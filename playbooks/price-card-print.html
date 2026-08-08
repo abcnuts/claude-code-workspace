@@ -1,0 +1,151 @@
+<title>Guild Price Card — print-ready</title>
+<style>
+  /* Print piece: one deliberate visual world, every color painted explicitly. */
+  :root {
+    --ink: #101820;
+    --paper: #FFFFFF;
+    --steel: #24537F;
+    --amber: #8F6200;
+    --line: #C9CDD2;
+    --soft: #EEF2F6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: #4A5560;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 1.5rem 1rem 3rem;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .toolbar { max-width: 6.4in; margin: 0 auto 1.2rem; color: #E8EBEE; font-size: 0.85rem; line-height: 1.5; }
+  .toolbar b { color: #FFFFFF; }
+  .card {
+    width: 6in; height: 4in;
+    background: var(--paper);
+    margin: 0 auto 1.2rem;
+    padding: 0.28in;
+    display: flex; flex-direction: column;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+    overflow: hidden;
+  }
+  @media (max-width: 6.5in) {
+    .card { transform-origin: top left; transform: scale(0.58); margin-bottom: -1.55in; }
+  }
+
+  /* FRONT */
+  .hook { font-size: 0.29in; font-weight: 850; line-height: 1.12; letter-spacing: -0.01em; margin: 0 0 0.06in; text-wrap: balance; }
+  .hook em { font-style: normal; color: var(--steel); }
+  .sub { font-size: 0.128in; color: var(--ink); margin: 0 0 0.14in; }
+  .sub b { color: var(--steel); }
+  .tiers { display: flex; gap: 0.12in; flex: 1; }
+  .tier { flex: 1; border: 2px solid var(--ink); padding: 0.1in 0.11in; display: flex; flex-direction: column; }
+  .tier.featured { background: var(--soft); border-width: 3px; }
+  .tier-name { font-size: 0.095in; letter-spacing: 0.13em; text-transform: uppercase; font-weight: 800; color: var(--steel); }
+  .tier-price { font-size: 0.26in; font-weight: 850; margin: 0.02in 0 0.01in; font-variant-numeric: tabular-nums; }
+  .tier-price span { font-size: 0.11in; font-weight: 600; color: #4A5560; }
+  .tier ul { margin: 0.04in 0 0; padding-left: 0.13in; font-size: 0.098in; line-height: 1.35; }
+  .tier li { margin-bottom: 0.025in; }
+  .credit { font-size: 0.1in; text-align: center; margin: 0.1in 0 0.06in; font-weight: 600; }
+  .honest { border-top: 2px solid var(--ink); padding-top: 0.07in; font-size: 0.107in; font-style: italic; text-align: center; }
+
+  /* BACK */
+  .back-head { font-size: 0.17in; font-weight: 850; margin: 0 0 0.1in; }
+  .steps { display: flex; gap: 0.12in; margin-bottom: 0.12in; }
+  .step { flex: 1; border-left: 3px solid var(--steel); padding-left: 0.09in; }
+  .step-n { font-size: 0.09in; letter-spacing: 0.13em; text-transform: uppercase; color: var(--steel); font-weight: 800; }
+  .step-t { font-size: 0.12in; font-weight: 700; margin: 0.015in 0; }
+  .step p { font-size: 0.099in; margin: 0; line-height: 1.4; }
+  .proof { background: var(--soft); border: 1px solid var(--line); padding: 0.09in 0.12in; font-size: 0.105in; margin-bottom: 0.12in; }
+  .proof b { font-size: 0.125in; }
+  .back-bottom { display: flex; gap: 0.14in; align-items: stretch; flex: 1; }
+  .contact { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+  .contact .biz { font-size: 0.15in; font-weight: 850; }
+  .contact p { font-size: 0.105in; margin: 0.02in 0 0; }
+  .fill { color: var(--amber); font-weight: 700; }
+  .qr { width: 1.05in; border: 2px dashed var(--amber); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.085in; color: var(--amber); padding: 0.05in; font-weight: 700; }
+
+  @media print {
+    body { background: #FFFFFF; padding: 0; }
+    .toolbar { display: none; }
+    .card { box-shadow: none; margin: 0; page-break-after: always; transform: none; }
+    @page { size: 6in 4in; margin: 0; }
+  }
+</style>
+
+<div class="toolbar">
+  <b>Print sheet — Guild price card, 4×6" postcard, front and back.</b><br>
+  Print this page (Cmd/Ctrl+P) with paper size 4×6 and margins set to none, or hand the file to the print shop.
+  The two amber items — phone number and QR code — get filled after the GHL line exists (plan item B2).
+</div>
+
+<!-- FRONT -->
+<div class="card">
+  <p class="hook">When a customer asks ChatGPT for a plumber…<br><em>do you come up?</em></p>
+  <p class="sub">We ask the AI ten times and count. <b>"Named in 2 of 10 asks"</b> — that's your score. Then we do the work and run it again.</p>
+  <div class="tiers">
+    <div class="tier">
+      <div class="tier-name">Get Visible</div>
+      <div class="tier-price">$497 <span>setup</span></div>
+      <ul>
+        <li>Your AI score, measured</li>
+        <li>Listings claimed &amp; fixed everywhere the AI reads</li>
+        <li>Wrong hours &amp; info corrected</li>
+        <li>90-day re-check</li>
+      </ul>
+    </div>
+    <div class="tier featured">
+      <div class="tier-name">90-Day Proof</div>
+      <div class="tier-price">$997 <span>setup</span></div>
+      <ul>
+        <li>Everything in Get Visible</li>
+        <li>Review engine, done legally</li>
+        <li>Website tune-up</li>
+        <li>Printed before/after you can hold</li>
+      </ul>
+    </div>
+    <div class="tier">
+      <div class="tier-name">Stay Visible</div>
+      <div class="tier-price">$149 <span>/month</span></div>
+      <ul>
+        <li>Monthly AI check</li>
+        <li>Every review answered</li>
+        <li>Listing patrol</li>
+        <li>Quarterly refresh</li>
+      </ul>
+    </div>
+  </div>
+  <p class="credit">Setup fee credits toward your first month.</p>
+  <p class="honest">"Anyone who guarantees a ranking is lying to you. I guarantee the work — and a before/after you can hold."</p>
+</div>
+
+<!-- BACK -->
+<div class="card">
+  <p class="back-head">How it works</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">Step 1</div>
+      <div class="step-t">We measure</div>
+      <p>Ten separate asks to the AI, same question a real customer asks. Every answer saved. No cherry-picking.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">Step 2</div>
+      <div class="step-t">We fix</div>
+      <p>Google, Yelp, Bing, Foursquare, Apple — claimed, corrected, complete. The places the AI actually reads.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">Step 3</div>
+      <div class="step-t">We prove</div>
+      <p>Same question, ten asks, 90 days later. Two reports side by side. You keep both.</p>
+    </div>
+  </div>
+  <div class="proof"><b>45% of people now ask AI</b> to find local businesses — up from 6% a year ago. The AI recommends about 1 business in 50. We work to make it yours.</div>
+  <div class="back-bottom">
+    <div class="contact">
+      <div class="biz">The Guild</div>
+      <p>Local. Flat price. No contract on setup.</p>
+      <p class="fill">Call/text: [Guild line — after B2]</p>
+    </div>
+    <div class="qr">QR code here<br>(GHL form link, after B2)</div>
+  </div>
+</div>
