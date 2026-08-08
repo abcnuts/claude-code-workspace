@@ -74,19 +74,31 @@ test_different_businesses_do_not_match, test_target_in_names.
 - Do not change the destination repo's visibility (stays private).
 - No force pushes anywhere.
 
-## Optional follow-on (only if Brandon says go)
+## Follow-on — Phase 4 reality check (PRE-AUTHORIZED by Brandon, 2026-08-08)
 
-Phase 4 "reality check" needs `OPENAI_API_KEY` in a local `.env`
-(`cp .env.example .env`, add key). Then: run 5 real businesses
-(`python cli.py "Name" trade "Town, ST"`), hand-verify direction against a
-real phone (pass = same direction ≥4/5), calibration = known franchise scores
-high, brand-new business scores ~0. Full product doctrine is in the seeded
-README.md — the integrity rules (search-on always, no partial runs, locked
-before/after configs) are the brand; don't "improve" them away.
+After the seed push and verification pass, continue directly into Phase 4:
+
+1. `cp .env.example .env`, then ask Brandon to paste his `OPENAI_API_KEY`
+   into `.env` (a billing-enabled key). The key lives ONLY in `.env` — it is
+   gitignored; never commit it, never echo it into logs.
+2. Ask Brandon for 5 real businesses he knows (name, trade, town+state) and
+   run each: `python cli.py "Name" trade "Town, ST"`.
+3. Hand-verify direction with Brandon against a real phone: pass = same
+   direction on ≥4/5.
+4. Calibration checks: a known franchise should score high; a brand-new
+   business should score ~0.
+5. Full product doctrine is in the seeded README.md — the integrity rules
+   (search-on always, no partial runs, locked before/after configs) are the
+   brand; don't "improve" them away. If the OpenAI API surface has drifted
+   since build (the engine uses the Responses API with the web_search tool),
+   fix forward in a normal commit — do not weaken the integrity rules to
+   make a run pass.
 
 ## Report back to Brandon when done
 
 - Commit SHA pushed to main + test results (must be 4/4).
+- Phase 4: the five appearance scores, the ≥4/5 direction verdict, and both
+  calibration results.
 - Brandon then tells the Claude remote session "seeded at <SHA>" so it can
   delete the temporary `probe-staging/` copy from the workspace repo and close
   out PRs #2/#3 there.
