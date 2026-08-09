@@ -2,7 +2,7 @@
 date: 2026-08-09
 type: sprint-plan
 project: the-guild
-status: ready-when-funnel-live
+status: ready-now-zero-cost
 territory: Lehi, Utah
 prerequisites: a phone with subscription ChatGPT + the offline field log (playbooks/lehi-field-log.html) — no paid infrastructure
 ---

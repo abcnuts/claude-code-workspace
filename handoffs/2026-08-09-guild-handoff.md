@@ -35,8 +35,8 @@ activates at the first close — until then no API key, no paid calls.
 | Journals, handoffs, playbook, plans | `abcnuts/claude-code-workspace` `main` @ `e0d801b` + PR #6 (draft, unmerged) | durable custody |
 | Fulfillment playbook v1 + price tiers | `playbooks/fulfillment-playbook-v1.md` | **approved** by Brandon |
 | Build plan (revised) | `plans/2026-08-08-build-phase-plan.md` | active |
-| Lehi sprint plan | `plans/2026-08-09-lehi-learn-sprint.md` | ready-when-funnel-live |
-| **Offline field log (canonical sprint record)** | `playbooks/lehi-field-log.html` + `lehi-field-log-template.csv` + private artifact e52d93c2-62b6-464c-9c9b-8c6eb0208edb | verified: 40/40 behavioral checks — offline, localStorage, CSV export, gated reset, zero network calls |
+| Lehi sprint plan | `plans/2026-08-09-lehi-learn-sprint.md` | ready now — zero-cost, needs only a phone and doors |
+| **Offline field log (canonical sprint record)** | `playbooks/lehi-field-log.html` + `lehi-field-log-template.csv` + private artifact e52d93c2-62b6-464c-9c9b-8c6eb0208edb | verified: 71/71 behavioral checks — protocol-enforced (doors 1–20 unique, completion lock at 20, derived cohorts, demo-consistency locks), offline, localStorage, escaped CSV, gated reset, zero network calls |
 | Funnel build sheet + consent language | `playbooks/ghl-funnel-build-sheet.md` | spec only — procurement deferred until after a close |
 | Price card (honesty-fixed) | `playbooks/price-card-print.html` + artifact 9302a24e-24a1-48b2-8e29-aa83476edcea | post-signal — print after a number exists |
 | One-pager v2 / Script Book v1 | artifacts d51a71b4… / c6c4dfb3… | live (from 8/7) |

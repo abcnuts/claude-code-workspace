@@ -95,10 +95,20 @@ unchanged.
   network calls; localStorage autosave; progress /20; CSV export with
   proper escaping; typed-RESET-gated erase; business info only, no
   customer PII) + `playbooks/lehi-field-log-template.csv` fallback.
-  Verified with a 40/40 Playwright behavioral pass (persistence, draft
-  restore, CSV escaping incl. quotes/newlines, gated reset, 390px
-  layout, zero external requests). Private artifact:
-  e52d93c2-62b6-464c-9c9b-8c6eb0208edb.
+  Private artifact: e52d93c2-62b6-464c-9c9b-8c6eb0208edb.
+- **Protocol-integrity revision (same day, independent verification):**
+  door number enforced 1–20 with duplicate rejection and a completion
+  lock after 20 unique doors (progress counts unique doors); price
+  cohort is derived from door parity (odd $497 / even $997), displayed
+  read-only, never manually selectable, still exported as
+  `price_cohort`; demo consistency enforced by UI locks (no → result
+  locked to "not run"; yes → "not run" unselectable, Present/Absent
+  required; switching clears incompatible state) with a second guard in
+  submit validation. Verified with a **71/71 Playwright behavioral
+  pass** covering duplicate rejection, out-of-range rejection,
+  21st-entry rejection and completion lock, cohort derivation in UI and
+  CSV, both invalid demo combinations, persistence, draft restore, CSV
+  escaping, gated reset, 390px layout, and zero external requests.
 
 ## Next actions (in order)
 

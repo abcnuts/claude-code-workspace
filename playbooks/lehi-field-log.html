@@ -28,8 +28,11 @@
   .bar { background: var(--steel); height: 100%; width: 0%; transition: width 0.2s; }
   .bar-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; color: var(--ink); }
   .cohorts { font-size: 0.75rem; color: var(--muted); text-align: center; margin-bottom: 0.9rem; font-variant-numeric: tabular-nums; }
+  .complete-banner { display: none; background: var(--good-soft); border: 2px solid var(--good); color: var(--good); font-weight: 800; font-size: 0.95rem; text-align: center; padding: 0.7rem; margin-bottom: 0.9rem; }
+  .complete-banner.show { display: block; }
 
   fieldset { border: 2px solid var(--ink); padding: 0.75rem; margin: 0 0 1rem; }
+  fieldset:disabled { opacity: 0.55; }
   legend { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--steel); padding: 0 0.3rem; }
   label { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin: 0.65rem 0 0.2rem; }
   label:first-of-type { margin-top: 0; }
@@ -45,6 +48,11 @@
     border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); cursor: pointer;
   }
   .seg button.on { background: var(--steel); border-color: var(--steel); color: #FFFFFF; }
+  .seg button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .cohort-display {
+    font-size: 1.25rem; font-weight: 850; color: var(--steel); background: var(--steel-soft);
+    border: 2px solid var(--steel); text-align: center; padding: 0.45rem; font-variant-numeric: tabular-nums;
+  }
   .hint { font-size: 0.72rem; color: var(--amber); font-weight: 600; margin-top: 0.2rem; }
   .pii { font-size: 0.72rem; color: var(--muted); margin-top: 0.65rem; }
 
@@ -52,7 +60,7 @@
     width: 100%; padding: 0.85rem; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.03em;
     background: var(--good); color: #FFFFFF; border: 2px solid var(--good); cursor: pointer; margin-top: 0.9rem;
   }
-  .save-btn:disabled { background: var(--line); border-color: var(--line); color: var(--muted); }
+  .save-btn:disabled { background: var(--line); border-color: var(--line); color: var(--muted); cursor: not-allowed; }
   .msg { font-size: 0.8rem; font-weight: 700; margin-top: 0.4rem; min-height: 1.1rem; }
   .msg.ok { color: var(--good); } .msg.err { color: var(--danger); }
 
@@ -76,18 +84,19 @@
 </head>
 <body>
   <h1>Lehi Field Log — 20 Doors</h1>
-  <p class="sub">Offline. Saves on this device only. Export CSV at day's end. Every door gets logged, including no-answers.</p>
+  <p class="sub">Offline. Saves on this device only. Export CSV at day's end. Every door 1–20 gets logged exactly once, including no-answers.</p>
 
   <div class="bar-wrap"><div class="bar" id="bar"></div><div class="bar-label" id="barLabel">0 / 20 doors</div></div>
   <div class="cohorts" id="cohorts">$497: 0 · $997: 0 · closed: 0</div>
+  <div class="complete-banner" id="completeBanner">SPRINT COMPLETE — all 20 doors logged. Export the CSV.</div>
 
-  <form id="f" autocomplete="off">
-  <fieldset>
+  <form id="f" autocomplete="off" novalidate>
+  <fieldset id="formFields">
     <legend>This door</legend>
     <div class="row2">
       <div>
-        <label for="door">Door #</label>
-        <input type="number" id="door" min="1" max="99" inputmode="numeric">
+        <label for="door">Door # (1–20)</label>
+        <input type="number" id="door" min="1" max="20" inputmode="numeric">
       </div>
       <div>
         <label for="trade">Trade</label>
@@ -104,12 +113,8 @@
     <label for="biz">Business name</label>
     <input type="text" id="biz" placeholder="Shop name on the door">
 
-    <label>Price cohort (assigned before the knock — alternate)</label>
-    <div class="seg" id="cohort" role="group" aria-label="Price cohort">
-      <button type="button" data-v="$497">$497</button>
-      <button type="button" data-v="$997">$997</button>
-    </div>
-    <div class="hint" id="cohortHint"></div>
+    <label id="cohortLabel">Price cohort — locked protocol: odd door $497, even door $997</label>
+    <div class="cohort-display" id="cohortDisplay" role="status" aria-labelledby="cohortLabel">$497</div>
 
     <label>Demo shown (ChatGPT, their phone)</label>
     <div class="seg" id="demoShown" role="group" aria-label="Demo shown">
@@ -123,6 +128,7 @@
       <button type="button" data-v="absent">Absent</button>
       <button type="button" data-v="not run">Not run</button>
     </div>
+    <div class="hint" id="demoHint">Pick "Demo shown" first — result options follow it.</div>
 
     <label>Outcome</label>
     <div class="seg" id="outcome" role="group" aria-label="Outcome">
@@ -149,10 +155,9 @@
     <input type="date" id="cb">
 
     <p class="pii">Business info only — no customer names, numbers, or personal details in this log.</p>
-
-    <button type="submit" class="save-btn" id="saveBtn">SAVE DOOR</button>
-    <div class="msg" id="msg" role="status"></div>
   </fieldset>
+  <button type="submit" class="save-btn" id="saveBtn">SAVE DOOR</button>
+  <div class="msg" id="msg" role="status"></div>
   </form>
 
   <h2>Logged doors</h2>
@@ -168,7 +173,7 @@
     </details>
   </div>
 
-  <footer>The Guild · Lehi learn sprint · doctrine: every door logged, no cherry-picking · measure → improve → prove</footer>
+  <footer>The Guild · Lehi learn sprint · doctrine: every door logged once, no cherry-picking · measure → improve → prove</footer>
 
 <script>
 (function () {
@@ -185,34 +190,80 @@
   function persist(entries) { localStorage.setItem(KEY, JSON.stringify(entries)); }
 
   var entries = load();
-  var seg = { cohort: "", demoShown: "", demoResult: "", outcome: "", element: "" };
+  var seg = { demoShown: "", demoResult: "", outcome: "", element: "" };
 
   function $(id) { return document.getElementById(id); }
+
+  function cohortFor(door) { return door % 2 === 1 ? "$497" : "$997"; }
+  function loggedDoors() {
+    var s = {};
+    entries.forEach(function (e) { s[e.door_number] = true; });
+    return s;
+  }
+  function uniqueCount() { return Object.keys(loggedDoors()).length; }
+  function isComplete() { return uniqueCount() >= TARGET; }
+  function nextDoor() {
+    var logged = loggedDoors();
+    for (var i = 1; i <= TARGET; i++) { if (!logged[i]) return i; }
+    return null;
+  }
+
+  function applyDemoLock() {
+    var shown = seg.demoShown;
+    var buttons = $("demoResult").querySelectorAll("button");
+    if (shown === "no") {
+      // Locked: no demo means the only truthful result is "not run".
+      seg.demoResult = "not run";
+      Array.prototype.forEach.call(buttons, function (b) {
+        var v = b.getAttribute("data-v");
+        b.classList.toggle("on", v === "not run");
+        b.disabled = true;
+      });
+      $("demoHint").textContent = "Demo not shown — result locked to \"not run\".";
+    } else if (shown === "yes") {
+      if (seg.demoResult === "not run" || seg.demoResult === "") {
+        seg.demoResult = "";
+        Array.prototype.forEach.call(buttons, function (b) { b.classList.remove("on"); });
+      }
+      Array.prototype.forEach.call(buttons, function (b) {
+        b.disabled = b.getAttribute("data-v") === "not run";
+      });
+      $("demoHint").textContent = "Demo shown — pick Present or Absent.";
+    } else {
+      seg.demoResult = "";
+      Array.prototype.forEach.call(buttons, function (b) { b.classList.remove("on"); b.disabled = true; });
+      $("demoHint").textContent = "Pick \"Demo shown\" first — result options follow it.";
+    }
+    saveDraft();
+  }
 
   function wireSeg(groupId) {
     var group = $(groupId);
     group.addEventListener("click", function (ev) {
-      var btn = ev.target.closest("button"); if (!btn) return;
-      seg[groupId === "element" ? "element" : groupId] = btn.getAttribute("data-v");
+      var btn = ev.target.closest("button"); if (!btn || btn.disabled) return;
+      seg[groupId] = btn.getAttribute("data-v");
       Array.prototype.forEach.call(group.querySelectorAll("button"), function (b) {
         b.classList.toggle("on", b === btn);
       });
-      if (groupId === "demoShown" && btn.getAttribute("data-v") === "no") pickSeg("demoResult", "not run");
+      if (groupId === "demoShown") applyDemoLock();
       saveDraft();
     });
   }
   function pickSeg(groupId, value) {
-    seg[groupId === "element" ? "element" : groupId] = value;
+    seg[groupId] = value;
     Array.prototype.forEach.call($(groupId).querySelectorAll("button"), function (b) {
       b.classList.toggle("on", b.getAttribute("data-v") === value);
     });
   }
-  ["cohort","demoShown","demoResult","outcome","element"].forEach(wireSeg);
+  ["demoShown","demoResult","outcome","element"].forEach(wireSeg);
 
-  function nextDoor() { return entries.length + 1; }
-  function cohortHint() {
-    var n = parseInt($("door").value, 10) || nextDoor();
-    $("cohortHint").textContent = "Protocol for door " + n + ": " + (n % 2 === 1 ? "$497" : "$997");
+  function updateCohortDisplay() {
+    var n = parseInt($("door").value, 10);
+    if (n >= 1 && n <= TARGET) {
+      $("cohortDisplay").textContent = cohortFor(n) + "  (door " + n + ")";
+    } else {
+      $("cohortDisplay").textContent = "—";
+    }
   }
 
   function saveDraft() {
@@ -230,11 +281,13 @@
       if (d.trade) $("trade").value = d.trade;
       $("biz").value = d.biz || ""; $("notes").value = d.notes || ""; $("cb").value = d.cb || "";
       if (d.seg) {
-        if (d.seg.cohort) pickSeg("cohort", d.seg.cohort);
         if (d.seg.demoShown) pickSeg("demoShown", d.seg.demoShown);
-        if (d.seg.demoResult) pickSeg("demoResult", d.seg.demoResult);
         if (d.seg.outcome) pickSeg("outcome", d.seg.outcome);
         if (d.seg.element) pickSeg("element", d.seg.element);
+        applyDemoLock();
+        if (d.seg.demoShown === "yes" && (d.seg.demoResult === "present" || d.seg.demoResult === "absent")) {
+          pickSeg("demoResult", d.seg.demoResult);
+        }
       }
     } catch (e) { /* draft unreadable: start clean */ }
   }
@@ -242,12 +295,13 @@
     $(id).addEventListener("input", saveDraft);
     $(id).addEventListener("change", saveDraft);
   });
-  $("door").addEventListener("input", cohortHint);
+  $("door").addEventListener("input", updateCohortDisplay);
 
   function render() {
-    var pct = Math.min(100, Math.round(entries.length / TARGET * 100));
+    var unique = uniqueCount();
+    var pct = Math.min(100, Math.round(unique / TARGET * 100));
     $("bar").style.width = pct + "%";
-    $("barLabel").textContent = entries.length + " / " + TARGET + " doors";
+    $("barLabel").textContent = unique + " / " + TARGET + " doors";
     var c497 = 0, c997 = 0, closed = 0;
     entries.forEach(function (e) {
       if (e.price_cohort === "$497") c497++;
@@ -255,6 +309,12 @@
       if (e.outcome === "closed") closed++;
     });
     $("cohorts").textContent = "$497: " + c497 + " · $997: " + c997 + " · closed: " + closed;
+
+    var done = isComplete();
+    $("completeBanner").classList.toggle("show", done);
+    $("formFields").disabled = done;
+    $("saveBtn").disabled = done;
+    $("saveBtn").textContent = done ? "SPRINT COMPLETE" : "SAVE DOOR";
 
     var list = $("list");
     if (!entries.length) {
@@ -284,12 +344,20 @@
 
   $("f").addEventListener("submit", function (ev) {
     ev.preventDefault();
+    if (isComplete()) { flash("Sprint complete — all 20 doors are logged.", false); return; }
+
     var door = parseInt($("door").value, 10);
-    if (!door || door < 1) { flash("Door # required.", false); return; }
+    if (!door || door < 1 || door > TARGET) { flash("Door # must be 1–20.", false); return; }
+    if (loggedDoors()[door]) { flash("Door " + door + " is already logged. Doors are logged once.", false); return; }
     if (!$("trade").value) { flash("Pick the trade.", false); return; }
-    if (!seg.cohort) { flash("Pick the price cohort.", false); return; }
     if (!seg.demoShown) { flash("Demo shown: yes or no.", false); return; }
-    if (!seg.demoResult) { flash("Pick the demo result.", false); return; }
+    // Demo consistency — second guard behind the UI locks.
+    if (seg.demoShown === "yes" && seg.demoResult !== "present" && seg.demoResult !== "absent") {
+      flash("Demo was shown — result must be Present or Absent.", false); return;
+    }
+    if (seg.demoShown === "no" && seg.demoResult !== "not run") {
+      flash("Demo not shown — result must be \"not run\".", false); return;
+    }
     if (!seg.outcome) { flash("Pick the outcome.", false); return; }
     if (!seg.element) { flash("Element read (or Unread).", false); return; }
 
@@ -303,7 +371,7 @@
       timestamp: ts,
       business_name: $("biz").value.trim(),
       trade: $("trade").value,
-      price_cohort: seg.cohort,
+      price_cohort: cohortFor(door),   // locked protocol: derived, never chosen
       demo_shown: seg.demoShown,
       demo_result: seg.demoResult,
       outcome: seg.outcome,
@@ -315,14 +383,20 @@
     localStorage.removeItem(DRAFT_KEY);
 
     $("f").reset();
-    seg = { cohort: "", demoShown: "", demoResult: "", outcome: "", element: "" };
-    ["cohort","demoShown","demoResult","outcome","element"].forEach(function (g) {
+    seg = { demoShown: "", demoResult: "", outcome: "", element: "" };
+    ["demoShown","demoResult","outcome","element"].forEach(function (g) {
       Array.prototype.forEach.call($(g).querySelectorAll("button"), function (b) { b.classList.remove("on"); });
     });
-    $("door").value = nextDoor();
-    cohortHint();
+    applyDemoLock();
+    var nd = nextDoor();
+    if (nd) $("door").value = nd;
+    updateCohortDisplay();
     render();
-    flash("Door " + door + " saved. Next: door " + nextDoor() + ".", true);
+    if (isComplete()) {
+      flash("Door " + door + " saved — that's all twenty. Export the CSV.", true);
+    } else {
+      flash("Door " + door + " saved. Next: door " + nd + " (" + cohortFor(nd) + ").", true);
+    }
   });
 
   function csvField(v) {
@@ -332,9 +406,10 @@
   }
   function buildCSV() {
     var lines = [HEADERS.join(",")];
-    entries.forEach(function (e) {
-      lines.push(HEADERS.map(function (h) { return csvField(e[h]); }).join(","));
-    });
+    entries.slice().sort(function (a, b) { return a.door_number - b.door_number; })
+      .forEach(function (e) {
+        lines.push(HEADERS.map(function (h) { return csvField(e[h]); }).join(","));
+      });
     return lines.join("\r\n") + "\r\n";
   }
   $("exportBtn").addEventListener("click", function () {
@@ -358,14 +433,16 @@
     $("resetConfirm").value = "";
     $("resetBtn").disabled = true;
     $("door").value = 1;
-    cohortHint();
+    updateCohortDisplay();
     render();
     flash("Log erased.", true);
   });
 
-  $("door").value = nextDoor();
+  var nd0 = nextDoor();
+  if (nd0) $("door").value = nd0;
   restoreDraft();
-  cohortHint();
+  applyDemoLock();
+  updateCohortDisplay();
   render();
 })();
 </script>
