@@ -1,111 +1,79 @@
 ---
 date: 2026-08-08
+revised: 2026-08-09 (direction lock — Phase 4 deferred, missions reordered)
 type: handoff
 project: the-guild
 audience: codex (local session on Brandon's Mac)
-task: Phase 4 reality check + trades review + skills install
+task: Lehi trades list + skills dedupe now; probe calibration DEFERRED until first close
 from: claude.ai/code remote session (build-phase session)
-supersedes: handoffs/2026-08-08-codex-repo-seed-handoff.md (seed mission COMPLETE at 450f25d)
+supersedes: handoffs/2026-08-08-codex-repo-seed-handoff.md (seed mission COMPLETE)
 ---
 
-# HANDOFF → CODEX #2 — Phase 4 + Mac-side lane — 2026-08-08
+# HANDOFF → CODEX #2 (revised) — Mac-side lane — 2026-08-09
 
-You are the local agent with Brandon's credentials and his Mac. Your seed
-mission is complete (guild-visibility-probe pushed at `450f25da`, 4/4 tests).
-This handoff is your next work order. It is self-contained: you cannot read
-the Guild's workspace repo (different GitHub account), so everything you
-need is in this file or in the probe repo you CAN reach.
+You are the local agent with Brandon's credentials and his Mac. Seed
+mission complete. This revision reflects Brandon's locked direction of
+2026-08-09 — read the DEFERRED section carefully: the API calibration
+that was previously Mission 1 is **no longer the next gate**.
 
-## Context in five sentences
+## Direction lock (Brandon's authority — do not reopen)
 
-The Guild sells local businesses a **measured appearance rate** in AI
-answers — "named in X of 10 asks" — never a guaranteed ranking. The probe
-you seeded is the measurement instrument; it has never run against the live
-OpenAI API. Your Mission 1 is the Phase 4 reality check that proves the
-instrument tells the truth. Missions 2–3 are small: adjust the trades list
-with Brandon, and install three skills into the local skills directories.
-Everything you do is reported back to Brandon, who relays to the cloud
-Claude session for journaling — you two cannot see each other's repos.
+- The first-door demo is **ordinary subscription ChatGPT on the
+  prospect's phone**. The paid Responses-API probe is a separate INTERNAL
+  baseline/proof lane, not a pre-door blocker.
+- **Do not request an API key. Do not make paid API calls.** The probe
+  lane activates at the first close, or when Brandon explicitly says so.
+- First learn-sprint territory: **Lehi, Utah**.
+- Approved playbook and price tiers stand; invent no new scripts, tiers,
+  legal architecture, or automation.
 
-## Operating facts
+## Probe state of record (confirmed by Brandon, 2026-08-09)
 
-- Repo: `brandonwadepackard-cell/guild-visibility-probe`, branch `main`.
-  `git pull` before starting — do not assume your clone is current.
-- Engine: OpenAI **Responses API** with the `web_search` tool
-  (`probe/engine.py`); extraction pass is a second, cheap call. Model via
-  `OPENAI_MODEL` env (default `gpt-4o-mini`), samples via
-  `SAMPLES_PER_RUN` (default 10), `DAILY_RUN_LIMIT` (default 50) is the
-  accident brake. Cost ≈ ten search asks + ten tiny extractions per
-  report — well under $1.
-- Storage: SQLite, append-only by design. There is deliberately no code
-  path that edits or deletes a saved run. Do not add one.
+- Repo: `brandonwadepackard-cell/guild-visibility-probe`, `main` at
+  `450f25da0f049f84f96d93ef6460be27e5375a1c`.
+- Default model: `gpt-5.6-terra`. Tests: **8/8 passing**.
+- The search-required and invalid-run protections are load-bearing
+  doctrine. **Do not revert or weaken them** — not for convenience, not
+  to make a future run pass, not in any refactor.
 
-## The four integrity rules (never weaken these, even to make a run pass)
+## MISSION 1 — Lehi trades list (do now, with Brandon)
 
-1. **Search-on, always.** Every ask goes through web search. Bare-model
-   answers are stale and would never reflect fix work.
-2. **No partial runs, no deletions, no cherry-picking.** A run with any
-   failed sample is invalid, and stays saved as invalid.
-3. **Apples to apples.** Re-runs reuse the baseline's exact question,
-   model, and sample count automatically. Model changes get footnoted.
-4. **Humans backstop name matching.** A false "0 of 10" from a name
-   mismatch is the worst failure; raw answers stay visible, corrections
-   are append-only overrides.
+`git pull` first. Tune `probe/questions.yaml` to the Lehi first wave
+(see cohort table in the workspace repo's
+`plans/2026-08-09-lehi-learn-sprint.md`; Brandon can read it to you —
+you cannot reach that repo):
 
-If the OpenAI API surface has drifted since build (tool naming, response
-shape), fix forward in normal commits with clear messages — never by
-loosening a rule. Push fixes to `main` and record the SHAs for the report.
+- Priority 1: hvac, plumber, electrician
+- Priority 2: sprinkler/landscaper, pest_control, garage_door
+- Priority 3: roofer, auto_repair, barber
+- Hold for wave two: dentist, chiropractor, restaurant (keep the lines,
+  they cost nothing — just ensure wave-one trades are all present).
 
-## MISSION 1 — Phase 4 reality check (PRE-AUTHORIZED by Brandon)
+One line per trade; question must read like a real customer ask and
+include `{town}`; town values always carry the state ("Lehi, UT").
+Commit and push. This costs zero API calls — it's a YAML edit.
 
-Setup:
-1. `git pull` → fresh venv → `pip install -r requirements.txt` →
-   `python -m pytest tests/ -v` (expect 4 passed).
-2. `cp .env.example .env`; ask Brandon to paste his billing-enabled
-   `OPENAI_API_KEY`. The key lives ONLY in `.env` (gitignored). Never
-   commit it, never echo it into logs or output.
-3. Smoke run ONE business first (any real local business Brandon names):
-   `python cli.py "Business Name" trade "Town, ST"`. If it errors, this is
-   where API drift shows up — fix forward, re-run, commit.
+## MISSION 2 — Skills install, deduplicated (do once)
 
-The check (after smoke passes):
-4. Ask Brandon for **5 real businesses he personally knows** — name,
-   trade, town + state. Spread across trades if possible.
-5. Run each once. Record every run ID and score.
-6. **Direction verification with Brandon:** for each business, ask him
-   "does this score point the same direction as reality?" (a business he
-   knows is well-known should score high; obscure should score low).
-   PASS = same direction on **≥4 of 5**.
-7. **Calibration pair:** run a known national franchise location (should
-   score HIGH) and a brand-new/tiny business (should score ~0). Both
-   behaving = the instrument isn't just noise.
-8. While you're in there: have Brandon click through the web UI once
-   (`uvicorn app:app --reload`, passcode from `.env`) — report page loads,
-   raw answers visible, manual-correction flow works.
+On this Mac, `~/.claude/skills` and `~/.codex/skills` both point to the
+same canonical store: **`~/Projects/skills`**. Therefore:
 
-Rules during runs: no re-rolling a run because the number looks wrong
-(that IS the data — AI answers are stochastic; frequency is the product).
-If a sample fails mid-run, the run marks invalid — diagnose, fix, run
-again as a NEW run. All runs stay in the database.
+- Install each skill ONCE into `~/Projects/skills/<name>/SKILL.md`.
+  Never write separate copies into the two pointer paths — that creates
+  the duplicate problem this instruction exists to prevent.
+- Before installing, check whether a skill of the same name already
+  exists in the canonical store; if so, reconcile (newest doctrine wins,
+  note what changed) rather than blindly overwrite.
+- After installing, run the canonical backup workflow for
+  `~/Projects/skills` (the store's established backup routine on this
+  Mac). Any future skill work follows this same pattern: canonical
+  store, dedupe once, backup.
 
-## MISSION 2 — Trades list review (plan item A3, with Brandon)
+The three skills, exact contents (validate `appearance-rate-probe`
+against the probe repo README after install — if they disagree, the
+README wins; report the discrepancy):
 
-`probe/questions.yaml` ships with 10 starter trades (plumber, hvac,
-roofer, electrician, landscaper, pest_control, dentist, chiropractor,
-restaurant, barber). With Brandon, add/cut for his chosen territory. One
-line per trade; the question must always include `{town}` and read like a
-real customer ask ("Who should I call for a plumber in {town}?" — town
-values always include the state). Commit and push the edited list.
-
-## MISSION 3 — Install the three mined skills (standing lane)
-
-Create one folder per skill in `~/.claude/skills/` AND `~/.codex/skills/`
-(both, if both exist on this Mac), file named `SKILL.md`, exact contents
-below. After installing, validate `appearance-rate-probe` against the
-probe repo's README — they should agree; if they don't, the README wins
-and report the discrepancy.
-
-### ~/.claude/skills/appearance-rate-probe/SKILL.md
+### ~/Projects/skills/appearance-rate-probe/SKILL.md
 
 ```markdown
 ---
@@ -154,7 +122,7 @@ Turn "what does AI say about this business" into an honest, sellable, repeatable
 - Never guarantee a ranking, placement, or specific score.
 ```
 
-### ~/.claude/skills/four-elements-sales-scripts/SKILL.md
+### ~/Projects/skills/four-elements-sales-scripts/SKILL.md
 
 ```markdown
 ---
@@ -200,7 +168,7 @@ product; the Guild is just a user). Drill until the Water callback close and
 the Fire silence-after-demo are muscle memory.
 ```
 
-### ~/.claude/skills/cold-outreach-legality-gate/SKILL.md
+### ~/Projects/skills/cold-outreach-legality-gate/SKILL.md
 
 ```markdown
 ---
@@ -239,31 +207,34 @@ stale. Capture consent language at every intake point; keep records 4+ years.
   entering a new state.
 ```
 
+## DEFERRED — probe calibration + customer baselines (do NOT start)
+
+Previously "Phase 4." It activates ONLY when Brandon says "first close"
+or explicitly triggers the probe lane. Until then: no `.env` key, no
+paid calls, no calibration runs. When activated, the protocol is:
+smoke run one business → five known businesses hand-verified with
+Brandon (≥4/5 same direction) → franchise-high / new-biz-zero
+calibration pair → web UI click-through → then the first real customer
+baseline within the week promised at the close. Integrity rules
+(search-on, no partial runs, append-only, locked baselines) apply
+unchanged; fix API drift forward in normal commits, never by weakening
+a rule. Stochastic scores are the product, not a bug.
+
 ## Rules (all missions)
 
-- Never commit `.env`, keys, or passcodes. Never echo the key.
-- Only touch `brandonwadepackard-cell/guild-visibility-probe` and the local
-  skills directories. Nothing under `abcnuts` (you can't reach it anyway).
-- No force pushes. No new repos. No probe v2 features (video audits, PDF
-  export, multi-engine, GHL integration are deliberately out of scope).
-- The stochastic scores are the product, not a bug to fix.
+- Never commit `.env`, keys, or passcodes.
+- Only touch `brandonwadepackard-cell/guild-visibility-probe` and
+  `~/Projects/skills`. Nothing under `abcnuts` (unreachable anyway).
+- No force pushes. No new repos. No probe v2 features.
 
-## Report back to Brandon (he relays it to the cloud Claude session)
-
-Have Brandon paste this block, filled in, to Claude:
+## Report back to Brandon (he relays to the cloud Claude session)
 
 ```
-Phase 4 results:
-- Smoke run: <ok | fixed drift, commits: SHAs>
-- Businesses (name / trade / town / score / run-id):
-  1..5
-- Direction verdict: <N>/5 match Brandon's read → <PASS|FAIL>
-- Calibration: franchise <score>, new-biz <score> → <PASS|FAIL>
-- Web UI check: <ok | issues>
-- Trades list: <unchanged | edited, commit SHA>
-- Skills installed: <list> ; README validation: <agrees | discrepancy: …>
+Mac lane results:
+- Trades list: <edited for Lehi wave one, commit SHA | already correct>
+- Skills: <installed to ~/Projects/skills: list> ; dedupe check: <clean |
+  reconciled: what> ; backup workflow: <run | issue> ;
+  README validation: <agrees | discrepancy: …>
+- Probe lane: NOT activated (per direction lock) | activated by Brandon
+  on <date>: <calibration + baseline results per protocol>
 ```
-
-Claude then journals the results and updates the build-phase plan. If
-Phase 4 PASSES, the probe is cleared for customer baselines and the next
-gate is Brandon's territory decision (B1) and the GHL funnel (B2).
