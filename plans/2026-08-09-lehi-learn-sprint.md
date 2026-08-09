@@ -4,7 +4,7 @@ type: sprint-plan
 project: the-guild
 status: ready-now-zero-cost
 territory: Lehi, Utah
-prerequisites: a phone with subscription ChatGPT + the offline field log (playbooks/lehi-field-log.html) — no paid infrastructure
+prerequisites: a phone with subscription ChatGPT + the Guild Command Center (playbooks/guild-command-center.html) — no paid infrastructure
 ---
 
 # Lehi Learn Sprint — First-Wave Plan
@@ -85,23 +85,34 @@ implies we make the AI say their name or guarantee placement or score.
 The demo shows what the AI says today; the offer is measure → improve →
 prove.
 
-## What to record (canonical: the offline field log, per door, 60 seconds)
+## What to record (canonical: the Command Center LOG view, per door, 60 seconds)
 
-**`playbooks/lehi-field-log.html` is the canonical record for the first
-20 doors.** It runs offline on the phone — no backend, no login, no
-network — autosaves locally, tracks progress out of 20, and exports CSV
-(`playbooks/lehi-field-log-template.csv` is the same header as a
-paper/spreadsheet fallback). Fields per door:
+**`playbooks/guild-command-center.html` is the canonical first-sprint
+surface** — plan, door workflow, field log, client presentation, and
+live results in one offline file (private artifact
+d2fe8d92-9c56-4a56-bb3a-20f91a8f4cb7). Its LOG view is the canonical
+record for the first 20 doors: offline, localStorage autosave, progress
+out of 20, escaped CSV export (`playbooks/lehi-field-log-template.csv`
+is the same header as a paper/spreadsheet fallback). Fields per door:
 
 - door number · timestamp (auto) · business name · trade
-- price_cohort ($497/$997) · demo_shown (y/n)
-- **demo_result: present / absent / not run**
+- price_cohort ($497/$997, derived from door parity — locked)
 - outcome (closed / callback set / soft no / hard no / no answer)
+- **owner_present (yes / no / not applicable)**
+- demo_shown (y/n) · **demo_result: present / absent / not run**
+- **sit_down_booked (yes / no)**
 - element read (Fire/Earth/Water/Air/unread) · notes with objection
   verbatim · optional callback date
 
+Truth rules the log enforces: "no answer" forces owner_present=N/A,
+demo_shown=no, demo_result=not run, sit_down_booked=no; a sit-down can
+only be "yes" when a conversation happened; a shown demo must record
+Present or Absent, never "not run."
+
 No customer PII goes in the log — business info only. Export the CSV at
-the end of each day.
+the end of each day. `playbooks/lehi-field-log.html` remains an
+EMERGENCY fallback only: it predates the owner/sit-down fields, and
+entries logged there will read as incomplete in the results gate.
 
 ## On a close
 
@@ -122,6 +133,10 @@ the end of each day.
 
 Hard gate (sprint validity): **all 20 doors logged, complete fields** —
 an incomplete dataset is an invalid run, same as the probe.
+
+The Command Center's RESULTS view computes these gates automatically
+with the correct denominators, and refuses any verdict until the run is
+complete — a partial or incomplete run is never labeled pass or fail.
 
 Read after 20 doors (learn gates, not success guarantees):
 

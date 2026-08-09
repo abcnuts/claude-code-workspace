@@ -110,9 +110,44 @@ unchanged.
   CSV, both invalid demo combinations, persistence, draft restore, CSV
   escaping, gated reset, 390px layout, and zero external requests.
 
+## Guild Command Center built (2026-08-09, authorized)
+
+- **`playbooks/guild-command-center.html`** — one self-contained,
+  phone-first cockpit (no libraries, backend, login, or network calls;
+  sticky bottom nav on phone, rail on desktop): COMMAND (mission,
+  phases with you-are-here, zero-cost readiness, immediate sequence),
+  WORKFLOW (8-step door flow with the locked honest PRESENT/ABSENT
+  wording + fulfillment lanes tagged $497/$997/$149-mo), LOG (the full
+  field log, same localStorage keys), CLIENT (6-card presentation mode
+  for the prospect's hands — editable prompt, copyable question,
+  honest interpretation, tier for the current door, no internal
+  experiment language), RESULTS (live counts, correct-denominator demo
+  rate, cohort direction, and a decision gate that never labels a
+  partial run). Private artifact d2fe8d92-9c56-4a56-bb3a-20f91a8f4cb7.
+- **Schema mismatch resolved:** the documented learn gates required
+  "demo rate among answered owner-present conversations" and "sit-downs
+  booked" — fields the log couldn't record. Added `owner_present`
+  (yes/no/not applicable) and `sit_down_booked` (yes/no) with enforced
+  truth cascades ("no answer" forces N/A + demo not run + sit no;
+  leaving "no answer" clears the forced values for fresh answers;
+  sit-down=yes requires a conversation). CSV header + template updated.
+  Legacy fallback-logger entries migrate non-destructively at read time
+  (no-answer doors derive their values; answered doors export empty
+  owner/sit fields and are flagged incomplete by the gate — the run
+  cannot be judged until every entry is complete).
+- **Verified: 126/126 behavioral checks** via the committed suite
+  `playbooks/tests/command-center-smoke.js`, run at 390×844 and
+  1280×800: navigation + client-mode chrome, all prior field-log
+  integrity behaviors, the new cascades, migration, denominator math,
+  both complete-run gate verdicts, partial-run no-verdict, tier
+  mapping, client copy honesty scan, zero external requests, no
+  horizontal overflow.
+- The standalone `lehi-field-log.html` is demoted to EMERGENCY fallback
+  (pre-revision schema; its entries read incomplete in the gate).
+
 ## Next actions (in order)
 
-1. Field log on the phone; test entry, export, reset.
+1. Command Center on the phone; test door in LOG, export, reset.
 2. Joey dry run (lanes 1–3 + 5, timed).
 3. Lehi 20-door sprint — field log is the canonical record.
 4. Crew decisions before first dollar.

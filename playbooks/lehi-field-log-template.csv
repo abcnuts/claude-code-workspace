@@ -1,1 +1,1 @@
-door_number,timestamp,business_name,trade,price_cohort,demo_shown,demo_result,outcome,objection_element,notes,callback_date
+door_number,timestamp,business_name,trade,price_cohort,owner_present,demo_shown,demo_result,outcome,sit_down_booked,objection_element,notes,callback_date

@@ -39,7 +39,7 @@ in this phase. The first 20 doors run zero-cost.
 
 | # | Item | Owner | Gate |
 |---|------|-------|------|
-| N1 | Field log on the phone: open `playbooks/lehi-field-log.html` (or its private artifact), confirm it saves and exports | Brandon | test entry saved + CSV exported, then reset |
+| N1 | Command Center on the phone: open `playbooks/guild-command-center.html` (private artifact d2fe8d92-…), save a test door in LOG, export CSV, reset | Brandon | test entry saved + CSV exported, then reset |
 | N2 | Joey dry run: playbook lanes 1–3 + 5 on one friendly business, timed (Step 0's probe baseline is deferred with the probe lane) | Joey + Brandon | checklist done once; hours-per-client written down |
 | N3 | Crew decisions: rev split across the seven; referral reward now vs later — the flywheel needs the referral answer | Brandon + crew | decided before first outside dollar |
 
@@ -47,9 +47,12 @@ in this phase. The first 20 doors run zero-cost.
 
 Full sprint plan: `plans/2026-08-09-lehi-learn-sprint.md` — first-wave
 scope, trade cohorts, the ChatGPT-on-their-phone demo procedure, the
-offline field-log recording spec, and pass/fail evidence after the
-first reps. The field log is the canonical record for the first 20
-doors.
+recording spec, and pass/fail evidence after the first reps. The
+**Guild Command Center** (`playbooks/guild-command-center.html`) is the
+canonical first-sprint surface — plan, workflow, log, client
+presentation, and results in one offline file; its LOG view is the
+canonical record. `playbooks/lehi-field-log.html` is an emergency
+fallback only.
 
 ## POST-SIGNAL INFRASTRUCTURE (procure after a close, not before)
 
