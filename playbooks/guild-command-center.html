@@ -510,7 +510,7 @@
       <div class="price-line" id="cPrice">$497 setup</div>
       <ul class="inc" id="cIncludes"></ul>
       <p><b>$149/month after</b> keeps it measured and maintained: monthly check, every review answered, listing patrol. Your setup fee credits toward the first month.</p>
-      <p id="cClose">If that's fair, we can start this week — I'll take your business info and the work begins. You'll have the first measured report in hand within days.</p>
+      <p id="cClose">If that's fair, we can start this week — I'll take your business info and the work begins. You'll have the first measured report in hand within the week.</p>
       <p class="honest-foot">"Anyone who guarantees a ranking is lying to you. I guarantee the work — and a before/after report you can hold."</p>
       <div class="cnav"><button class="ghost" id="cBack5">Back</button><button id="cRestart">Start over</button></div>
     </div>
@@ -1005,9 +1005,15 @@
     var town = $("cTown").value.trim() || "Lehi, Utah";
     $("cPrompt").textContent = "Who should I call for a " + $("cTrade").value + " in " + town + "?";
   }
+  function activeDoor() {
+    // The door being worked: the LOG's current door number when it is a
+    // valid unlogged 1-20, else the next unlogged door (TARGET at completion).
+    var n = parseInt($("door").value, 10);
+    if (n >= 1 && n <= TARGET && !loggedDoors()[n]) return n;
+    return nextDoor() || TARGET;
+  }
   function syncClientPrice() {
-    // Price for the door being worked = the next unlogged door's locked cohort.
-    var nd = nextDoor() || TARGET;
+    var nd = activeDoor();
     var price = cohortFor(nd);
     $("cPrice").textContent = price + " setup";
     var inc497 = [

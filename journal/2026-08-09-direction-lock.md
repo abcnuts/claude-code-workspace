@@ -135,7 +135,12 @@ unchanged.
   (no-answer doors derive their values; answered doors export empty
   owner/sit fields and are flagged incomplete by the gate — the run
   cannot be judged until every entry is complete).
-- **Verified: 126/126 behavioral checks** via the committed suite
+- **Verification drift fixes (same day):** CLIENT price now follows the
+  LOG's active door (valid unlogged 1–20) with nextDoor() fallback, so
+  out-of-sequence doors show the correct locked price; close copy
+  corrected to the approved "within the week" timeframe, with committed
+  copy assertions preventing regression.
+- **Verified: 130/130 behavioral checks** via the committed suite
   `playbooks/tests/command-center-smoke.js`, run at 390×844 and
   1280×800: navigation + client-mode chrome, all prior field-log
   integrity behaviors, the new cascades, migration, denominator math,

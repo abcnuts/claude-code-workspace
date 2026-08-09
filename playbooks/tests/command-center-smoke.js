@@ -104,6 +104,22 @@ async function saveDoor(page, o) {
   check("m: client mode hides tabbar", await page.locator("#tabbar").evaluate(t => getComputedStyle(t).display === "none"));
   check("m: client mode hides topbar", await page.locator(".topbar").evaluate(t => getComputedStyle(t).display === "none"));
   check("m: client price maps door 1 → $497", (await page.locator("#cPrice").textContent()).includes("$497"));
+  // Active-door regression: CLIENT must follow the LOG's selected door, not
+  // merely nextDoor() — matters when doors are worked out of sequence.
+  await page.click("#clientExit");
+  await nav(page, "log");
+  await page.fill("#door", "2");
+  await nav(page, "client");
+  check("m: active door 2 (no saves) → CLIENT $997", (await page.locator("#cPrice").textContent()).includes("$997"));
+  await page.click("#clientExit");
+  await nav(page, "log");
+  await page.fill("#door", "5");
+  await nav(page, "client");
+  check("m: active door 5 (no saves) → CLIENT $497", (await page.locator("#cPrice").textContent()).includes("$497"));
+  await page.click("#clientExit");
+  await nav(page, "log");
+  await page.fill("#door", "1");
+  await nav(page, "client");
   await page.selectOption("#cTrade", "pest control company");
   await page.fill("#cTown", "Lehi, Utah");
   await page.click("#cNext0");
@@ -124,6 +140,9 @@ async function saveDoor(page, o) {
   await page.click("#cNext3"); await page.click("#cNext4");
   check("m: $497 tier lists 4 inclusions", (await page.locator("#cIncludes li").count()) === 4);
   check("m: honest line present on offer card", (await page.locator(".honest-foot").textContent()).includes("guarantee the work"));
+  const closeCopy = await page.locator("#cClose").textContent();
+  check("m: close copy promises the approved timeframe", closeCopy.includes("within the week"));
+  check("m: close copy does not say within days", !/within days/i.test(closeCopy));
   check("m: no cohort/experiment language in client view", !/cohort|experiment|odd door|even door/i.test(await page.locator("#view-client").innerText()));
   await page.click("#clientExit");
   check("m: client exit returns to operator", await page.locator("#view-command").evaluate(v => v.classList.contains("on")));
