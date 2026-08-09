@@ -76,11 +76,36 @@ cli` clean; secret scan clean; repo confirmed private. No remaining
 Codex launch task. Skills and the paid API lane remain deferred,
 unchanged.
 
+## Lean correction (Brandon-verified authority, 2026-08-09)
+
+- **No personal/Guild GoHighLevel account exists** — Mac browser and
+  connected mail show no account/signup/billing evidence. The only live
+  HighLevel access on the Mac is a location-scoped integration into a
+  client's sub-account: a separate client system, explicitly OFF-LIMITS
+  for Guild use. The "GHL login/build" launch prerequisite was a false
+  assumption and is removed from the first-sprint path.
+- No GHL account creation, trial, number purchase, or paid service in
+  this phase. GHL (or equivalent) is a post-validation procurement
+  decision AFTER a close; `playbooks/ghl-funnel-build-sheet.md` remains
+  the ready spec for that day.
+- Cards and a dedicated line/QR are post-signal infrastructure, not
+  prerequisites for the first 20 doors. Prices and doctrine unchanged.
+- **Zero-cost first-sprint path built:** `playbooks/lehi-field-log.html`
+  — self-contained offline field log (no backend, login, libraries, or
+  network calls; localStorage autosave; progress /20; CSV export with
+  proper escaping; typed-RESET-gated erase; business info only, no
+  customer PII) + `playbooks/lehi-field-log-template.csv` fallback.
+  Verified with a 40/40 Playwright behavioral pass (persistence, draft
+  restore, CSV escaping incl. quotes/newlines, gated reset, 390px
+  layout, zero external requests). Private artifact:
+  e52d93c2-62b6-464c-9c9b-8c6eb0208edb.
+
 ## Next actions (in order)
 
-1. GHL funnel build (Brandon + build sheet) — the gating item.
-2. Price card print once the Guild line exists.
-3. Joey dry run (lanes 1–3 + 5, timed).
-4. Lehi 20-door sprint per the sprint plan.
+1. Field log on the phone; test entry, export, reset.
+2. Joey dry run (lanes 1–3 + 5, timed).
+3. Lehi 20-door sprint — field log is the canonical record.
+4. Crew decisions before first dollar.
 
-Not next: OpenAI billing, probe calibration, new scripts/tiers/automation.
+Not next: any purchase (GHL, number, printing until post-signal), OpenAI
+billing, probe calibration, new scripts/tiers/automation.

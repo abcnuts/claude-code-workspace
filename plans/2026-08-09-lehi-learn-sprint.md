@@ -4,7 +4,7 @@ type: sprint-plan
 project: the-guild
 status: ready-when-funnel-live
 territory: Lehi, Utah
-prerequisites: GHL funnel live (N1), cards printed (N2)
+prerequisites: a phone with subscription ChatGPT + the offline field log (playbooks/lehi-field-log.html) — no paid infrastructure
 ---
 
 # Lehi Learn Sprint — First-Wave Plan
@@ -85,20 +85,33 @@ implies we make the AI say their name or guarantee placement or score.
 The demo shows what the AI says today; the offer is measure → improve →
 prove.
 
-## What to record in GHL (per door, 60 seconds, in the truck)
+## What to record (canonical: the offline field log, per door, 60 seconds)
 
-Fields per `playbooks/ghl-funnel-build-sheet.md` appendix, plus one:
+**`playbooks/lehi-field-log.html` is the canonical record for the first
+20 doors.** It runs offline on the phone — no backend, no login, no
+network — autosaves locally, tracks progress out of 20, and exports CSV
+(`playbooks/lehi-field-log-template.csv` is the same header as a
+paper/spreadsheet fallback). Fields per door:
 
-- door_element (Fire/Earth/Water/Air/unread) · price_cohort ($497/$997)
+- door number · timestamp (auto) · business name · trade
+- price_cohort ($497/$997) · demo_shown (y/n)
+- **demo_result: present / absent / not run**
 - outcome (closed / callback set / soft no / hard no / no answer)
-- **demo_result: appeared / didn't appear / no-recommendation / not shown**
-- objection_1 (dropdown) + objection_verbatim (their exact words)
-- demo_shown (y/n) · notes
+- element read (Fire/Earth/Water/Air/unread) · notes with objection
+  verbatim · optional callback date
+
+No customer PII goes in the log — business info only. Export the CSV at
+the end of each day.
 
 ## On a close
 
-- Consent captured at the table (the funnel's verbatim checkbox — their
-  thumb checks it). Funnel takes over from there.
+- Consent captured at the table using the approved verbatim consent
+  language (`playbooks/ghl-funnel-build-sheet.md` §3) on a simple form —
+  paper or a notes form on their phone; keep the record. Follow-up is
+  human and manual until infrastructure exists.
+- **A close is the procurement trigger.** GHL (or equivalent) becomes a
+  post-validation purchasing decision AFTER the first close — the build
+  sheet is the ready spec for that day. It is not a launch prerequisite.
 - Fulfillment starts per approved playbook v1. The internal probe
   baseline is part of the proof lane — **first close is what activates
   that lane** (Brandon triggers it; until then no API key, no paid calls).
@@ -123,5 +136,6 @@ Read after 20 doors (learn gates, not success guarantees):
   by element → the pricing verdict input. 20 doors is a small sample;
   treat differences as direction, not proof — the next 20 confirm.
 
-Bring "Sprint results: …" with the GHL export to a Claude session and it
-gets mined: pricing verdict, script edits by panel ID, wave-two cohorts.
+Bring "Sprint results: …" with the field-log CSV to a Claude session and
+it gets mined: pricing verdict, script edits by panel ID, wave-two
+cohorts.

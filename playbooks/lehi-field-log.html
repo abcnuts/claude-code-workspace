@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Lehi Field Log — 20 Doors</title>
+<style>
+  /* Field tool: one deliberate look — sunlight-readable, high contrast, explicit colors. */
+  :root {
+    --paper: #FFFFFF; --ink: #14181C; --muted: #4C555E;
+    --steel: #24537F; --steel-soft: #E5EDF4;
+    --amber: #8F6200; --amber-soft: #F6EDD8;
+    --good: #1F6B42; --good-soft: #E2F0E8;
+    --danger: #8C2B22; --danger-soft: #F6E3E1;
+    --line: #C7CCD1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.4; padding: 0.9rem 0.9rem 4rem;
+    max-width: 480px; margin: 0 auto;
+  }
+  h1 { font-size: 1.15rem; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+  .sub { font-size: 0.78rem; color: var(--muted); margin: 0.15rem 0 0.8rem; }
+  .bar-wrap { background: var(--steel-soft); border: 1px solid var(--line); height: 1.5rem; position: relative; margin-bottom: 0.3rem; }
+  .bar { background: var(--steel); height: 100%; width: 0%; transition: width 0.2s; }
+  .bar-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; color: var(--ink); }
+  .cohorts { font-size: 0.75rem; color: var(--muted); text-align: center; margin-bottom: 0.9rem; font-variant-numeric: tabular-nums; }
+
+  fieldset { border: 2px solid var(--ink); padding: 0.75rem; margin: 0 0 1rem; }
+  legend { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--steel); padding: 0 0.3rem; }
+  label { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin: 0.65rem 0 0.2rem; }
+  label:first-of-type { margin-top: 0; }
+  input[type="text"], input[type="number"], input[type="date"], textarea, select {
+    width: 100%; font-size: 1rem; padding: 0.55rem 0.6rem; border: 1.5px solid var(--ink);
+    background: var(--paper); color: var(--ink); border-radius: 0; font-family: inherit;
+  }
+  textarea { min-height: 3.2rem; resize: vertical; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .seg { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .seg button {
+    flex: 1 1 auto; min-width: 5.2rem; padding: 0.55rem 0.4rem; font-size: 0.88rem; font-weight: 700;
+    border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); cursor: pointer;
+  }
+  .seg button.on { background: var(--steel); border-color: var(--steel); color: #FFFFFF; }
+  .hint { font-size: 0.72rem; color: var(--amber); font-weight: 600; margin-top: 0.2rem; }
+  .pii { font-size: 0.72rem; color: var(--muted); margin-top: 0.65rem; }
+
+  .save-btn {
+    width: 100%; padding: 0.85rem; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.03em;
+    background: var(--good); color: #FFFFFF; border: 2px solid var(--good); cursor: pointer; margin-top: 0.9rem;
+  }
+  .save-btn:disabled { background: var(--line); border-color: var(--line); color: var(--muted); }
+  .msg { font-size: 0.8rem; font-weight: 700; margin-top: 0.4rem; min-height: 1.1rem; }
+  .msg.ok { color: var(--good); } .msg.err { color: var(--danger); }
+
+  h2 { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--steel); margin: 1.2rem 0 0.4rem; }
+  .entry { border: 1px solid var(--line); border-left: 4px solid var(--steel); padding: 0.45rem 0.6rem; margin-bottom: 0.4rem; font-size: 0.82rem; }
+  .entry b { font-size: 0.88rem; }
+  .entry .meta { color: var(--muted); font-size: 0.75rem; }
+  .entry.closed { border-left-color: var(--good); background: var(--good-soft); }
+  .empty { font-size: 0.82rem; color: var(--muted); font-style: italic; }
+
+  .tools { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 1.1rem; }
+  .export-btn { padding: 0.7rem; font-size: 0.95rem; font-weight: 800; background: var(--steel); color: #FFFFFF; border: 2px solid var(--steel); cursor: pointer; }
+  details { border: 1.5px solid var(--danger); padding: 0.6rem; }
+  summary { font-size: 0.82rem; font-weight: 800; color: var(--danger); cursor: pointer; }
+  .reset-note { font-size: 0.78rem; color: var(--muted); margin: 0.5rem 0; }
+  .reset-btn { width: 100%; padding: 0.6rem; font-size: 0.9rem; font-weight: 800; background: var(--danger-soft); color: var(--danger); border: 2px solid var(--danger); cursor: pointer; margin-top: 0.5rem; }
+  .reset-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  footer { font-size: 0.7rem; color: var(--muted); margin-top: 1.3rem; border-top: 1px solid var(--line); padding-top: 0.5rem; }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 1px; }
+</style>
+</head>
+<body>
+  <h1>Lehi Field Log — 20 Doors</h1>
+  <p class="sub">Offline. Saves on this device only. Export CSV at day's end. Every door gets logged, including no-answers.</p>
+
+  <div class="bar-wrap"><div class="bar" id="bar"></div><div class="bar-label" id="barLabel">0 / 20 doors</div></div>
+  <div class="cohorts" id="cohorts">$497: 0 · $997: 0 · closed: 0</div>
+
+  <form id="f" autocomplete="off">
+  <fieldset>
+    <legend>This door</legend>
+    <div class="row2">
+      <div>
+        <label for="door">Door #</label>
+        <input type="number" id="door" min="1" max="99" inputmode="numeric">
+      </div>
+      <div>
+        <label for="trade">Trade</label>
+        <select id="trade">
+          <option value="">— pick —</option>
+          <option>hvac</option><option>plumber</option><option>electrician</option>
+          <option>sprinkler</option><option>landscaper</option><option>pest_control</option>
+          <option>garage_door</option><option>roofer</option><option>auto_repair</option>
+          <option>barber</option><option>other</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="biz">Business name</label>
+    <input type="text" id="biz" placeholder="Shop name on the door">
+
+    <label>Price cohort (assigned before the knock — alternate)</label>
+    <div class="seg" id="cohort" role="group" aria-label="Price cohort">
+      <button type="button" data-v="$497">$497</button>
+      <button type="button" data-v="$997">$997</button>
+    </div>
+    <div class="hint" id="cohortHint"></div>
+
+    <label>Demo shown (ChatGPT, their phone)</label>
+    <div class="seg" id="demoShown" role="group" aria-label="Demo shown">
+      <button type="button" data-v="yes">Yes</button>
+      <button type="button" data-v="no">No</button>
+    </div>
+
+    <label>Demo result</label>
+    <div class="seg" id="demoResult" role="group" aria-label="Demo result">
+      <button type="button" data-v="present">Present</button>
+      <button type="button" data-v="absent">Absent</button>
+      <button type="button" data-v="not run">Not run</button>
+    </div>
+
+    <label>Outcome</label>
+    <div class="seg" id="outcome" role="group" aria-label="Outcome">
+      <button type="button" data-v="closed">Closed</button>
+      <button type="button" data-v="callback set">Callback</button>
+      <button type="button" data-v="soft no">Soft no</button>
+      <button type="button" data-v="hard no">Hard no</button>
+      <button type="button" data-v="no answer">No answer</button>
+    </div>
+
+    <label>Element read</label>
+    <div class="seg" id="element" role="group" aria-label="Element read">
+      <button type="button" data-v="fire">Fire</button>
+      <button type="button" data-v="earth">Earth</button>
+      <button type="button" data-v="water">Water</button>
+      <button type="button" data-v="air">Air</button>
+      <button type="button" data-v="unread">Unread</button>
+    </div>
+
+    <label for="notes">Notes / objection verbatim</label>
+    <textarea id="notes" placeholder="Their exact words are gold"></textarea>
+
+    <label for="cb">Callback date (optional)</label>
+    <input type="date" id="cb">
+
+    <p class="pii">Business info only — no customer names, numbers, or personal details in this log.</p>
+
+    <button type="submit" class="save-btn" id="saveBtn">SAVE DOOR</button>
+    <div class="msg" id="msg" role="status"></div>
+  </fieldset>
+  </form>
+
+  <h2>Logged doors</h2>
+  <div id="list"><p class="empty">Nothing yet. First door of twenty.</p></div>
+
+  <div class="tools">
+    <button type="button" class="export-btn" id="exportBtn">EXPORT CSV</button>
+    <details>
+      <summary>Reset (erases ALL entries)</summary>
+      <p class="reset-note">This deletes every logged door from this device permanently. Export the CSV first. Type <b>RESET</b> to arm the button.</p>
+      <input type="text" id="resetConfirm" placeholder="Type RESET" aria-label="Type RESET to confirm">
+      <button type="button" class="reset-btn" id="resetBtn" disabled>ERASE ALL ENTRIES</button>
+    </details>
+  </div>
+
+  <footer>The Guild · Lehi learn sprint · doctrine: every door logged, no cherry-picking · measure → improve → prove</footer>
+
+<script>
+(function () {
+  "use strict";
+  var KEY = "lehi-field-log-v1";
+  var DRAFT_KEY = "lehi-field-log-draft-v1";
+  var TARGET = 20;
+  var HEADERS = ["door_number","timestamp","business_name","trade","price_cohort","demo_shown","demo_result","outcome","objection_element","notes","callback_date"];
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+    catch (e) { return []; }
+  }
+  function persist(entries) { localStorage.setItem(KEY, JSON.stringify(entries)); }
+
+  var entries = load();
+  var seg = { cohort: "", demoShown: "", demoResult: "", outcome: "", element: "" };
+
+  function $(id) { return document.getElementById(id); }
+
+  function wireSeg(groupId) {
+    var group = $(groupId);
+    group.addEventListener("click", function (ev) {
+      var btn = ev.target.closest("button"); if (!btn) return;
+      seg[groupId === "element" ? "element" : groupId] = btn.getAttribute("data-v");
+      Array.prototype.forEach.call(group.querySelectorAll("button"), function (b) {
+        b.classList.toggle("on", b === btn);
+      });
+      if (groupId === "demoShown" && btn.getAttribute("data-v") === "no") pickSeg("demoResult", "not run");
+      saveDraft();
+    });
+  }
+  function pickSeg(groupId, value) {
+    seg[groupId === "element" ? "element" : groupId] = value;
+    Array.prototype.forEach.call($(groupId).querySelectorAll("button"), function (b) {
+      b.classList.toggle("on", b.getAttribute("data-v") === value);
+    });
+  }
+  ["cohort","demoShown","demoResult","outcome","element"].forEach(wireSeg);
+
+  function nextDoor() { return entries.length + 1; }
+  function cohortHint() {
+    var n = parseInt($("door").value, 10) || nextDoor();
+    $("cohortHint").textContent = "Protocol for door " + n + ": " + (n % 2 === 1 ? "$497" : "$997");
+  }
+
+  function saveDraft() {
+    var d = {
+      door: $("door").value, trade: $("trade").value, biz: $("biz").value,
+      notes: $("notes").value, cb: $("cb").value, seg: seg
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+  }
+  function restoreDraft() {
+    var raw = localStorage.getItem(DRAFT_KEY); if (!raw) return;
+    try {
+      var d = JSON.parse(raw);
+      if (d.door) $("door").value = d.door;
+      if (d.trade) $("trade").value = d.trade;
+      $("biz").value = d.biz || ""; $("notes").value = d.notes || ""; $("cb").value = d.cb || "";
+      if (d.seg) {
+        if (d.seg.cohort) pickSeg("cohort", d.seg.cohort);
+        if (d.seg.demoShown) pickSeg("demoShown", d.seg.demoShown);
+        if (d.seg.demoResult) pickSeg("demoResult", d.seg.demoResult);
+        if (d.seg.outcome) pickSeg("outcome", d.seg.outcome);
+        if (d.seg.element) pickSeg("element", d.seg.element);
+      }
+    } catch (e) { /* draft unreadable: start clean */ }
+  }
+  ["door","trade","biz","notes","cb"].forEach(function (id) {
+    $(id).addEventListener("input", saveDraft);
+    $(id).addEventListener("change", saveDraft);
+  });
+  $("door").addEventListener("input", cohortHint);
+
+  function render() {
+    var pct = Math.min(100, Math.round(entries.length / TARGET * 100));
+    $("bar").style.width = pct + "%";
+    $("barLabel").textContent = entries.length + " / " + TARGET + " doors";
+    var c497 = 0, c997 = 0, closed = 0;
+    entries.forEach(function (e) {
+      if (e.price_cohort === "$497") c497++;
+      if (e.price_cohort === "$997") c997++;
+      if (e.outcome === "closed") closed++;
+    });
+    $("cohorts").textContent = "$497: " + c497 + " · $997: " + c997 + " · closed: " + closed;
+
+    var list = $("list");
+    if (!entries.length) {
+      list.innerHTML = '<p class="empty">Nothing yet. First door of twenty.</p>';
+      return;
+    }
+    list.innerHTML = "";
+    entries.slice().reverse().forEach(function (e) {
+      var div = document.createElement("div");
+      div.className = "entry" + (e.outcome === "closed" ? " closed" : "");
+      var b = document.createElement("b");
+      b.textContent = "#" + e.door_number + " · " + (e.business_name || "(unnamed)") + " · " + e.outcome;
+      var meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = e.trade + " · " + e.price_cohort + " · demo " + e.demo_result +
+        " · " + e.objection_element + " · " + e.timestamp.slice(11, 16);
+      div.appendChild(b); div.appendChild(meta);
+      list.appendChild(div);
+    });
+  }
+
+  function flash(text, ok) {
+    var m = $("msg");
+    m.textContent = text;
+    m.className = "msg " + (ok ? "ok" : "err");
+  }
+
+  $("f").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var door = parseInt($("door").value, 10);
+    if (!door || door < 1) { flash("Door # required.", false); return; }
+    if (!$("trade").value) { flash("Pick the trade.", false); return; }
+    if (!seg.cohort) { flash("Pick the price cohort.", false); return; }
+    if (!seg.demoShown) { flash("Demo shown: yes or no.", false); return; }
+    if (!seg.demoResult) { flash("Pick the demo result.", false); return; }
+    if (!seg.outcome) { flash("Pick the outcome.", false); return; }
+    if (!seg.element) { flash("Element read (or Unread).", false); return; }
+
+    var now = new Date();
+    var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+    var ts = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) +
+      " " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+
+    entries.push({
+      door_number: door,
+      timestamp: ts,
+      business_name: $("biz").value.trim(),
+      trade: $("trade").value,
+      price_cohort: seg.cohort,
+      demo_shown: seg.demoShown,
+      demo_result: seg.demoResult,
+      outcome: seg.outcome,
+      objection_element: seg.element,
+      notes: $("notes").value.trim(),
+      callback_date: $("cb").value
+    });
+    persist(entries);
+    localStorage.removeItem(DRAFT_KEY);
+
+    $("f").reset();
+    seg = { cohort: "", demoShown: "", demoResult: "", outcome: "", element: "" };
+    ["cohort","demoShown","demoResult","outcome","element"].forEach(function (g) {
+      Array.prototype.forEach.call($(g).querySelectorAll("button"), function (b) { b.classList.remove("on"); });
+    });
+    $("door").value = nextDoor();
+    cohortHint();
+    render();
+    flash("Door " + door + " saved. Next: door " + nextDoor() + ".", true);
+  });
+
+  function csvField(v) {
+    var s = String(v == null ? "" : v);
+    if (/[",\r\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+  function buildCSV() {
+    var lines = [HEADERS.join(",")];
+    entries.forEach(function (e) {
+      lines.push(HEADERS.map(function (h) { return csvField(e[h]); }).join(","));
+    });
+    return lines.join("\r\n") + "\r\n";
+  }
+  $("exportBtn").addEventListener("click", function () {
+    var blob = new Blob([buildCSV()], { type: "text/csv" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "lehi-field-log.csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    flash(entries.length + " entries exported.", true);
+  });
+
+  $("resetConfirm").addEventListener("input", function () {
+    $("resetBtn").disabled = this.value.trim() !== "RESET";
+  });
+  $("resetBtn").addEventListener("click", function () {
+    if ($("resetConfirm").value.trim() !== "RESET") return;
+    entries = [];
+    localStorage.removeItem(KEY);
+    localStorage.removeItem(DRAFT_KEY);
+    $("resetConfirm").value = "";
+    $("resetBtn").disabled = true;
+    $("door").value = 1;
+    cohortHint();
+    render();
+    flash("Log erased.", true);
+  });
+
+  $("door").value = nextDoor();
+  restoreDraft();
+  cohortHint();
+  render();
+})();
+</script>
+</body>
+</html>

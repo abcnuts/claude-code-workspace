@@ -25,20 +25,40 @@ the work and the report.
 3. Fulfillment playbook v1 and the $497/$997/$149-mo tiers: approved as-is.
 4. **First learn-sprint territory: Lehi, Utah.**
 
-## NOW — build the machine (gating items, in order)
+## LEAN CORRECTION (Brandon-verified, 2026-08-09)
+
+No Guild GoHighLevel account exists — the prior "GHL login/build" launch
+prerequisite was a false assumption and is removed from the first-sprint
+path. The only live HighLevel access on Brandon's Mac is a
+location-scoped integration into a client's sub-account: a separate
+client system, **off-limits for Guild use**. Do not create a GHL
+account, start a trial, buy a phone number, or create any paid service
+in this phase. The first 20 doors run zero-cost.
+
+## NOW — the zero-cost first-sprint path
 
 | # | Item | Owner | Gate |
 |---|------|-------|------|
-| N1 | GHL sealed funnel per `playbooks/ghl-funnel-build-sheet.md` — AI Employee inbound, consent capture, speed-to-lead. Buy a Utah (801/385) number | Brandon | 5-step test protocol passes, incl. the unchecked-box negative test |
-| N2 | Price card print — fill Guild line + QR from N1 into `playbooks/price-card-print.html`, then print | Brandon | cards in hand |
-| N3 | Joey dry run: playbook lanes 1–3 + 5 on one friendly business, timed (Step 0's probe baseline is deferred with the probe lane) | Joey + Brandon | checklist done once; hours-per-client written down |
-| N4 | Crew decisions: rev split across the seven; referral reward now vs later — the flywheel needs the referral answer | Brandon + crew | decided before first outside dollar |
+| N1 | Field log on the phone: open `playbooks/lehi-field-log.html` (or its private artifact), confirm it saves and exports | Brandon | test entry saved + CSV exported, then reset |
+| N2 | Joey dry run: playbook lanes 1–3 + 5 on one friendly business, timed (Step 0's probe baseline is deferred with the probe lane) | Joey + Brandon | checklist done once; hours-per-client written down |
+| N3 | Crew decisions: rev split across the seven; referral reward now vs later — the flywheel needs the referral answer | Brandon + crew | decided before first outside dollar |
 
-## SPRINT — Lehi, Utah (when N1 + N2 pass)
+## SPRINT — Lehi, Utah (ready now; needs only a phone and doors)
 
 Full sprint plan: `plans/2026-08-09-lehi-learn-sprint.md` — first-wave
-scope, trade cohorts, the ChatGPT-on-their-phone demo procedure, GHL
-recording spec, and pass/fail evidence after the first reps.
+scope, trade cohorts, the ChatGPT-on-their-phone demo procedure, the
+offline field-log recording spec, and pass/fail evidence after the
+first reps. The field log is the canonical record for the first 20
+doors.
+
+## POST-SIGNAL INFRASTRUCTURE (procure after a close, not before)
+
+- GHL (or equivalent) funnel: a purchasing decision AFTER the first
+  close. `playbooks/ghl-funnel-build-sheet.md` is the ready spec for
+  that day (consent language, test protocol) — spec, not prerequisite.
+- Price cards + dedicated line/QR: post-signal. The card source
+  (`playbooks/price-card-print.html`) stays print-ready with
+  placeholders until a number exists.
 
 ## DEFERRED LANE — internal probe (activates at first close)
 
@@ -68,11 +88,13 @@ protections stay as-is.
 
 ## Ownership map
 
-- **Brandon:** GHL build, number purchase, print, crew decisions, doors.
+- **Brandon:** doors, crew decisions; post-signal procurement (funnel,
+  number, print) after the first close.
 - **Joey:** playbook mastery, dry run, capacity number, fulfillment.
 - **Codex (Mac):** trades list, skills dedupe; probe lane when activated.
 - **Claude sessions:** journaling, sweeps on demand, doc/plan upkeep,
-  continuity. Cannot: GHL login, printing, doors, `-cell` repo access.
+  continuity. Cannot: printing, doors, `-cell` repo access, any paid
+  procurement.
 
 ## Not in this plan, on purpose
 
@@ -83,7 +105,7 @@ features · FLEXX work · clinics · account consolidation · new tooling.
 
 ## Re-entry points for the next session
 
-1. "GHL is live" → verify N1 test protocol results, journal it.
-2. "Sprint results: …" → mine the objection log; pricing verdict.
-3. "First close" / "activate the probe lane" → probe calibration +
-   customer baseline flow via Codex.
+1. "Sprint results: …" (+ field-log CSV) → mine the objection log;
+   pricing verdict; wave-two cohorts.
+2. "First close" → activates BOTH deferred lanes: the probe (calibration
+   + customer baseline via Codex) and the funnel procurement decision.

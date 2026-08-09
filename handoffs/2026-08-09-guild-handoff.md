@@ -19,11 +19,13 @@ AI appearance rate, the fix work, and a before/after report — guaranteeing
 only the work and the report, never placement or score. The business shape
 is wedge → ladder → referral flywheel; the small offer is customer
 acquisition. Strategy is CLOSED, the toolchain is BUILT, and the next
-actions are physical: GHL funnel build, card printing, and the first
-20-door learn sprint in **Lehi, Utah**. The door demo is ordinary
-subscription ChatGPT on the prospect's own phone; the paid API probe is
-an internal proof lane that activates at the first close — until then no
-API key, no paid calls.
+action is the first 20-door learn sprint in **Lehi, Utah** — run
+zero-cost: the door demo is ordinary subscription ChatGPT on the
+prospect's own phone, and the offline field log is the canonical record.
+No Guild GHL account exists (verified 8/9) — funnel, dedicated number,
+and printed cards are post-signal procurement AFTER a close, not launch
+prerequisites. The paid API probe is an internal proof lane that
+activates at the first close — until then no API key, no paid calls.
 
 ## 2. State of assets (receipts)
 
@@ -34,8 +36,9 @@ API key, no paid calls.
 | Fulfillment playbook v1 + price tiers | `playbooks/fulfillment-playbook-v1.md` | **approved** by Brandon |
 | Build plan (revised) | `plans/2026-08-08-build-phase-plan.md` | active |
 | Lehi sprint plan | `plans/2026-08-09-lehi-learn-sprint.md` | ready-when-funnel-live |
-| GHL build sheet + consent language | `playbooks/ghl-funnel-build-sheet.md` | ready to execute |
-| Price card (honesty-fixed) | `playbooks/price-card-print.html` + artifact 9302a24e-24a1-48b2-8e29-aa83476edcea | print-ready minus phone/QR |
+| **Offline field log (canonical sprint record)** | `playbooks/lehi-field-log.html` + `lehi-field-log-template.csv` + private artifact e52d93c2-62b6-464c-9c9b-8c6eb0208edb | verified: 40/40 behavioral checks — offline, localStorage, CSV export, gated reset, zero network calls |
+| Funnel build sheet + consent language | `playbooks/ghl-funnel-build-sheet.md` | spec only — procurement deferred until after a close |
+| Price card (honesty-fixed) | `playbooks/price-card-print.html` + artifact 9302a24e-24a1-48b2-8e29-aa83476edcea | post-signal — print after a number exists |
 | One-pager v2 / Script Book v1 | artifacts d51a71b4… / c6c4dfb3… | live (from 8/7) |
 | Codex Mac work order | `handoffs/2026-08-08-codex-phase4-handoff.md` (revised) | **COMPLETE** — Lehi trades list done @ `0e455bfd`; no remaining Codex launch task; skills (reference only) + probe lane deferred |
 
@@ -59,22 +62,35 @@ API key, no paid calls.
   `~/Projects/skills` store (both skill dirs point there), dedupes once,
   and runs the canonical backup workflow.
 
-## 4. Next actions (all Brandon's world; docs are ready)
+## 4. Next actions (all Brandon's world; docs and tools are ready)
 
-1. **GHL funnel build** — follow `playbooks/ghl-funnel-build-sheet.md`;
-   buy a Utah (801/385) number; pass the 5-step test incl. the
-   unchecked-box negative test.
-2. **Print cards** — drop the new Guild line + QR into the card, print.
-3. **Joey dry run** — lanes 1–3 + 5 on a friendly business, timed.
-4. **Lehi sprint** — 20 doors per `plans/2026-08-09-lehi-learn-sprint.md`.
-   Output: close-rate by cohort + complete objection log in GHL.
-5. Crew decisions before first dollar: rev split, referral reward.
+1. **Field log check** — open the field log on the phone (artifact
+   e52d93c2-62b6-464c-9c9b-8c6eb0208edb, or save the HTML file to the
+   phone for fully-offline use), save a test entry, export CSV, reset.
+2. **Joey dry run** — lanes 1–3 + 5 on a friendly business, timed.
+3. **Lehi sprint** — 20 doors per `plans/2026-08-09-lehi-learn-sprint.md`,
+   zero-cost. Output: close-rate by cohort + complete field-log CSV.
+4. Crew decisions before first dollar: rev split, referral reward.
+
+Post-signal (AFTER a close, procurement decisions — not launch items):
+funnel per the build sheet · dedicated line + QR · card printing ·
+probe-lane activation.
 
 ## 5. Unavoidable blockers (only these)
 
-GHL login (funnel) · print shop + payment (cards) · physical doors
-(sprint) · Brandon's crew (splits). Nothing is blocked on cloud sessions,
-Codex, repos, or API billing.
+Physical doors in Lehi (the sprint) · Brandon's crew (splits). That is
+the whole list — nothing is blocked on logins, printing, repos, cloud
+sessions, Codex, or any purchase.
+
+## 5b. GHL reality (verified by Brandon, 2026-08-09)
+
+No personal/Guild GoHighLevel account exists — Mac browser and connected
+mail show no account, signup, or billing evidence. The only live
+HighLevel access on the Mac is a location-scoped integration into a
+client's sub-account: a separate client system, explicitly OFF-LIMITS
+for Guild use. The earlier "GHL login/build" prerequisite was a false
+assumption, removed. No account creation, trial, number purchase, or
+paid service in this phase.
 
 ## 6. Session-type capabilities (learned the hard way, still true)
 
@@ -88,11 +104,11 @@ Codex, repos, or API billing.
 
 ## 7. Re-entry points (say one of these to a Claude session)
 
-1. **"GHL is live"** → verify test protocol results, journal, clear N1.
-2. **"Sprint results: …"** (+ GHL export) → mine objections, pricing
+1. **"Sprint results: …"** (+ field-log CSV) → mine objections, pricing
    verdict, script edits by panel ID, wave-two cohorts.
-3. **"First close"** → activate the probe lane: Codex calibration
-   protocol + customer baseline within the week.
+2. **"First close"** → activates BOTH deferred lanes: the probe (Codex
+   calibration + customer baseline within the week) and the funnel
+   procurement decision (build sheet is the ready spec).
 
-Recommended next move: N1, the GHL build — every other lane queues
-behind the phone number.
+Recommended next move: the doors themselves — field log on the phone,
+ChatGPT demo ready, twenty knocks in Lehi. Nothing else is in the way.
