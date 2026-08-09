@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#16334E">
+<meta name="description" content="The Guild's offline command center for the 20-door Lehi learn sprint.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guild">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Guild Command Center</title>
 <style>
   /* Operator cockpit: one deliberate look — sunlight-readable, explicit colors, calm and confident. */
@@ -141,6 +149,22 @@
   .empty { font-size: 0.82rem; color: var(--muted); font-style: italic; }
   .tools { display: grid; gap: 0.5rem; margin-top: 1rem; }
   .export-btn { padding: 0.7rem; font-size: 0.92rem; font-weight: 800; background: var(--steel); color: #FFF; border: 2px solid var(--steel); cursor: pointer; }
+  .secondary-btn { padding: 0.7rem; font-size: 0.92rem; font-weight: 800; background: #FFF; color: var(--steel); border: 2px solid var(--steel); cursor: pointer; }
+  .install-row { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 0.65rem; }
+  .install-status { display: flex; gap: 0.45rem; align-items: flex-start; color: var(--muted); font-size: 0.78rem; }
+  .status-dot { width: 0.68rem; height: 0.68rem; border-radius: 50%; background: var(--amber); margin-top: 0.22rem; flex: 0 0 auto; }
+  .status-dot.ready { background: var(--good); }
+  .update-banner { display: none; border: 2px solid var(--amber); background: var(--amber-soft); padding: 0.65rem; margin-bottom: 0.7rem; }
+  .update-banner.show { display: flex; gap: 0.6rem; align-items: center; justify-content: space-between; }
+  .update-banner span { font-size: 0.8rem; font-weight: 800; }
+  .update-banner button { border: 2px solid var(--amber); background: #FFF; color: var(--amber); font-weight: 800; padding: 0.45rem 0.65rem; cursor: pointer; }
+  .restore-panel { display: none; border: 2px solid var(--steel); background: var(--steel-soft); padding: 0.65rem; }
+  .restore-panel.show { display: block; }
+  .restore-panel p { margin: 0 0 0.55rem; font-size: 0.8rem; }
+  .restore-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+  .restore-actions button { padding: 0.6rem; font-weight: 800; cursor: pointer; }
+  .restore-confirm { background: var(--good); border: 2px solid var(--good); color: #FFF; }
+  .restore-cancel { background: #FFF; border: 2px solid var(--steel); color: var(--steel); }
   details.reset-box { border: 1.5px solid var(--danger); padding: 0.6rem; background: var(--card); }
   details.reset-box summary { font-size: 0.82rem; font-weight: 800; color: var(--danger); cursor: pointer; }
   .reset-note { font-size: 0.76rem; color: var(--muted); margin: 0.5rem 0; }
@@ -199,6 +223,10 @@
 </header>
 
 <div class="shell">
+  <div class="update-banner" id="updateBanner" role="status">
+    <span>A newer Command Center is ready.</span>
+    <button type="button" id="reloadAppBtn">UPDATE NOW</button>
+  </div>
 
   <!-- ============ COMMAND ============ -->
   <section class="view on" id="view-command">
@@ -207,6 +235,15 @@
 
     <div class="card accent">
       <p><b>Mission:</b> The Guild sells local businesses a measured AI appearance rate — the wedge. The small offer buys a customer; the ladder and the referral flywheel build the business. First market: <b>Lehi, Utah</b>, twenty doors, zero cost.</p>
+    </div>
+
+    <h2>This app on your phone</h2>
+    <div class="card" id="installCard">
+      <div class="install-status"><span class="status-dot" id="installDot"></span><span id="installStatus">Checking offline readiness…</span></div>
+      <div class="install-row">
+        <button type="button" class="secondary-btn" id="installBtn">INSTALL THIS APP</button>
+      </div>
+      <p class="quiet" id="installHelp">On iPhone: open this page in Safari, tap Share, then Add to Home Screen.</p>
     </div>
 
     <h2>What happens next</h2>
@@ -396,6 +433,16 @@
 
     <div class="tools">
       <button type="button" class="export-btn" id="exportBtn">EXPORT CSV</button>
+      <button type="button" class="secondary-btn" id="importBtn">RESTORE FROM CSV</button>
+      <input type="file" id="importFile" accept=".csv,text/csv" hidden>
+      <div class="restore-panel" id="restorePanel" role="status">
+        <p id="restoreSummary"></p>
+        <p class="quiet">Restore replaces this device's current log. Export the current log first if you need both copies.</p>
+        <div class="restore-actions">
+          <button type="button" class="restore-cancel" id="restoreCancel">CANCEL</button>
+          <button type="button" class="restore-confirm" id="restoreConfirm">RESTORE</button>
+        </div>
+      </div>
       <details class="reset-box">
         <summary>Reset (erases ALL entries)</summary>
         <p class="reset-note">This deletes every logged door from this device permanently. Export the CSV first. Type <b>RESET</b> to arm the button.</p>
@@ -403,7 +450,7 @@
         <button type="button" class="reset-btn" id="resetBtn" disabled>ERASE ALL ENTRIES</button>
       </details>
     </div>
-    <footer class="app-foot">Doctrine: every door logged once, no cherry-picking · fallback logger: playbooks/lehi-field-log.html (emergency only — it lacks the owner/sit-down fields)</footer>
+    <footer class="app-foot">Guild Command Center v1.0.0 · local device storage · every door logged once, no cherry-picking</footer>
   </section>
 
   <!-- ============ RESULTS ============ -->
@@ -534,6 +581,11 @@
   var HEADERS = ["door_number","timestamp","business_name","trade","price_cohort","owner_present","demo_shown","demo_result","outcome","sit_down_booked","objection_element","notes","callback_date"];
 
   function $(id) { return document.getElementById(id); }
+  function escapeHTML(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+    });
+  }
 
   /* ---------- store + migration ---------- */
   function migrate(e) {
@@ -868,6 +920,111 @@
   $("exportBtn").addEventListener("click", doExport);
   $("exportBtn2").addEventListener("click", doExport);
 
+  /* ---------- guarded CSV restore ---------- */
+  var pendingRestore = null;
+  function parseCSV(text) {
+    var rows = [], row = [], field = "", quoted = false;
+    text = String(text || "");
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (quoted) {
+        if (ch === '"' && text.charAt(i + 1) === '"') { field += '"'; i++; }
+        else if (ch === '"') { quoted = false; }
+        else { field += ch; }
+      } else if (ch === '"') { quoted = true; }
+      else if (ch === ",") { row.push(field); field = ""; }
+      else if (ch === "\n") {
+        row.push(field); rows.push(row); row = []; field = "";
+      } else if (ch !== "\r") { field += ch; }
+    }
+    if (quoted) throw new Error("an unclosed quoted field was found");
+    if (field !== "" || row.length) { row.push(field); rows.push(row); }
+    while (rows.length && rows[rows.length - 1].every(function (v) { return v === ""; })) rows.pop();
+    return rows;
+  }
+  function validateRestore(text) {
+    var rows = parseCSV(text);
+    if (!rows.length) throw new Error("the file is empty");
+    if (rows[0][0]) rows[0][0] = rows[0][0].replace(/^\uFEFF/, "");
+    if (rows[0].join(",") !== HEADERS.join(",")) throw new Error("the CSV header does not match this app");
+    if (rows.length === 1) throw new Error("the CSV has no door entries");
+    if (rows.length - 1 > TARGET) throw new Error("the CSV contains more than 20 entries");
+    var seen = {}, restored = [];
+    var validOutcome = { "closed":1, "callback set":1, "soft no":1, "hard no":1, "no answer":1 };
+    var validElement = { "fire":1, "earth":1, "water":1, "air":1, "unread":1 };
+    rows.slice(1).forEach(function (cells, index) {
+      var line = index + 2;
+      if (cells.length !== HEADERS.length) throw new Error("line " + line + " has " + cells.length + " columns; expected " + HEADERS.length);
+      var item = {};
+      HEADERS.forEach(function (h, n) { item[h] = cells[n]; });
+      var door = Number(item.door_number);
+      if (!Number.isInteger(door) || door < 1 || door > TARGET) throw new Error("line " + line + " has an invalid door number");
+      if (seen[door]) throw new Error("door " + door + " appears more than once");
+      seen[door] = true; item.door_number = door;
+      if (!item.trade) throw new Error("door " + door + " is missing a trade");
+      if (item.price_cohort !== cohortFor(door)) throw new Error("door " + door + " has the wrong locked price cohort");
+      if (!validOutcome[item.outcome]) throw new Error("door " + door + " has an invalid outcome");
+      if (!validElement[item.objection_element]) throw new Error("door " + door + " has an invalid element read");
+      if (["", "yes", "no", "not applicable"].indexOf(item.owner_present) < 0) throw new Error("door " + door + " has an invalid owner-present value");
+      if (["yes", "no"].indexOf(item.demo_shown) < 0) throw new Error("door " + door + " has an invalid demo-shown value");
+      if (["present", "absent", "not run"].indexOf(item.demo_result) < 0) throw new Error("door " + door + " has an invalid demo result");
+      if (["", "yes", "no"].indexOf(item.sit_down_booked) < 0) throw new Error("door " + door + " has an invalid sit-down value");
+      if (item.demo_shown === "yes" && item.demo_result === "not run") throw new Error("door " + door + " says the demo ran but records no result");
+      if (item.demo_shown === "no" && item.demo_result !== "not run") throw new Error("door " + door + " records a result for a demo that did not run");
+      if (item.outcome === "no answer" && (item.owner_present !== "not applicable" || item.demo_shown !== "no" || item.demo_result !== "not run" || item.sit_down_booked !== "no")) {
+        throw new Error("door " + door + " conflicts with the no-answer truth rules");
+      }
+      if (item.outcome !== "no answer" && item.owner_present === "not applicable") throw new Error("door " + door + " uses owner N/A for an answered door");
+      restored.push(item);
+    });
+    return restored.sort(function (a, b) { return a.door_number - b.door_number; });
+  }
+  function closeRestore() {
+    pendingRestore = null;
+    $("restorePanel").classList.remove("show");
+    $("restoreSummary").textContent = "";
+    $("importFile").value = "";
+  }
+  $("importBtn").addEventListener("click", function () {
+    closeRestore();
+    $("importFile").click();
+  });
+  $("importFile").addEventListener("change", function () {
+    var file = this.files && this.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        pendingRestore = validateRestore(reader.result);
+        $("restoreSummary").textContent = pendingRestore.length + " validated door" + (pendingRestore.length === 1 ? "" : "s") + " ready to restore. Current log: " + entries.length + ".";
+        $("restorePanel").classList.add("show");
+        flash("CSV validated. Review the restore warning below.", true);
+      } catch (err) {
+        closeRestore();
+        flash("Restore blocked: " + err.message + ".", false);
+      }
+    };
+    reader.onerror = function () { closeRestore(); flash("Restore blocked: the file could not be read.", false); };
+    reader.readAsText(file);
+  });
+  $("restoreCancel").addEventListener("click", closeRestore);
+  $("restoreConfirm").addEventListener("click", function () {
+    if (!pendingRestore) return;
+    entries = pendingRestore.map(migrate);
+    persist();
+    localStorage.removeItem(DRAFT_KEY);
+    var restoredCount = entries.length;
+    closeRestore();
+    $("f").reset();
+    ["outcome","ownerPresent","demoShown","demoResult","sitDown","element"].forEach(function (g) { setGroup(g, ""); });
+    applyOutcomeCascade();
+    var nd = nextDoor();
+    $("door").value = nd || TARGET;
+    updateCohortDisplay();
+    renderLog();
+    flash(restoredCount + " doors restored from CSV.", true);
+  });
+
   /* ---------- reset ---------- */
   $("resetConfirm").addEventListener("input", function () {
     $("resetBtn").disabled = this.value.trim() !== "RESET";
@@ -888,7 +1045,7 @@
   /* ---------- RESULTS ---------- */
   function hbar(label, count, total) {
     var pct = total ? Math.round(count / total * 100) : 0;
-    return '<div class="hbar"><div class="hl"><span>' + label + '</span><span>' + count + '</span></div>' +
+    return '<div class="hbar"><div class="hl"><span>' + escapeHTML(label) + '</span><span>' + count + '</span></div>' +
       '<div class="ht"><div class="hf" style="width:' + pct + '%"></div></div></div>';
   }
   function renderResults() {
@@ -986,7 +1143,7 @@
     var cbs = entries.filter(function (e) { return e.callback_date; })
       .sort(function (x, y) { return x.callback_date < y.callback_date ? -1 : 1; });
     $("callbackCard").innerHTML = cbs.length
-      ? cbs.map(function (e) { return '<div class="lane"><span class="tier-tag t497 mono">' + e.callback_date + '</span><span>#' + e.door_number + " " + (e.business_name || "(unnamed)") + " · " + e.trade + '</span></div>'; }).join("")
+      ? cbs.map(function (e) { return '<div class="lane"><span class="tier-tag t497 mono">' + escapeHTML(e.callback_date) + '</span><span>#' + e.door_number + " " + escapeHTML(e.business_name || "(unnamed)") + " · " + escapeHTML(e.trade) + '</span></div>'; }).join("")
       : '<p class="empty">No callbacks scheduled.</p>';
   }
 
@@ -1058,6 +1215,75 @@
       navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
     } else { done(false); }
   });
+
+  /* ---------- install, offline, and updates ---------- */
+  var deferredInstall = null;
+  var reloadingForUpdate = false;
+  function isStandalone() {
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  }
+  function setInstallState(message, ready) {
+    $("installStatus").textContent = message;
+    $("installDot").classList.toggle("ready", !!ready);
+  }
+  function showUpdate() { $("updateBanner").classList.add("show"); }
+  window.addEventListener("beforeinstallprompt", function (event) {
+    event.preventDefault();
+    deferredInstall = event;
+    $("installBtn").textContent = "INSTALL THIS APP";
+    setInstallState("Offline files are ready. Install to keep the Command Center on this phone.", true);
+  });
+  window.addEventListener("appinstalled", function () {
+    deferredInstall = null;
+    $("installBtn").textContent = "INSTALLED";
+    $("installBtn").disabled = true;
+    setInstallState("Installed on this phone. Your sprint data remains on this device.", true);
+  });
+  $("installBtn").addEventListener("click", function () {
+    if (deferredInstall) {
+      deferredInstall.prompt();
+      deferredInstall.userChoice.then(function () { deferredInstall = null; });
+    } else {
+      $("installHelp").textContent = "iPhone: Safari → Share → Add to Home Screen. Android: browser menu → Install app or Add to Home screen.";
+      $("installHelp").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });
+  $("reloadAppBtn").addEventListener("click", function () {
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+      navigator.serviceWorker.getRegistration().then(function (registration) {
+        if (registration && registration.waiting) registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        else window.location.reload();
+      });
+    } else { window.location.reload(); }
+  });
+  if (isStandalone()) {
+    $("installBtn").textContent = "INSTALLED";
+    $("installBtn").disabled = true;
+    setInstallState("Installed on this phone. The app will open without a connection.", true);
+  } else if (location.protocol === "file:") {
+    $("installBtn").textContent = "INSTALL FROM THE LIVE URL";
+    setInstallState("Offline file mode. Use the live HTTPS URL to install the app.", false);
+  }
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+    navigator.serviceWorker.addEventListener("controllerchange", function () {
+      if (!reloadingForUpdate) { reloadingForUpdate = true; window.location.reload(); }
+    });
+    navigator.serviceWorker.register("sw.js").then(function (registration) {
+      if (!isStandalone()) setInstallState(navigator.onLine ? "Offline files are ready on this phone." : "Offline — the Command Center is ready.", true);
+      if (registration.waiting) showUpdate();
+      registration.addEventListener("updatefound", function () {
+        var worker = registration.installing;
+        if (!worker) return;
+        worker.addEventListener("statechange", function () {
+          if (worker.state === "installed" && navigator.serviceWorker.controller) showUpdate();
+        });
+      });
+    }).catch(function () {
+      setInstallState("The app is open, but offline setup did not finish. Reload once online.", false);
+    });
+    window.addEventListener("offline", function () { setInstallState("Offline — the Command Center is ready.", true); });
+    window.addEventListener("online", function () { setInstallState("Online. Offline files are ready on this phone.", true); });
+  }
 
   /* ---------- init ---------- */
   var nd0 = nextDoor();

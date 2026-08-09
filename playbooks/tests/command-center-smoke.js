@@ -20,7 +20,10 @@ const path = require("path");
 const fs = require("fs");
 
 const FILE = "file://" + path.resolve(__dirname, "..", "guild-command-center.html");
-const CHROMIUM = "/opt/pw-browsers/chromium";
+const BROWSER_CANDIDATES = [
+  "/opt/pw-browsers/chromium",
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+];
 const results = [];
 function check(name, ok, detail) {
   results.push((ok ? "PASS" : "FAIL") + "  " + name + (detail ? "  (" + detail + ")" : ""));
@@ -67,7 +70,8 @@ async function saveDoor(page, o) {
 }
 
 (async () => {
-  const launchOpts = fs.existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {};
+  const executablePath = BROWSER_CANDIDATES.find(candidate => fs.existsSync(candidate));
+  const launchOpts = executablePath ? { executablePath } : {};
   const browser = await chromium.launch(launchOpts);
 
   /* ================= MOBILE (390px) — full suite ================= */
