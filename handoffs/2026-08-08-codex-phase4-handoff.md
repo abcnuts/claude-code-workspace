@@ -1,10 +1,10 @@
 ---
 date: 2026-08-08
-revised: 2026-08-09 (direction lock + verification follow-up — skills install removed, Phase 4 deferred)
+revised: 2026-08-09 (direction lock + verification follow-up; Mission 1 COMPLETE same day)
 type: handoff
 project: the-guild
 audience: codex (local session on Brandon's Mac)
-task: Lehi trades list now; skills and probe calibration DEFERRED
+task: COMPLETE — no active Codex launch task; skills and probe calibration DEFERRED
 from: claude.ai/code remote session (build-phase session)
 supersedes: handoffs/2026-08-08-codex-repo-seed-handoff.md (seed mission COMPLETE)
 ---
@@ -32,29 +32,25 @@ sections before doing anything beyond Mission 1.
 
 ## Probe state of record (confirmed by Brandon, 2026-08-09)
 
-- Repo: `brandonwadepackard-cell/guild-visibility-probe`, `main` at
-  `450f25da0f049f84f96d93ef6460be27e5375a1c`.
-- Default model: `gpt-5.6-terra`. Tests: **8/8 passing**.
+- Repo: `brandonwadepackard-cell/guild-visibility-probe` (private),
+  `main` at `0e455bfd200da0d3f64892c6f6915de9cb77d882`.
+- Default model: `gpt-5.6-terra`. Tests: **8/8 passing**; `import app,
+  cli` clean; secret scan clean.
+- `probe/questions.yaml` carries the Lehi wave-one trades (sprinkler,
+  garage_door, auto_repair added alongside the original ten).
 - The search-required and invalid-run protections are load-bearing
   doctrine. **Do not revert or weaken them** — not for convenience, not
   to make a future run pass, not in any refactor.
 
-## MISSION 1 (the only active mission) — Lehi trades list
+## MISSION 1 — Lehi trades list — ✅ COMPLETE (2026-08-09)
 
-`git pull` first. Tune `probe/questions.yaml` to the Lehi first wave
-(cohort table lives in the workspace repo's
-`plans/2026-08-09-lehi-learn-sprint.md`; Brandon can read it to you —
-you cannot reach that repo):
-
-- Priority 1: hvac, plumber, electrician
-- Priority 2: sprinkler/landscaper, pest_control, garage_door
-- Priority 3: roofer, auto_repair, barber
-- Hold for wave two: dentist, chiropractor, restaurant (keep the lines,
-  they cost nothing — just ensure wave-one trades are all present).
-
-One line per trade; question must read like a real customer ask and
-include `{town}`; town values always carry the state ("Lehi, UT").
-Commit and push. This costs zero API calls — it's a YAML edit.
+Receipt: `probe/questions.yaml` updated with exactly sprinkler,
+garage_door, auto_repair (wave-one set now complete alongside the
+original ten trades); pushed to `main` @
+`0e455bfd200da0d3f64892c6f6915de9cb77d882`; pytest 8/8; `import app,
+cli` clean; secret scan clean; repo confirmed private. **No remaining
+Codex launch task.** Both remaining lanes below stay deferred until
+Brandon explicitly triggers them.
 
 ## DEFERRED — skills (reference only; do NOT create or install)
 
@@ -93,9 +89,8 @@ a rule. Stochastic scores are the product, not a bug.
 ## Report back to Brandon (he relays to the cloud Claude session)
 
 ```
-Mac lane results:
-- Trades list: <edited for Lehi wave one, commit SHA | already correct>
-- Probe lane: NOT activated (per direction lock) | activated by Brandon
-  on <date>: <calibration + baseline results per protocol>
+Mac lane results (reported 2026-08-09):
+- Trades list: COMPLETE — main @ 0e455bfd200da0d3f64892c6f6915de9cb77d882
+- Probe lane: NOT activated (per direction lock)
 - Skills: deferred, none created (per direction lock)
 ```

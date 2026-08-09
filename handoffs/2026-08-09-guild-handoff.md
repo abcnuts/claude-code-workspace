@@ -29,7 +29,7 @@ API key, no paid calls.
 
 | Asset | Where | State |
 |---|---|---|
-| Probe MVP | `brandonwadepackard-cell/guild-visibility-probe` `main` @ `450f25da0f049f84f96d93ef6460be27e5375a1c` | live; default `gpt-5.6-terra`; 8/8 tests (Brandon-confirmed 2026-08-09); search-required + invalid-run protections intact |
+| Probe MVP | `brandonwadepackard-cell/guild-visibility-probe` (private) `main` @ `0e455bfd200da0d3f64892c6f6915de9cb77d882` | live; default `gpt-5.6-terra`; 8/8 tests; import + secret scan clean; Lehi wave-one trades in `questions.yaml` (added sprinkler, garage_door, auto_repair) — Brandon-confirmed 2026-08-09; search-required + invalid-run protections intact |
 | Journals, handoffs, playbook, plans | `abcnuts/claude-code-workspace` `main` @ `e0d801b` + PR #6 (draft, unmerged) | durable custody |
 | Fulfillment playbook v1 + price tiers | `playbooks/fulfillment-playbook-v1.md` | **approved** by Brandon |
 | Build plan (revised) | `plans/2026-08-08-build-phase-plan.md` | active |
@@ -37,7 +37,7 @@ API key, no paid calls.
 | GHL build sheet + consent language | `playbooks/ghl-funnel-build-sheet.md` | ready to execute |
 | Price card (honesty-fixed) | `playbooks/price-card-print.html` + artifact 9302a24e-24a1-48b2-8e29-aa83476edcea | print-ready minus phone/QR |
 | One-pager v2 / Script Book v1 | artifacts d51a71b4… / c6c4dfb3… | live (from 8/7) |
-| Codex Mac work order | `handoffs/2026-08-08-codex-phase4-handoff.md` (revised) | trades list now; skills (reference only) + probe lane deferred |
+| Codex Mac work order | `handoffs/2026-08-08-codex-phase4-handoff.md` (revised) | **COMPLETE** — Lehi trades list done @ `0e455bfd`; no remaining Codex launch task; skills (reference only) + probe lane deferred |
 
 ## 3. Locked decisions (authority: Brandon, 8/7 + 8/9 — do not reopen)
 

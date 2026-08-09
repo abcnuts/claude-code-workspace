@@ -60,12 +60,21 @@ do not reopen.
    (`~/Projects/skills`, dedupe once, canonical backup) stands for any
    future skill work Brandon explicitly triggers.
 
-## Probe state of record (per Brandon, 2026-08-09)
+## Probe state of record (per Brandon, 2026-08-09 — updated same day)
 
-`brandonwadepackard-cell/guild-visibility-probe`, `main` at
-`450f25da0f049f84f96d93ef6460be27e5375a1c`, default model
+`brandonwadepackard-cell/guild-visibility-probe` (private), `main` at
+`0e455bfd200da0d3f64892c6f6915de9cb77d882`, default model
 `gpt-5.6-terra`, tests 8/8 passing. Search-required and invalid-run
 protections intact and to remain so.
+
+## Codex-local lane COMPLETE (2026-08-09, Brandon's receipt)
+
+`probe/questions.yaml` updated with exactly sprinkler, garage_door,
+auto_repair (Lehi wave-one set complete); pushed to `main` @
+`0e455bfd200da0d3f64892c6f6915de9cb77d882`; pytest 8/8; `import app,
+cli` clean; secret scan clean; repo confirmed private. No remaining
+Codex launch task. Skills and the paid API lane remain deferred,
+unchanged.
 
 ## Next actions (in order)
 

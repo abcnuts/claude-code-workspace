@@ -43,9 +43,11 @@ recording spec, and pass/fail evidence after the first reps.
 ## DEFERRED LANE — internal probe (activates at first close)
 
 The probe repo is live and healthy: `brandonwadepackard-cell/
-guild-visibility-probe`, `main` at `450f25da0f049f84f96d93ef6460be27e5375a1c`,
-default model `gpt-5.6-terra`, tests 8/8 (state confirmed by Brandon
-2026-08-09). Search-required and invalid-run protections stay as-is.
+guild-visibility-probe` (private), `main` at
+`0e455bfd200da0d3f64892c6f6915de9cb77d882`, default model
+`gpt-5.6-terra`, tests 8/8, Lehi wave-one trades in `questions.yaml`
+(state confirmed by Brandon 2026-08-09). Search-required and invalid-run
+protections stay as-is.
 
 - Trigger: **first close** (a customer baseline is the first real need) or
   Brandon explicitly activating it. Not before.
@@ -55,10 +57,11 @@ default model `gpt-5.6-terra`, tests 8/8 (state confirmed by Brandon
 
 ## Standing lane (no deadline)
 
-- Codex Mac lane: Lehi trades list in `questions.yaml`. Skill
-  creation/install is deferred (reference only, not a launch item); any
-  future skill work uses the canonical `~/Projects/skills` store, dedupes
-  once, canonical backup workflow.
+- Codex Mac lane: ✅ COMPLETE (Lehi trades list @ `0e455bfd`) — no
+  remaining Codex launch task. Skill creation/install stays deferred
+  (reference only, not a launch item); any future skill work uses the
+  canonical `~/Projects/skills` store, dedupes once, canonical backup
+  workflow.
 - 90-day re-probe reminders — starts with customer #1.
 - Account consolidation (`abcnuts` vs `-cell`) — someday; blocks nothing.
 - Clinics vertical — parked until door data exists.
