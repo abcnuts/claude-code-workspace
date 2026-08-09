@@ -69,13 +69,15 @@ fallback if they won't install or don't have it.
 
 Handling the two outcomes — honestly, per doctrine:
 
-- **They're not in the answer:** "That's who's getting the call instead
-  of you. And here's the honest part — one ask is one flip of the coin.
+- **They're not in the answer:** "That's who ChatGPT named in this
+  answer instead of you. And here's the honest part — one ask is one
+  flip of the coin.
   We measure it properly: ten separate asks, counted. Then we do the
   work, measure again in ninety days, and you hold both reports."
 - **They ARE in the answer:** "Good — today's flip went your way. It
   doesn't always; the answer changes ask to ask. We measure the real
-  rate, and the monthly plan is how you stay there as this stuff moves."
+  rate, and the monthly plan is how we keep doing the work and
+  remeasure as it changes."
 
 Forbidden at the door: re-rolling the demo until it "shows the right
 thing" · promising the demo will or won't show anyone · any wording that

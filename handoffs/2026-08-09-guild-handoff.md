@@ -37,7 +37,7 @@ API key, no paid calls.
 | GHL build sheet + consent language | `playbooks/ghl-funnel-build-sheet.md` | ready to execute |
 | Price card (honesty-fixed) | `playbooks/price-card-print.html` + artifact 9302a24e-24a1-48b2-8e29-aa83476edcea | print-ready minus phone/QR |
 | One-pager v2 / Script Book v1 | artifacts d51a71b4… / c6c4dfb3… | live (from 8/7) |
-| Codex Mac work order | `handoffs/2026-08-08-codex-phase4-handoff.md` (revised) | trades list + skills dedupe now; probe lane deferred |
+| Codex Mac work order | `handoffs/2026-08-08-codex-phase4-handoff.md` (revised) | trades list now; skills (reference only) + probe lane deferred |
 
 ## 3. Locked decisions (authority: Brandon, 8/7 + 8/9 — do not reopen)
 
@@ -53,8 +53,11 @@ API key, no paid calls.
   never AI voice/SMS/RVM on cold lists. Voice = rent (GHL $97 inbound).
 - FLEXX separate. No new scripts, tiers, legal architecture, or
   automation beyond what's approved.
-- Mac skills: canonical store `~/Projects/skills` (both skill dirs point
-  there); dedupe once; canonical backup workflow.
+- Skill creation/install: deferred — not a launch item; the mined skills
+  are reference only (`journal/2026-08-07-skill-mining-register.md`).
+  Any future skill work Brandon triggers uses the canonical
+  `~/Projects/skills` store (both skill dirs point there), dedupes once,
+  and runs the canonical backup workflow.
 
 ## 4. Next actions (all Brandon's world; docs are ready)
 

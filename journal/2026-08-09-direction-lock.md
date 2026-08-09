@@ -36,17 +36,29 @@ do not reopen.
   trade cohorts, ChatGPT-on-their-phone demo procedure with honest
   handling of both outcomes, GHL recording spec (adds demo_result
   field), pass/fail evidence after 20 doors.
-- `handoffs/2026-08-08-codex-phase4-handoff.md` revised: missions
-  reordered (Lehi trades list, then skills), Phase 4 explicitly
-  DEFERRED with no-key/no-paid-calls rule, duplicate skill install
-  removed — canonical store is `~/Projects/skills` (both
-  `~/.claude/skills` and `~/.codex/skills` point there); install once,
-  reconcile on conflict, run the canonical backup workflow.
+- `handoffs/2026-08-08-codex-phase4-handoff.md` revised: Lehi trades
+  list is the only active mission; Phase 4 explicitly DEFERRED with
+  no-key/no-paid-calls rule.
 - `playbooks/price-card-print.html`: "We work to make it yours" →
   "We measure where you stand, do the work, and prove what changed"
   (honesty rule: measure → improve → prove; guarantee only the work and
   the report). Artifact republished at the same URL. Repo-wide scan
   found no other customer-facing violations.
+
+## Verification follow-up corrections (same day, Brandon's review)
+
+1. Lehi sprint plan door script: "That's who's getting the call instead
+   of you" → "That's who ChatGPT named in this answer instead of you"
+   (one answer proves naming, not call-flow).
+2. Same file: "the monthly plan is how you stay there…" → "the monthly
+   plan is how we keep doing the work and remeasure as it changes"
+   (no implied visibility guarantee).
+3. Skill creation/install removed from the Codex work order and canonical
+   handoff entirely — the mined skills are deferred reference only
+   (`journal/2026-08-07-skill-mining-register.md`), not a launch gate.
+   No skills are to be created. The canonical-store rule
+   (`~/Projects/skills`, dedupe once, canonical backup) stands for any
+   future skill work Brandon explicitly triggers.
 
 ## Probe state of record (per Brandon, 2026-08-09)
 

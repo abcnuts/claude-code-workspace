@@ -55,9 +55,10 @@ default model `gpt-5.6-terra`, tests 8/8 (state confirmed by Brandon
 
 ## Standing lane (no deadline)
 
-- Codex Mac lane: Lehi trades list in `questions.yaml`; skills dedupe —
-  ONE canonical install into `~/Projects/skills` (both skill dirs point
-  there), canonical backup workflow, no duplicate copies.
+- Codex Mac lane: Lehi trades list in `questions.yaml`. Skill
+  creation/install is deferred (reference only, not a launch item); any
+  future skill work uses the canonical `~/Projects/skills` store, dedupes
+  once, canonical backup workflow.
 - 90-day re-probe reminders — starts with customer #1.
 - Account consolidation (`abcnuts` vs `-cell`) — someday; blocks nothing.
 - Clinics vertical — parked until door data exists.
