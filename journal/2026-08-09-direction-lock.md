@@ -150,9 +150,36 @@ unchanged.
 - The standalone `lehi-field-log.html` is demoted to EMERGENCY fallback
   (pre-revision schema; its entries read incomplete in the gate).
 
+## PWA production release proof (2026-08-09, Codex deployment)
+
+- Live at **https://guild-command-center.brandonwadepackard.workers.dev**
+  — app source commit `ff79f94bceb6b8f3370b81abb2eaf020d38cd7a9`,
+  Cloudflare Worker upload etag
+  `da46db5184907c97fe092918e8d6378a6ba42f3384dd4343af6792da610c4c12`.
+- Automated proof at that commit: Command Center smoke 130/130 + PWA
+  smoke 22/22 = **152/152**; `npm audit --omit=dev` 0 vulnerabilities;
+  secret-shape scan clean.
+- Live-asset SHA-256: HTML `3ee0809261cf3ebfe8b0e4f5fba9fa96b3bb4578
+  f3b6a485a34701954ae91308` · manifest `dbf2432f33834797c5fa2645dc154b
+  3ca123882df7fd48c4a5c1750983d6aa2a` · SW `c0c2f4a9e65eadbb3d5019eae3
+  346f4921ad8d38b606aef81b3b13c1c3d06e0a`.
+- Live checks: HTTPS 200; service worker controls; saved state survives
+  close/reopen and offline reload; zero external requests; unknown
+  routes 404; POST 405; CSP self-only, X-Frame-Options DENY, no-cache;
+  `X-Guild-Commit: ff79f94…`.
+- Transport: static Cloudflare Worker — no bindings, storage,
+  analytics, API, payment, CRM, or OpenAI dependency. Public-by-URL;
+  all field data remains device-local.
+- Source of truth stays `playbooks/guild-command-center.html`; `dist/`
+  stays generated and gitignored.
+- **Verdict: LIMITED_TEST_READY** until Brandon's actual-iPhone proof:
+  Safari Add to Home Screen + airplane-mode open/reload + save/export.
+  Durable receipt: `pwa/RELEASE-2026-08-09.md`.
+
 ## Next actions (in order)
 
-1. Command Center on the phone; test door in LOG, export, reset.
+1. On-phone release proof at the live URL (install → test door →
+   export → airplane-mode reopen → reset).
 2. Joey dry run (lanes 1–3 + 5, timed).
 3. Lehi 20-door sprint — field log is the canonical record.
 4. Crew decisions before first dollar.

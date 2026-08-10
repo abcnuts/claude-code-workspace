@@ -5,6 +5,17 @@ The PWA shell in this directory adds installability, offline caching, icons,
 security headers, guarded CSV restore, and update handling without adding a
 backend, login, CRM, API call, or paid service.
 
+## Live release
+
+- **URL:** https://guild-command-center.brandonwadepackard.workers.dev
+- **Status:** LIMITED_TEST_READY — automated + live checks passed at source
+  commit `ff79f94`; awaiting Brandon's on-phone proof (Safari Add to Home
+  Screen + airplane-mode open/reload/export) before full release.
+- **Receipt:** `pwa/RELEASE-2026-08-09.md` (etag, byte hashes, live checks).
+- Transport is a static Cloudflare Worker with no bindings, storage,
+  analytics, API, payment, CRM, or OpenAI dependency. The URL is
+  public-by-URL; all field data stays device-local.
+
 ## Build and test
 
 ```bash
