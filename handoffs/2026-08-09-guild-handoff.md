@@ -36,7 +36,7 @@ activates at the first close — until then no API key, no paid calls.
 | Fulfillment playbook v1 + price tiers | `playbooks/fulfillment-playbook-v1.md` | **approved** by Brandon |
 | Build plan (revised) | `plans/2026-08-08-build-phase-plan.md` | active |
 | Lehi sprint plan | `plans/2026-08-09-lehi-learn-sprint.md` | ready now — zero-cost, needs only a phone and doors |
-| **Guild Command Center (canonical first-sprint surface)** | `playbooks/guild-command-center.html` + committed test `playbooks/tests/command-center-smoke.js` + private artifact d2fe8d92-9c56-4a56-bb3a-20f91a8f4cb7 | verified: 130/130 behavioral checks at 390px + desktop — five views (command/workflow/log/client/results), full field-log integrity contract, owner_present + sit_down_booked schema with truth cascades, legacy migration, correct demo-rate denominator, no-verdict-on-partial-runs gate, active-door price sync, approved-timeframe close copy, client honesty copy scan, zero network calls |
+| **Guild Command Center (canonical first-sprint surface)** | Production PWA: `https://guild-command-center.brandonwadepackard.workers.dev` · source `playbooks/guild-command-center.html` + `pwa/` · draft PR #6 @ app commit `ff79f94bceb6b8f3370b81abb2eaf020d38cd7a9` · private artifact d2fe8d92-9c56-4a56-bb3a-20f91a8f4cb7 | **LIMITED_TEST_READY**: original 130/130 behavioral checks + 22/22 PWA/offline/restore checks; live HTML, manifest, and service-worker hashes equal the tested build; same-origin-only traffic, service-worker control, persistence across close/reopen, offline reopen, security headers, and 404/405 guards independently passed. Actual iPhone Add-to-Home-Screen + airplane-mode proof remains before release-ready. |
 | Offline field log (EMERGENCY fallback only) | `playbooks/lehi-field-log.html` + `lehi-field-log-template.csv` + private artifact e52d93c2-62b6-464c-9c9b-8c6eb0208edb | pre-schema-revision (lacks owner/sit-down fields); entries logged there read as incomplete in the results gate |
 | Funnel build sheet + consent language | `playbooks/ghl-funnel-build-sheet.md` | spec only — procurement deferred until after a close |
 | Price card (honesty-fixed) | `playbooks/price-card-print.html` + artifact 9302a24e-24a1-48b2-8e29-aa83476edcea | post-signal — print after a number exists |
@@ -65,10 +65,11 @@ activates at the first close — until then no API key, no paid calls.
 
 ## 4. Next actions (all Brandon's world; docs and tools are ready)
 
-1. **Command Center check** — open it on the phone (artifact
-   d2fe8d92-9c56-4a56-bb3a-20f91a8f4cb7, or save
-   `playbooks/guild-command-center.html` to the phone for fully-offline
-   use), save a test door in LOG, export CSV, reset. It is the single
+1. **Command Center phone proof** — open
+   `https://guild-command-center.brandonwadepackard.workers.dev` in Safari,
+   Share → Add to Home Screen, then save a test door in LOG, export CSV,
+   close/reopen, reopen in airplane mode, restore the CSV, and typed-reset.
+   It is the single
    front door: plan (COMMAND), door script (WORKFLOW), record (LOG),
    prospect presentation (CLIENT), and live gates (RESULTS).
 2. **Joey dry run** — lanes 1–3 + 5 on a friendly business, timed.

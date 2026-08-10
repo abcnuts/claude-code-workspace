@@ -1,5 +1,7 @@
 # Guild Command Center PWA
 
+Production: <https://guild-command-center.brandonwadepackard.workers.dev>
+
 The canonical application source is `playbooks/guild-command-center.html`.
 The PWA shell in this directory adds installability, offline caching, icons,
 security headers, guarded CSV restore, and update handling without adding a
@@ -34,4 +36,3 @@ configuration, guarded restore, persistence across reopen, and offline reopen
 after first load. A release remains limited-test ready until Brandon proves on
 his actual phone: Add to Home Screen, save/export, close/reopen, airplane-mode
 reopen, restore, then typed reset.
-

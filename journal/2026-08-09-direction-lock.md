@@ -159,3 +159,21 @@ unchanged.
 
 Not next: any purchase (GHL, number, printing until post-signal), OpenAI
 billing, probe calibration, new scripts/tiers/automation.
+
+## Installable PWA delivery (Codex Mac, 2026-08-09)
+
+- Production URL: `https://guild-command-center.brandonwadepackard.workers.dev`.
+- App source commit on draft PR #6:
+  `ff79f94bceb6b8f3370b81abb2eaf020d38cd7a9`; PR remains draft/unmerged.
+- The canonical HTML remains `playbooks/guild-command-center.html`; `pwa/`
+  adds only the install/offline shell, icons, secure static headers, guarded
+  CSV restore, and update handling. No backend, account, CRM, OpenAI API,
+  payment, analytics, or new doctrine was added.
+- Verification: original 130/130 Command Center suite plus 22/22 PWA checks;
+  npm audit clean; secret-shape scan clean. Live HTML, manifest, and service
+  worker hashes match the tested local build. Live proof passed service-worker
+  control, same-origin-only traffic, saved-state close/reopen, offline reopen,
+  commit receipt header, security headers, and 404/405 route guards.
+- Release verdict: **LIMITED_TEST_READY**, not release-ready, until Brandon's
+  actual iPhone proves Add to Home Screen, save/export, close/reopen,
+  airplane-mode reopen, restore, and typed reset.
