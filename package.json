@@ -1,0 +1,15 @@
+{
+  "name": "guild-command-center",
+  "private": true,
+  "version": "1.0.1",
+  "description": "Offline-first field command center for The Guild's Lehi learn sprint.",
+  "scripts": {
+    "build": "bash scripts/build-guild-pwa.sh",
+    "test:command-center": "node playbooks/tests/command-center-smoke.js",
+    "test:pwa": "node pwa/tests/pwa-smoke.js",
+    "test": "npm run test:command-center && npm run test:pwa"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

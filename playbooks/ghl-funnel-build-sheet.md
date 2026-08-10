@@ -2,12 +2,18 @@
 date: 2026-08-08
 type: build-sheet
 project: the-guild
-status: ready-to-build
-plan-item: B2 (with C sprint-kit appendix)
-owner: Brandon (build), Claude (spec)
+status: spec only — procurement deferred until after a close (2026-08-09 lean correction)
+plan-item: post-signal infrastructure
+owner: Brandon (build, when procured), Claude (spec)
 ---
 
-# GHL Sealed Funnel — Build Sheet (Plan item B2)
+# GHL Sealed Funnel — Build Sheet (post-signal spec)
+
+> **Status (2026-08-09):** No Guild GHL account exists; this sheet is
+> the ready spec for the procurement decision that follows the first
+> close. It is NOT a launch prerequisite. The first 20 doors run
+> zero-cost with the offline field log. The §3 consent language is used
+> at closes now (paper or phone form).
 
 Everything to configure, in order, with the exact consent language. Gate:
 test call answered + booking lands + consent stored.

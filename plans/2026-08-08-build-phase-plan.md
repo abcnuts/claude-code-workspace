@@ -1,82 +1,114 @@
 ---
 date: 2026-08-08
+revised: 2026-08-09 (direction lock — Brandon's confirmed decisions)
 type: plan
 project: the-guild
 status: active
-horizon: through first learn sprint (~Aug 22)
-evidence: journal/2026-08-08-ai-visibility-sweep-synthesis.md, handoffs/2026-08-07-guild-handoff.md
+horizon: through first Lehi learn sprint
+evidence: journal/2026-08-08-ai-visibility-sweep-synthesis.md, journal/2026-08-09-direction-lock.md
 ---
 
-# Guild Build-Phase Plan — 2026-08-08
+# Guild Build-Phase Plan — revised 2026-08-09
 
-Everything left between today and the first close-rate data. Three phases,
-each with owners and pass/fail gates. Doctrine: sell the odds, prove the
-delta, never promise the coin flip.
+Doctrine: sell the odds, prove the delta, never promise the coin flip.
+Customer-facing language is measure → improve → prove; we guarantee only
+the work and the report.
 
-## Phase A — Prove the probe (this weekend, Aug 8–10)
+## Locked by Brandon, 2026-08-09 (do not reopen)
+
+1. **Business shape:** wedge → ladder → referral flywheel. The small offer
+   is customer acquisition, not the whole business.
+2. **The door demo is ordinary subscription ChatGPT on the prospect's own
+   phone**, live. The paid Responses-API probe is a separate INTERNAL
+   baseline/before-after proof lane — it is NOT a pre-door blocker, and no
+   API key is requested and no paid API calls are made in this phase.
+3. Fulfillment playbook v1 and the $497/$997/$149-mo tiers: approved as-is.
+4. **First learn-sprint territory: Lehi, Utah.**
+
+## LEAN CORRECTION (Brandon-verified, 2026-08-09)
+
+No Guild GoHighLevel account exists — the prior "GHL login/build" launch
+prerequisite was a false assumption and is removed from the first-sprint
+path. The only live HighLevel access on Brandon's Mac is a
+location-scoped integration into a client's sub-account: a separate
+client system, **off-limits for Guild use**. Do not create a GHL
+account, start a trial, buy a phone number, or create any paid service
+in this phase. The first 20 doors run zero-cost.
+
+## NOW — the zero-cost first-sprint path
 
 | # | Item | Owner | Gate |
 |---|------|-------|------|
-| A1 | Merge PR #4 (sweep + playbook + this plan) | Brandon | merged |
-| A2 | Phase 4 reality check via Codex: key into `.env`, 5 real businesses, phone verification | Brandon + Codex | ≥4/5 same direction as phone; franchise scores high; new business ~0 |
-| A3 | Review the 10 starter trades in `probe/questions.yaml`; add/cut for our market | Brandon | list matches territory plan |
+| N1 | Command Center on the phone: open `playbooks/guild-command-center.html` (private artifact d2fe8d92-…), save a test door in LOG, export CSV, reset | Brandon | test entry saved + CSV exported, then reset |
+| N2 | Joey dry run: playbook lanes 1–3 + 5 on one friendly business, timed (Step 0's probe baseline is deferred with the probe lane) | Joey + Brandon | checklist done once; hours-per-client written down |
+| N3 | Crew decisions: rev split across the seven; referral reward now vs later — the flywheel needs the referral answer | Brandon + crew | decided before first outside dollar |
 
-If Phase 4 fails calibration: Codex fixes forward (API drift is the likely
-cause) — integrity rules are never loosened to make a run pass. Report the
-five scores back to a Claude session for journaling either way.
+## SPRINT — Lehi, Utah (ready now; needs only a phone and doors)
 
-## Phase B — Build the machine (week of Aug 11)
+Full sprint plan: `plans/2026-08-09-lehi-learn-sprint.md` — first-wave
+scope, trade cohorts, the ChatGPT-on-their-phone demo procedure, the
+recording spec, and pass/fail evidence after the first reps. The
+**Guild Command Center** (`playbooks/guild-command-center.html`) is the
+canonical first-sprint surface — plan, workflow, log, client
+presentation, and results in one offline file; its LOG view is the
+canonical record. `playbooks/lehi-field-log.html` is an emergency
+fallback only.
 
-| # | Item | Owner | Gate |
-|---|------|-------|------|
-| B1 | **Territory decision** — pick the starting town(s). Blocks C entirely; decide by Mon Aug 11 | Brandon | named territory written down |
-| B2 | GHL sealed funnel: AI Employee ($97/mo) inbound on the Guild line; consent language on every form/QR; <60s callback on consented leads | Brandon | test call answered + booking lands + consent stored |
-| B3 | Price card print: $497/$997/$149-mo, fee-credit mechanic, honest-line footer (content locked since 8/7) | Brandon | cards in hand |
-| B4 | Playbook dry run: Joey reads playbook v1, then Step 0 + Lanes 1–3 + 5 on one friendly business, timing each lane | Joey + Brandon | full checklist done once; hours-per-client number written down |
-| B5 | Crew decisions: rev split across the seven; referral reward now vs later | Brandon + crew | decided before first outside dollar |
+## POST-SIGNAL INFRASTRUCTURE (procure after a close, not before)
 
-The B4 timing number matters: it converts the playbook into capacity math
-(clients per week Joey can fulfill) before we promise anything at doors.
+- GHL (or equivalent) funnel: a purchasing decision AFTER the first
+  close. `playbooks/ghl-funnel-build-sheet.md` is the ready spec for
+  that day (consent language, test protocol) — spec, not prerequisite.
+- Price cards + dedicated line/QR: post-signal. The card source
+  (`playbooks/price-card-print.html`) stays print-ready with
+  placeholders until a number exists.
 
-## Phase C — Learn sprint (week of Aug 17, or when A2 + B1–B3 pass)
+## DEFERRED LANE — internal probe (activates at first close)
 
-- 20-door week in the chosen territory. Cohorts: 10 doors pitched at $497,
-  10 at $997. Element read on every doorstep; scripts by the book; every
-  objection logged in GHL with the door's element.
-- Every close: consent captured on the spot → funnel takes over; baseline
-  probe run same day → proof clock starts.
-- Output (the whole point): close-rate by price point + objection log.
-  This is data nobody else in the market has. It confirms or resets pricing,
-  and the objections feed script edits by panel ID.
+The probe repo is live and healthy: `brandonwadepackard-cell/
+guild-visibility-probe` (private), `main` at
+`0e455bfd200da0d3f64892c6f6915de9cb77d882`, default model
+`gpt-5.6-terra`, tests 8/8, Lehi wave-one trades in `questions.yaml`
+(state confirmed by Brandon 2026-08-09). Search-required and invalid-run
+protections stay as-is.
 
-## Standing lane (parallel, no deadline)
+- Trigger: **first close** (a customer baseline is the first real need) or
+  Brandon explicitly activating it. Not before.
+- Until then: no API key requests, no paid API calls, no calibration gate.
+- When triggered: Codex runs the calibration + first baselines per
+  `handoffs/2026-08-08-codex-phase4-handoff.md` (revised).
 
-- Install the three mined skills on the Mac (`appearance-rate-probe` first,
-  then `four-elements-sales-scripts`, `cold-outreach-legality-gate`).
-- 90-day re-probe calendar reminders — starts with customer #1.
-- Account consolidation (`abcnuts` vs `-cell`) — someday; needs `abcnuts`
-  credentials; blocks nothing.
-- Clinics vertical — parked until door data exists (AI hedges health
-  queries; entry route is the directory layer).
+## Standing lane (no deadline)
+
+- Codex Mac lane: ✅ COMPLETE (Lehi trades list @ `0e455bfd`) — no
+  remaining Codex launch task. Skill creation/install stays deferred
+  (reference only, not a launch item); any future skill work uses the
+  canonical `~/Projects/skills` store, dedupes once, canonical backup
+  workflow.
+- 90-day re-probe reminders — starts with customer #1.
+- Account consolidation (`abcnuts` vs `-cell`) — someday; blocks nothing.
+- Clinics vertical — parked until door data exists.
 
 ## Ownership map
 
-- **Brandon:** merges, decisions (territory, splits, referral), GHL build,
-  print, doors.
-- **Joey:** fulfillment playbook mastery + dry run + capacity number.
-- **Codex (Mac):** Phase 4 run; probe fixes if API drifted.
-- **Claude sessions:** journaling, research sweeps on demand, script-book
-  edits by panel ID, next-session continuity. Cannot: create repos, touch
-  `-cell` account, run the probe (no key in cloud).
+- **Brandon:** doors, crew decisions; post-signal procurement (funnel,
+  number, print) after the first close.
+- **Joey:** playbook mastery, dry run, capacity number, fulfillment.
+- **Codex (Mac):** trades list, skills dedupe; probe lane when activated.
+- **Claude sessions:** journaling, sweeps on demand, doc/plan upkeep,
+  continuity. Cannot: printing, doors, `-cell` repo access, any paid
+  procurement.
 
 ## Not in this plan, on purpose
 
-DIY voice stack · AI voice/SMS/RVM to cold lists (legality gate) · schema
-"magic" and ranking guarantees (evidence: sweep) · probe v2 features ·
-FLEXX work · clinics · account consolidation · new tooling purchases.
+DIY voice stack · AI voice/SMS/RVM to cold lists (legality gate) ·
+schema "magic" or any guaranteed-placement language · new scripts, tiers,
+legal architecture, or automation beyond what is approved · probe v2
+features · FLEXX work · clinics · account consolidation · new tooling.
 
 ## Re-entry points for the next session
 
-1. "Phase 4 results: …" → journal the scores, update this plan.
-2. "Territory is X" → finalize trades list, sprint checklist.
-3. "Sprint done" → skill-mine the objection log; pricing verdict.
+1. "Sprint results: …" (+ field-log CSV) → mine the objection log;
+   pricing verdict; wave-two cohorts.
+2. "First close" → activates BOTH deferred lanes: the probe (calibration
+   + customer baseline via Codex) and the funnel procurement decision.

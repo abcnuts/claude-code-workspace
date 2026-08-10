@@ -1,0 +1,1347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#16334E">
+<meta name="description" content="The Guild's offline command center for the 20-door Lehi learn sprint.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guild">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Guild Command Center</title>
+<style>
+  /* Operator cockpit: one deliberate look — sunlight-readable, explicit colors, calm and confident. */
+  :root {
+    --paper: #F7F8F6; --card: #FFFFFF; --ink: #14181C; --muted: #4C555E;
+    --steel: #24537F; --steel-deep: #16334E; --steel-soft: #E5EDF4;
+    --amber: #8F6200; --amber-soft: #F6EDD8;
+    --good: #1F6B42; --good-soft: #E2F0E8;
+    --danger: #8C2B22; --danger-soft: #F6E3E1;
+    --line: #C7CCD1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.45;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  button { font-family: inherit; }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 1px; }
+
+  /* ---- Top status bar ---- */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--steel-deep); color: #FFFFFF;
+    padding: 0.55rem 0.8rem;
+    display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  }
+  .topbar .brand { font-weight: 850; font-size: 0.9rem; letter-spacing: 0.1em; }
+  .pill { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 0.15rem 0.65rem; font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
+  .nextmove {
+    margin-left: auto; background: #FFFFFF; color: var(--steel-deep);
+    border: none; border-radius: 999px; padding: 0.45rem 0.9rem;
+    font-size: 0.8rem; font-weight: 800; cursor: pointer; white-space: nowrap;
+  }
+
+  /* ---- Layout: phone bottom nav / desktop left rail ---- */
+  .shell { max-width: 520px; margin: 0 auto; padding: 0.9rem 0.9rem 5.5rem; }
+  .tabbar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 30;
+    background: var(--card); border-top: 2px solid var(--steel-deep);
+    display: flex;
+  }
+  .tabbar button {
+    flex: 1; padding: 0.65rem 0.2rem 0.75rem; border: none; background: none; cursor: pointer;
+    font-size: 0.66rem; font-weight: 800; letter-spacing: 0.06em; color: var(--muted);
+    border-top: 3px solid transparent; min-height: 48px;
+  }
+  .tabbar button.on { color: var(--steel); border-top-color: var(--steel); background: var(--steel-soft); }
+  @media (min-width: 860px) {
+    body { padding-left: 170px; }
+    .tabbar { top: 0; bottom: 0; left: 0; right: auto; width: 170px; flex-direction: column; justify-content: flex-start; border-top: none; border-right: 2px solid var(--steel-deep); padding-top: 4.2rem; }
+    .tabbar button { flex: 0 0 auto; text-align: left; padding: 0.9rem 1rem; font-size: 0.78rem; border-top: none; border-left: 4px solid transparent; }
+    .tabbar button.on { border-left-color: var(--steel); }
+    .shell { max-width: 640px; padding-bottom: 2rem; }
+  }
+  body.client-mode .tabbar, body.client-mode .topbar { display: none; }
+  body.client-mode { padding-left: 0; }
+
+  .view { display: none; }
+  .view.on { display: block; }
+
+  /* ---- Shared components ---- */
+  h1 { font-size: 1.1rem; font-weight: 850; margin: 0 0 0.2rem; letter-spacing: -0.01em; }
+  h2 { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: var(--steel); margin: 1.2rem 0 0.45rem; }
+  .card { background: var(--card); border: 1px solid var(--line); padding: 0.8rem 0.9rem; margin-bottom: 0.7rem; }
+  .card.accent { border-left: 4px solid var(--steel); }
+  .card p { margin: 0.3rem 0; font-size: 0.88rem; }
+  .quiet { color: var(--muted); font-size: 0.78rem; }
+  .doctrine { border-left: 3px solid var(--amber); background: var(--amber-soft); padding: 0.6rem 0.8rem; font-size: 0.84rem; font-style: italic; margin-bottom: 0.8rem; }
+
+  /* COMMAND phases */
+  .phase { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.45rem 0; border-left: 3px solid var(--line); padding-left: 0.8rem; margin-left: 0.4rem; }
+  .phase.done { border-left-color: var(--good); }
+  .phase.now { border-left-color: var(--steel); background: var(--steel-soft); }
+  .phase .p-name { font-weight: 800; font-size: 0.86rem; }
+  .phase .p-note { font-size: 0.76rem; color: var(--muted); }
+  .youarehere { display: inline-block; background: var(--steel); color: #FFF; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em; padding: 0.08rem 0.5rem; border-radius: 999px; margin-left: 0.4rem; vertical-align: middle; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
+  .chip { font-size: 0.72rem; font-weight: 700; padding: 0.22rem 0.6rem; border-radius: 999px; border: 1.5px solid var(--good); color: var(--good); background: var(--good-soft); }
+  .chip.later { border-color: var(--line); color: var(--muted); background: var(--paper); }
+  ol.seq { margin: 0.3rem 0 0; padding-left: 1.2rem; font-size: 0.86rem; }
+  ol.seq li { margin-bottom: 0.3rem; }
+
+  /* WORKFLOW steps */
+  details.step { border: 1px solid var(--line); border-left: 4px solid var(--steel); background: var(--card); margin-bottom: 0.45rem; }
+  details.step summary { list-style: none; cursor: pointer; padding: 0.6rem 0.8rem; font-weight: 750; font-size: 0.88rem; display: flex; gap: 0.55rem; align-items: baseline; min-height: 44px; }
+  details.step summary::-webkit-details-marker { display: none; }
+  details.step .s-n { color: var(--steel); font-weight: 850; font-size: 0.78rem; }
+  details.step .s-body { padding: 0 0.8rem 0.7rem; font-size: 0.84rem; color: var(--ink); }
+  details.step .s-body p { margin: 0.3rem 0; }
+  .say { background: var(--steel-soft); border-left: 3px solid var(--steel); padding: 0.5rem 0.7rem; font-style: italic; margin: 0.4rem 0; }
+  .lane { display: flex; gap: 0.55rem; align-items: baseline; border-bottom: 1px solid var(--line); padding: 0.42rem 0; font-size: 0.84rem; }
+  .lane:last-child { border-bottom: none; }
+  .tier-tag { flex: 0 0 auto; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.05em; padding: 0.1rem 0.45rem; border-radius: 2px; white-space: nowrap; }
+  .t497 { background: var(--steel-soft); color: var(--steel); }
+  .t997 { background: var(--amber-soft); color: var(--amber); }
+  .t149 { background: var(--good-soft); color: var(--good); }
+
+  /* LOG (field log) */
+  .bar-wrap { background: var(--steel-soft); border: 1px solid var(--line); height: 1.5rem; position: relative; margin-bottom: 0.3rem; }
+  .bar { background: var(--steel); height: 100%; width: 0%; transition: width 0.2s; }
+  .bar-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; }
+  .cohorts { font-size: 0.75rem; color: var(--muted); text-align: center; margin-bottom: 0.7rem; font-variant-numeric: tabular-nums; }
+  .complete-banner { display: none; background: var(--good-soft); border: 2px solid var(--good); color: var(--good); font-weight: 800; font-size: 0.92rem; text-align: center; padding: 0.65rem; margin-bottom: 0.8rem; }
+  .complete-banner.show { display: block; }
+  fieldset { border: 2px solid var(--ink); padding: 0.75rem; margin: 0 0 1rem; background: var(--card); }
+  fieldset:disabled { opacity: 0.55; }
+  legend { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--steel); padding: 0 0.3rem; }
+  label { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin: 0.6rem 0 0.2rem; }
+  input[type="text"], input[type="number"], input[type="date"], textarea, select {
+    width: 100%; font-size: 1rem; padding: 0.55rem 0.6rem; border: 1.5px solid var(--ink);
+    background: #FFFFFF; color: var(--ink); border-radius: 0; font-family: inherit;
+  }
+  textarea { min-height: 3rem; resize: vertical; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .seg { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .seg button {
+    flex: 1 1 auto; min-width: 4.6rem; padding: 0.55rem 0.4rem; font-size: 0.86rem; font-weight: 700;
+    border: 1.5px solid var(--ink); background: #FFFFFF; color: var(--ink); cursor: pointer; min-height: 44px;
+  }
+  .seg button.on { background: var(--steel); border-color: var(--steel); color: #FFFFFF; }
+  .seg button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .cohort-display { font-size: 1.2rem; font-weight: 850; color: var(--steel); background: var(--steel-soft); border: 2px solid var(--steel); text-align: center; padding: 0.42rem; font-variant-numeric: tabular-nums; }
+  .hint { font-size: 0.72rem; color: var(--amber); font-weight: 600; margin-top: 0.2rem; }
+  .pii { font-size: 0.72rem; color: var(--muted); margin-top: 0.6rem; }
+  .save-btn { width: 100%; padding: 0.85rem; font-size: 1rem; font-weight: 800; background: var(--good); color: #FFF; border: 2px solid var(--good); cursor: pointer; margin-top: 0.8rem; }
+  .save-btn:disabled { background: var(--line); border-color: var(--line); color: var(--muted); cursor: not-allowed; }
+  .msg { font-size: 0.8rem; font-weight: 700; margin-top: 0.4rem; min-height: 1.1rem; }
+  .msg.ok { color: var(--good); } .msg.err { color: var(--danger); }
+  .entry { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--steel); margin-bottom: 0.4rem; font-size: 0.82rem; overflow: hidden; }
+  .entry summary { list-style: none; cursor: pointer; padding: 0.55rem 0.6rem; min-height: 44px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.55rem; align-items: center; }
+  .entry summary::-webkit-details-marker { display: none; }
+  .entry summary::after { content: "VIEW"; color: var(--steel); font-size: 0.66rem; font-weight: 850; letter-spacing: 0.08em; }
+  .entry[open] summary::after { content: "CLOSE"; }
+  .entry .summary-copy { min-width: 0; }
+  .entry b { display: block; font-size: 0.86rem; overflow-wrap: anywhere; }
+  .entry .meta { color: var(--muted); font-size: 0.74rem; overflow-wrap: anywhere; }
+  .entry-details { border-top: 1px solid var(--line); background: #FFF; padding: 0.65rem; }
+  .entry-details dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem 0.7rem; margin: 0; }
+  .entry-details .detail-field { min-width: 0; }
+  .entry-details .detail-field.wide { grid-column: 1 / -1; }
+  .entry-details dt { color: var(--muted); font-size: 0.62rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+  .entry-details dd { margin: 0.12rem 0 0; color: var(--ink); font-size: 0.8rem; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .entry-readonly { margin: 0.65rem 0 0; color: var(--muted); font-size: 0.68rem; font-weight: 700; }
+  .entry.closed { border-left-color: var(--good); background: var(--good-soft); }
+  .empty { font-size: 0.82rem; color: var(--muted); font-style: italic; }
+  .tools { display: grid; gap: 0.5rem; margin-top: 1rem; }
+  .export-btn { padding: 0.7rem; font-size: 0.92rem; font-weight: 800; background: var(--steel); color: #FFF; border: 2px solid var(--steel); cursor: pointer; }
+  .secondary-btn { padding: 0.7rem; font-size: 0.92rem; font-weight: 800; background: #FFF; color: var(--steel); border: 2px solid var(--steel); cursor: pointer; }
+  .install-row { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 0.65rem; }
+  .install-status { display: flex; gap: 0.45rem; align-items: flex-start; color: var(--muted); font-size: 0.78rem; }
+  .status-dot { width: 0.68rem; height: 0.68rem; border-radius: 50%; background: var(--amber); margin-top: 0.22rem; flex: 0 0 auto; }
+  .status-dot.ready { background: var(--good); }
+  .update-banner { display: none; border: 2px solid var(--amber); background: var(--amber-soft); padding: 0.65rem; margin-bottom: 0.7rem; }
+  .update-banner.show { display: flex; gap: 0.6rem; align-items: center; justify-content: space-between; }
+  .update-banner span { font-size: 0.8rem; font-weight: 800; }
+  .update-banner button { border: 2px solid var(--amber); background: #FFF; color: var(--amber); font-weight: 800; padding: 0.45rem 0.65rem; cursor: pointer; }
+  .restore-panel { display: none; border: 2px solid var(--steel); background: var(--steel-soft); padding: 0.65rem; }
+  .restore-panel.show { display: block; }
+  .restore-panel p { margin: 0 0 0.55rem; font-size: 0.8rem; }
+  .restore-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+  .restore-actions button { padding: 0.6rem; font-weight: 800; cursor: pointer; }
+  .restore-confirm { background: var(--good); border: 2px solid var(--good); color: #FFF; }
+  .restore-cancel { background: #FFF; border: 2px solid var(--steel); color: var(--steel); }
+  details.reset-box { border: 1.5px solid var(--danger); padding: 0.6rem; background: var(--card); }
+  details.reset-box summary { font-size: 0.82rem; font-weight: 800; color: var(--danger); cursor: pointer; }
+  .reset-note { font-size: 0.76rem; color: var(--muted); margin: 0.5rem 0; }
+  .reset-btn { width: 100%; padding: 0.6rem; font-size: 0.9rem; font-weight: 800; background: var(--danger-soft); color: var(--danger); border: 2px solid var(--danger); cursor: pointer; margin-top: 0.5rem; }
+  .reset-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* RESULTS */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+  .stat { background: var(--card); border: 1px solid var(--line); padding: 0.55rem 0.7rem; }
+  .stat .n { font-size: 1.35rem; font-weight: 850; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .hbar { margin: 0.3rem 0; }
+  .hbar .hl { display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 600; }
+  .hbar .ht { background: var(--steel-soft); height: 0.7rem; }
+  .hbar .hf { background: var(--steel); height: 100%; }
+  .gate { border: 2px solid var(--line); background: var(--card); padding: 0.75rem 0.9rem; margin-bottom: 0.7rem; }
+  .gate.invalid { border-color: var(--muted); }
+  .gate.pass { border-color: var(--good); background: var(--good-soft); }
+  .gate.attention { border-color: var(--amber); background: var(--amber-soft); }
+  .gate .g-verdict { font-weight: 850; font-size: 0.95rem; }
+  .gate p { font-size: 0.82rem; margin: 0.3rem 0 0; }
+
+  /* CLIENT presentation */
+  #view-client { background: var(--steel-deep); position: fixed; inset: 0; z-index: 40; overflow-y: auto; display: none; }
+  #view-client.on { display: block; }
+  .client-shell { max-width: 480px; margin: 0 auto; padding: 1rem 1rem 3rem; min-height: 100%; }
+  .client-exit { position: fixed; top: 0.6rem; right: 0.6rem; z-index: 41; background: rgba(255,255,255,0.15); color: #FFF; border: 1px solid rgba(255,255,255,0.4); border-radius: 999px; font-size: 0.72rem; font-weight: 700; padding: 0.3rem 0.7rem; cursor: pointer; }
+  .ccard { background: #FFFFFF; color: var(--ink); border-radius: 10px; padding: 1.1rem 1rem 1.2rem; margin-bottom: 0.8rem; display: none; }
+  .ccard.on { display: block; }
+  .ccard h3 { font-size: 1.25rem; font-weight: 850; margin: 0 0 0.5rem; line-height: 1.15; text-wrap: balance; }
+  .ccard p { font-size: 0.95rem; margin: 0.4rem 0; }
+  .cnav { display: flex; gap: 0.6rem; margin-top: 0.9rem; }
+  .cnav button { flex: 1; padding: 0.8rem; font-size: 0.95rem; font-weight: 800; border-radius: 8px; border: 2px solid var(--steel); background: var(--steel); color: #FFF; cursor: pointer; min-height: 48px; }
+  .cnav button.ghost { background: #FFF; color: var(--steel); }
+  .cstep { color: rgba(255,255,255,0.75); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin: 0.2rem 0 0.4rem; text-align: center; }
+  .prompt-box { background: var(--steel-soft); border: 2px dashed var(--steel); padding: 0.8rem; font-size: 1.05rem; font-weight: 600; }
+  .copy-btn { width: 100%; margin-top: 0.6rem; padding: 0.7rem; font-size: 0.9rem; font-weight: 800; border: 2px solid var(--steel); background: #FFF; color: var(--steel); border-radius: 8px; cursor: pointer; }
+  .big-choice { display: flex; gap: 0.7rem; margin-top: 0.6rem; }
+  .big-choice button { flex: 1; padding: 1.3rem 0.5rem; font-size: 1.05rem; font-weight: 850; border-radius: 10px; cursor: pointer; border: 3px solid var(--steel); background: #FFF; color: var(--steel); min-height: 72px; }
+  .price-line { font-size: 2rem; font-weight: 850; color: var(--steel); margin: 0.2rem 0; font-variant-numeric: tabular-nums; }
+  .inc { font-size: 0.9rem; padding-left: 1.1rem; margin: 0.4rem 0; }
+  .inc li { margin-bottom: 0.25rem; }
+  .honest-foot { border-top: 2px solid var(--ink); margin-top: 0.7rem; padding-top: 0.55rem; font-style: italic; font-size: 0.88rem; }
+  .improve-grid { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.5rem 0; }
+  .imp { border: 2px solid var(--steel); color: var(--steel); font-weight: 800; font-size: 0.8rem; padding: 0.45rem 0.7rem; border-radius: 8px; }
+  footer.app-foot { font-size: 0.7rem; color: var(--muted); margin-top: 1.4rem; border-top: 1px solid var(--line); padding-top: 0.5rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="brand">LEHI PILOT</span>
+  <span class="pill" id="topProgress">0 / 20</span>
+  <span class="pill" id="topPhase">Prepare</span>
+  <button class="nextmove" id="nextMoveBtn">NEXT MOVE</button>
+</header>
+
+<div class="shell">
+  <div class="update-banner" id="updateBanner" role="status">
+    <span>A newer Command Center is ready.</span>
+    <button type="button" id="reloadAppBtn">UPDATE NOW</button>
+  </div>
+
+  <!-- ============ COMMAND ============ -->
+  <section class="view on" id="view-command">
+    <h1>Command</h1>
+    <p class="doctrine">Measure → improve → prove. Sell the odds, prove the delta, never promise the coin flip. We guarantee only the work and the report.</p>
+
+    <div class="card accent">
+      <p><b>Mission:</b> The Guild sells local businesses a measured AI appearance rate — the wedge. The small offer buys a customer; the ladder and the referral flywheel build the business. First market: <b>Lehi, Utah</b>, twenty doors, zero cost.</p>
+    </div>
+
+    <h2>This app on your phone</h2>
+    <div class="card" id="installCard">
+      <div class="install-status"><span class="status-dot" id="installDot"></span><span id="installStatus">Checking offline readiness…</span></div>
+      <div class="install-row">
+        <button type="button" class="secondary-btn" id="installBtn">INSTALL THIS APP</button>
+      </div>
+      <p class="quiet" id="installHelp">On iPhone: open this page in Safari, tap Share, then Add to Home Screen.</p>
+    </div>
+
+    <h2>What happens next</h2>
+    <div id="phaseList">
+      <div class="phase" data-phase="0"><div><div class="p-name">Prepare</div><div class="p-note">Phone check · field log test · Joey dry run</div></div></div>
+      <div class="phase" data-phase="1"><div><div class="p-name">20-door learn sprint</div><div class="p-note">Lehi · alternating price cohorts · every door logged</div></div></div>
+      <div class="phase" data-phase="2"><div><div class="p-name">First close</div><div class="p-note">Consent on paper · triggers baseline + procurement decisions</div></div></div>
+      <div class="phase" data-phase="3"><div><div class="p-name">Baseline + fulfillment</div><div class="p-note">Internal probe baseline · playbook lanes</div></div></div>
+      <div class="phase" data-phase="4"><div><div class="p-name">90-day remeasure</div><div class="p-note">Same question, same count — the before/after they hold</div></div></div>
+      <div class="phase" data-phase="5"><div><div class="p-name">Referral flywheel</div><div class="p-note">Proven customers recruit the next doors</div></div></div>
+    </div>
+
+    <h2>Ready now — zero cost</h2>
+    <div class="card">
+      <div class="chips">
+        <span class="chip">Subscription ChatGPT</span>
+        <span class="chip">A phone</span>
+        <span class="chip">This field log</span>
+        <span class="chip">Physical doors</span>
+      </div>
+      <div class="chips">
+        <span class="chip later">Funnel — after first close</span>
+        <span class="chip later">Probe baseline — after first close</span>
+        <span class="chip later">Printed cards — after a number exists</span>
+      </div>
+      <p class="quiet">The second row isn't missing — it's deliberately parked until a close proves the offer.</p>
+    </div>
+
+    <h2>Immediate sequence</h2>
+    <div class="card">
+      <ol class="seq">
+        <li>Phone check: save a test door in LOG, export the CSV, reset.</li>
+        <li>Joey dry run: fulfillment lanes 1–3 + 5 on a friendly business, timed.</li>
+        <li>Twenty doors in Lehi — the WORKFLOW view is the script.</li>
+        <li>Crew decision before the first dollar: rev split + referral reward.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ WORKFLOW ============ -->
+  <section class="view" id="view-workflow">
+    <h1>Workflow</h1>
+    <h2>The door, step by step</h2>
+
+    <details class="step"><summary><span class="s-n">1</span>Approach + element read</summary>
+      <div class="s-body"><p>First 30 seconds: read the buyer — Fire (rival on the brain), Earth (wants paper), Water (been burned), Air (curious, phone out). The script book governs the pitch itself.</p></div>
+    </details>
+    <details class="step"><summary><span class="s-n">2</span>Ask permission</summary>
+      <div class="s-body"><p class="say">"Grab your phone — I want to show you something about your business. Takes 45 seconds."</p></div>
+    </details>
+    <details class="step"><summary><span class="s-n">3</span>They open ChatGPT</summary>
+      <div class="s-body"><p>Their phone, their thumbs. If they don't have it or won't install: your phone is the fallback. Web search on if the toggle is visible. Switch to the CLIENT view and hand them the screen.</p></div>
+    </details>
+    <details class="step"><summary><span class="s-n">4</span>Ask the real local question</summary>
+      <div class="s-body"><p class="say">"Who should I call for a [their trade] in Lehi, Utah?"</p><p>Their trade, exact wording, they hit send. Never re-roll the answer.</p></div>
+    </details>
+    <details class="step"><summary><span class="s-n">5</span>Record what happened</summary>
+      <div class="s-body"><p>Present, absent, or not run — it goes in the LOG exactly as it happened. The demo shows what the AI says today; nothing more.</p></div>
+    </details>
+    <details class="step" id="honestyStep"><summary><span class="s-n">6</span>Explain it honestly</summary>
+      <div class="s-body">
+        <p><b>If they're ABSENT:</b></p>
+        <p class="say">"Today, ChatGPT named other businesses in this answer — not you. And here's the honest part: one ask is one flip of the coin. The answer changes from ask to ask. We measure the real number — ten separate asks, counted — do the work, and measure again in ninety days. You hold both reports."</p>
+        <p><b>If they're PRESENT:</b></p>
+        <p class="say">"Good — today's answer went your way. It doesn't always: the same question gets different answers ask to ask. We measure your real rate, keep doing the work, and remeasure as it changes — so you're not betting on one lucky answer."</p>
+        <p class="quiet">One answer never proves a ranking, a rate, or where calls go. Only the sampled number is real.</p>
+      </div>
+    </details>
+    <details class="step"><summary><span class="s-n">7</span>Offer the locked price</summary>
+      <div class="s-body"><p>The CLIENT view shows this door's price and what's included. Say the number straight the moment price comes up. No guarantee of placement or score — the work and the reports are what's promised.</p></div>
+    </details>
+    <details class="step"><summary><span class="s-n">8</span>Log outcome + follow-up</summary>
+      <div class="s-body"><p>Outcome, owner present, sit-down booked, element, their exact objection words, callback date if any. On a close: consent language on paper, and fulfillment begins per the playbook below.</p></div>
+    </details>
+
+    <h2>After a close — fulfillment lanes (playbook v1)</h2>
+    <div class="card">
+      <div class="lane"><span class="tier-tag t497">$497 + $997</span><span>Intake + internal baseline measurement (probe lane activates at first close)</span></div>
+      <div class="lane"><span class="tier-tag t497">$497 + $997</span><span>Google Business Profile: claim, complete every field, photos, respond to reviews</span></div>
+      <div class="lane"><span class="tier-tag t497">$497 + $997</span><span>Yelp: claim + complete + respond — never solicit Yelp reviews (policy)</span></div>
+      <div class="lane"><span class="tier-tag t497">$497 + $997</span><span>ChatGPT stack: Foursquare claim, Bing Places via GBP import, Bing Webmaster Tools, crawlability</span></div>
+      <div class="lane"><span class="tier-tag t497">$497 + $997</span><span>NAP consistency sweep: one canonical name/address/phone everywhere</span></div>
+      <div class="lane"><span class="tier-tag t997">$997</span><span>Review engine — Google-first asks, no incentives, no gating, FTC-clean</span></div>
+      <div class="lane"><span class="tier-tag t997">$997</span><span>Website + local mentions: service-town pages, best-of list pitches</span></div>
+      <div class="lane"><span class="tier-tag t997">$997</span><span>Midpoint check + printed before/after report</span></div>
+      <div class="lane"><span class="tier-tag t497">$497 + $997</span><span>90-day remeasure with the locked baseline config</span></div>
+      <div class="lane"><span class="tier-tag t149">$149/mo</span><span>Stay Visible: monthly measurement, every review answered, listing patrol, quarterly refresh</span></div>
+      <p class="quiet" style="margin-top:0.5rem">Setup fee credits toward the first month. We do not sell schema markup as AI magic, and we never guarantee a ranking, placement, or score.</p>
+    </div>
+  </section>
+
+  <!-- ============ LOG ============ -->
+  <section class="view" id="view-log">
+    <h1>Field Log — 20 Doors</h1>
+    <p class="quiet">Offline. Saves on this device only. Every door 1–20 logged exactly once, including no-answers. Export CSV at day's end.</p>
+
+    <div class="bar-wrap"><div class="bar" id="bar"></div><div class="bar-label" id="barLabel">0 / 20 doors</div></div>
+    <div class="cohorts" id="cohorts">$497: 0 · $997: 0 · closed: 0</div>
+    <div class="complete-banner" id="completeBanner">SPRINT COMPLETE — all 20 doors logged. See RESULTS and export the CSV.</div>
+
+    <form id="f" autocomplete="off" novalidate>
+    <fieldset id="formFields">
+      <legend>This door</legend>
+      <div class="row2">
+        <div>
+          <label for="door">Door # (1–20)</label>
+          <input type="number" id="door" min="1" max="20" inputmode="numeric">
+        </div>
+        <div>
+          <label for="trade">Trade</label>
+          <select id="trade">
+            <option value="">— pick —</option>
+            <option>hvac</option><option>plumber</option><option>electrician</option>
+            <option>sprinkler</option><option>landscaper</option><option>pest_control</option>
+            <option>garage_door</option><option>roofer</option><option>auto_repair</option>
+            <option>barber</option><option>other</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="biz">Business name</label>
+      <input type="text" id="biz" placeholder="Shop name on the door">
+
+      <label id="cohortLabel">Price cohort — locked protocol: odd door $497, even door $997</label>
+      <div class="cohort-display" id="cohortDisplay" role="status" aria-labelledby="cohortLabel">$497</div>
+
+      <label>Outcome</label>
+      <div class="seg" id="outcome" role="group" aria-label="Outcome">
+        <button type="button" data-v="closed">Closed</button>
+        <button type="button" data-v="callback set">Callback</button>
+        <button type="button" data-v="soft no">Soft no</button>
+        <button type="button" data-v="hard no">Hard no</button>
+        <button type="button" data-v="no answer">No answer</button>
+      </div>
+
+      <label>Owner / decision-maker present</label>
+      <div class="seg" id="ownerPresent" role="group" aria-label="Owner present">
+        <button type="button" data-v="yes">Yes</button>
+        <button type="button" data-v="no">No</button>
+        <button type="button" data-v="not applicable">N/A</button>
+      </div>
+      <div class="hint" id="ownerHint">N/A applies only to no-answer doors.</div>
+
+      <label>Demo shown (ChatGPT, their phone)</label>
+      <div class="seg" id="demoShown" role="group" aria-label="Demo shown">
+        <button type="button" data-v="yes">Yes</button>
+        <button type="button" data-v="no">No</button>
+      </div>
+
+      <label>Demo result</label>
+      <div class="seg" id="demoResult" role="group" aria-label="Demo result">
+        <button type="button" data-v="present">Present</button>
+        <button type="button" data-v="absent">Absent</button>
+        <button type="button" data-v="not run">Not run</button>
+      </div>
+      <div class="hint" id="demoHint">Pick "Demo shown" first — result options follow it.</div>
+
+      <label>Sit-down booked</label>
+      <div class="seg" id="sitDown" role="group" aria-label="Sit-down booked">
+        <button type="button" data-v="yes">Yes</button>
+        <button type="button" data-v="no">No</button>
+      </div>
+
+      <label>Element read</label>
+      <div class="seg" id="element" role="group" aria-label="Element read">
+        <button type="button" data-v="fire">Fire</button>
+        <button type="button" data-v="earth">Earth</button>
+        <button type="button" data-v="water">Water</button>
+        <button type="button" data-v="air">Air</button>
+        <button type="button" data-v="unread">Unread</button>
+      </div>
+
+      <label for="notes">Notes / objection verbatim</label>
+      <textarea id="notes" placeholder="Their exact words are gold"></textarea>
+
+      <label for="cb">Callback date (optional)</label>
+      <input type="date" id="cb">
+
+      <p class="pii">Business info only — no customer names, numbers, or personal details in this log.</p>
+    </fieldset>
+    <button type="submit" class="save-btn" id="saveBtn">SAVE DOOR</button>
+    <div class="msg" id="msg" role="status"></div>
+    </form>
+
+    <h2>Logged doors</h2>
+    <p class="quiet">Tap a saved door to view every recorded detail. Saved doors are read-only.</p>
+    <div id="list"><p class="empty">Nothing yet. First door of twenty.</p></div>
+
+    <div class="tools">
+      <button type="button" class="export-btn" id="exportBtn">EXPORT CSV</button>
+      <button type="button" class="secondary-btn" id="importBtn">RESTORE FROM CSV</button>
+      <input type="file" id="importFile" accept=".csv,text/csv" hidden>
+      <div class="restore-panel" id="restorePanel" role="status">
+        <p id="restoreSummary"></p>
+        <p class="quiet">Restore replaces this device's current log. Export the current log first if you need both copies.</p>
+        <div class="restore-actions">
+          <button type="button" class="restore-cancel" id="restoreCancel">CANCEL</button>
+          <button type="button" class="restore-confirm" id="restoreConfirm">RESTORE</button>
+        </div>
+      </div>
+      <details class="reset-box">
+        <summary>Reset (erases ALL entries)</summary>
+        <p class="reset-note">This deletes every logged door from this device permanently. Export the CSV first. Type <b>RESET</b> to arm the button.</p>
+        <input type="text" id="resetConfirm" placeholder="Type RESET" aria-label="Type RESET to confirm">
+        <button type="button" class="reset-btn" id="resetBtn" disabled>ERASE ALL ENTRIES</button>
+      </details>
+    </div>
+    <footer class="app-foot">Guild Command Center v1.0.1 · local device storage · every door logged once, no cherry-picking</footer>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="view" id="view-results">
+    <h1>Results</h1>
+    <div class="gate invalid" id="gateCard">
+      <div class="g-verdict" id="gateVerdict">RUN INCOMPLETE</div>
+      <p id="gateDetail">Gates evaluate only on a complete run: all 20 unique doors with complete entries. Partial data never produces a pass or fail.</p>
+    </div>
+
+    <h2>Counts</h2>
+    <div class="stat-grid" id="statGrid"></div>
+
+    <h2>Demo rate (correct denominator)</h2>
+    <div class="card" id="demoRateCard"></div>
+
+    <h2>Outcomes</h2>
+    <div class="card" id="outcomeBars"></div>
+
+    <h2>Cohorts — direction only, not proof</h2>
+    <div class="card" id="cohortCard"></div>
+
+    <h2>Trades + elements</h2>
+    <div class="card" id="mixCard"></div>
+
+    <h2>Callbacks due</h2>
+    <div class="card" id="callbackCard"></div>
+
+    <div class="tools">
+      <button type="button" class="export-btn" id="exportBtn2">EXPORT CSV</button>
+    </div>
+  </section>
+
+</div><!-- /shell -->
+
+<!-- ============ CLIENT (presentation overlay) ============ -->
+<section class="view" id="view-client">
+  <button class="client-exit" id="clientExit">← operator</button>
+  <div class="client-shell">
+    <div class="cstep" id="cstepLabel">STEP 1 OF 6</div>
+
+    <div class="ccard on" data-c="0">
+      <h3>Let's ask <em>your</em> ChatGPT.</h3>
+      <p>Not ours — yours. Same app your customers use.</p>
+      <label>Business name</label>
+      <input type="text" id="cBiz" placeholder="Your business name">
+      <label>Trade</label>
+      <select id="cTrade">
+        <option value="heating and air company">HVAC / heating &amp; air</option>
+        <option value="plumber">Plumber</option>
+        <option value="electrician">Electrician</option>
+        <option value="sprinkler company">Sprinkler</option>
+        <option value="landscaper">Landscaper</option>
+        <option value="pest control company">Pest control</option>
+        <option value="garage door company">Garage door</option>
+        <option value="roofer">Roofer</option>
+        <option value="auto repair shop">Auto repair</option>
+        <option value="barber shop">Barber</option>
+      </select>
+      <label>Town</label>
+      <input type="text" id="cTown" value="Lehi, Utah">
+      <div class="cnav"><button id="cNext0">Next</button></div>
+    </div>
+
+    <div class="ccard" data-c="1">
+      <h3>Type this in — your thumbs.</h3>
+      <div class="prompt-box" id="cPrompt">Who should I call for a plumber in Lehi, Utah?</div>
+      <button class="copy-btn" id="cCopy">Copy the question</button>
+      <p class="quiet" id="cCopyMsg" style="min-height:1rem"></p>
+      <div class="cnav"><button class="ghost" id="cBack1">Back</button><button id="cNext1">We asked it</button></div>
+    </div>
+
+    <div class="ccard" data-c="2">
+      <h3>What did it say?</h3>
+      <p>Read the answer together. Is your business in it?</p>
+      <div class="big-choice">
+        <button id="cPresent">WE'RE IN IT</button>
+        <button id="cAbsent">WE'RE NOT</button>
+      </div>
+      <div class="cnav"><button class="ghost" id="cBack2">Back</button></div>
+    </div>
+
+    <div class="ccard" data-c="3">
+      <h3 id="cInterpTitle">Here's the honest read.</h3>
+      <p id="cInterpBody"></p>
+      <p><b>What we sell is the real number:</b> we ask ten separate times, count how often you're named, do the work, then measure again in ninety days. You hold both reports.</p>
+      <div class="cnav"><button class="ghost" id="cBack3">Back</button><button id="cNext3">What gets improved?</button></div>
+    </div>
+
+    <div class="ccard" data-c="4">
+      <h3>What we improve.</h3>
+      <p>The places the AI actually reads about you:</p>
+      <div class="improve-grid">
+        <span class="imp">Google profile</span><span class="imp">Yelp</span><span class="imp">Bing</span>
+        <span class="imp">Foursquare</span><span class="imp">Apple</span><span class="imp">Your website</span>
+        <span class="imp">Reviews, done legally</span><span class="imp">Wrong info fixed</span>
+      </div>
+      <p>Claimed, corrected, complete — then measured again.</p>
+      <div class="cnav"><button class="ghost" id="cBack4">Back</button><button id="cNext4">The price</button></div>
+    </div>
+
+    <div class="ccard" data-c="5">
+      <h3>One flat price. No contract on setup.</h3>
+      <div class="price-line" id="cPrice">$497 setup</div>
+      <ul class="inc" id="cIncludes"></ul>
+      <p><b>$149/month after</b> keeps it measured and maintained: monthly check, every review answered, listing patrol. Your setup fee credits toward the first month.</p>
+      <p id="cClose">If that's fair, we can start this week — I'll take your business info and the work begins. You'll have the first measured report in hand within the week.</p>
+      <p class="honest-foot">"Anyone who guarantees a ranking is lying to you. I guarantee the work — and a before/after report you can hold."</p>
+      <div class="cnav"><button class="ghost" id="cBack5">Back</button><button id="cRestart">Start over</button></div>
+    </div>
+  </div>
+</section>
+
+<nav class="tabbar" id="tabbar">
+  <button data-view="command" class="on">COMMAND</button>
+  <button data-view="workflow">WORKFLOW</button>
+  <button data-view="log">LOG</button>
+  <button data-view="client">CLIENT</button>
+  <button data-view="results">RESULTS</button>
+</nav>
+
+<script>
+(function () {
+  "use strict";
+  var KEY = "lehi-field-log-v1";
+  var DRAFT_KEY = "lehi-field-log-draft-v1";
+  var TARGET = 20;
+  var HEADERS = ["door_number","timestamp","business_name","trade","price_cohort","owner_present","demo_shown","demo_result","outcome","sit_down_booked","objection_element","notes","callback_date"];
+
+  function $(id) { return document.getElementById(id); }
+  function escapeHTML(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+    });
+  }
+
+  /* ---------- store + migration ---------- */
+  function migrate(e) {
+    // Non-destructive read-time migration for entries saved by the standalone
+    // field log (pre owner_present / sit_down_booked schema).
+    if (e.owner_present === undefined) {
+      e.owner_present = e.outcome === "no answer" ? "not applicable" : "";
+    }
+    if (e.sit_down_booked === undefined) {
+      e.sit_down_booked = e.outcome === "no answer" ? "no" : "";
+    }
+    return e;
+  }
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || "[]").map(migrate); }
+    catch (err) { return []; }
+  }
+  function persist() { localStorage.setItem(KEY, JSON.stringify(entries)); }
+  var entries = load();
+
+  function cohortFor(door) { return door % 2 === 1 ? "$497" : "$997"; }
+  function loggedDoors() { var s = {}; entries.forEach(function (e) { s[e.door_number] = true; }); return s; }
+  function uniqueCount() { return Object.keys(loggedDoors()).length; }
+  function isComplete() { return uniqueCount() >= TARGET; }
+  function nextDoor() {
+    var logged = loggedDoors();
+    for (var i = 1; i <= TARGET; i++) { if (!logged[i]) return i; }
+    return null;
+  }
+  function entryComplete(e) {
+    if (e.outcome === "no answer") {
+      return e.owner_present === "not applicable" && e.demo_shown === "no" &&
+             e.demo_result === "not run" && e.sit_down_booked === "no";
+    }
+    var ownerOk = e.owner_present === "yes" || e.owner_present === "no";
+    var demoOk = (e.demo_shown === "yes" && (e.demo_result === "present" || e.demo_result === "absent")) ||
+                 (e.demo_shown === "no" && e.demo_result === "not run");
+    var sitOk = e.sit_down_booked === "yes" || e.sit_down_booked === "no";
+    return ownerOk && demoOk && sitOk && !!e.outcome && !!e.objection_element;
+  }
+
+  /* ---------- navigation ---------- */
+  var VIEWS = ["command","workflow","log","client","results"];
+  function show(view) {
+    VIEWS.forEach(function (v) {
+      $("view-" + v).classList.toggle("on", v === view);
+    });
+    Array.prototype.forEach.call($("tabbar").querySelectorAll("button"), function (b) {
+      b.classList.toggle("on", b.getAttribute("data-view") === view);
+    });
+    document.body.classList.toggle("client-mode", view === "client");
+    if (view === "results") renderResults();
+    if (view === "client") { clientGo(0); syncClientPrice(); }
+    if (view === "command") renderCommand();
+  }
+  $("tabbar").addEventListener("click", function (ev) {
+    var b = ev.target.closest("button"); if (!b) return;
+    show(b.getAttribute("data-view"));
+  });
+  $("clientExit").addEventListener("click", function () { show("command"); });
+
+  /* ---------- top status + phases ---------- */
+  function currentPhaseIndex() {
+    if (entries.length === 0) return 0;
+    if (!isComplete()) return 1;
+    return 2;
+  }
+  function renderTop() {
+    $("topProgress").textContent = uniqueCount() + " / " + TARGET;
+    var names = ["Prepare","Sprint","First close","Fulfillment","Remeasure","Flywheel"];
+    $("topPhase").textContent = names[currentPhaseIndex()];
+    var nm = $("nextMoveBtn");
+    if (uniqueCount() === 0) nm.textContent = "START DOOR 1";
+    else if (!isComplete()) nm.textContent = "NEXT: DOOR " + nextDoor();
+    else nm.textContent = "SEE RESULTS";
+  }
+  $("nextMoveBtn").addEventListener("click", function () {
+    show(isComplete() ? "results" : "log");
+  });
+  function renderCommand() {
+    var idx = currentPhaseIndex();
+    Array.prototype.forEach.call(document.querySelectorAll("#phaseList .phase"), function (el) {
+      var p = parseInt(el.getAttribute("data-phase"), 10);
+      el.classList.toggle("done", p < idx);
+      el.classList.toggle("now", p === idx);
+      var tag = el.querySelector(".youarehere");
+      if (p === idx && !tag) {
+        var s = document.createElement("span");
+        s.className = "youarehere"; s.textContent = "YOU ARE HERE";
+        el.querySelector(".p-name").appendChild(s);
+      } else if (p !== idx && tag) { tag.remove(); }
+    });
+  }
+
+  /* ---------- LOG: segmented controls + cascades ---------- */
+  var seg = { outcome: "", ownerPresent: "", demoShown: "", demoResult: "", sitDown: "", element: "" };
+
+  function setGroup(groupId, value, opts) {
+    seg[groupId] = value;
+    Array.prototype.forEach.call($(groupId).querySelectorAll("button"), function (b) {
+      b.classList.toggle("on", b.getAttribute("data-v") === value && value !== "");
+      if (opts && opts.disableAll !== undefined) b.disabled = opts.disableAll;
+    });
+  }
+  function setDisabled(groupId, pred) {
+    Array.prototype.forEach.call($(groupId).querySelectorAll("button"), function (b) {
+      b.disabled = pred(b.getAttribute("data-v"));
+    });
+  }
+
+  function applyDemoLock() {
+    var shown = seg.demoShown;
+    if (seg.outcome === "no answer") return; // outcome cascade owns everything
+    if (shown === "no") {
+      setGroup("demoResult", "not run");
+      setDisabled("demoResult", function () { return true; });
+      $("demoHint").textContent = "Demo not shown — result locked to \"not run\".";
+    } else if (shown === "yes") {
+      if (seg.demoResult === "not run" || seg.demoResult === "") setGroup("demoResult", "");
+      setDisabled("demoResult", function (v) { return v === "not run"; });
+      $("demoHint").textContent = "Demo shown — pick Present or Absent.";
+    } else {
+      setGroup("demoResult", "");
+      setDisabled("demoResult", function () { return true; });
+      $("demoHint").textContent = "Pick \"Demo shown\" first — result options follow it.";
+    }
+  }
+  function applyOutcomeCascade() {
+    if (seg.outcome === "no answer") {
+      // Truth rules: nobody answered, so nothing downstream can have happened.
+      setGroup("ownerPresent", "not applicable"); setDisabled("ownerPresent", function () { return true; });
+      setGroup("demoShown", "no"); setDisabled("demoShown", function () { return true; });
+      setGroup("demoResult", "not run"); setDisabled("demoResult", function () { return true; });
+      setGroup("sitDown", "no"); setDisabled("sitDown", function () { return true; });
+      $("ownerHint").textContent = "No answer — locked to N/A.";
+      $("demoHint").textContent = "No answer — demo locked to \"not run\".";
+    } else {
+      if (seg.ownerPresent === "not applicable") setGroup("ownerPresent", "");
+      setDisabled("ownerPresent", function (v) { return v === "not applicable"; });
+      setDisabled("demoShown", function () { return false; });
+      if (seg.sitDown === "") setGroup("sitDown", "");
+      setDisabled("sitDown", function () { return false; });
+      $("ownerHint").textContent = "N/A applies only to no-answer doors.";
+      applyDemoLock();
+    }
+    saveDraft();
+  }
+  function wireSeg(groupId) {
+    $(groupId).addEventListener("click", function (ev) {
+      var btn = ev.target.closest("button"); if (!btn || btn.disabled) return;
+      var prev = seg[groupId];
+      setGroup(groupId, btn.getAttribute("data-v"));
+      if (groupId === "outcome") {
+        // Leaving "no answer" clears the values that cascade forced —
+        // they were derived, not chosen, and must be answered fresh.
+        if (prev === "no answer" && seg.outcome !== "no answer") {
+          setGroup("ownerPresent", ""); setGroup("demoShown", "");
+          setGroup("demoResult", ""); setGroup("sitDown", "");
+        }
+        applyOutcomeCascade();
+      }
+      if (groupId === "demoShown") applyDemoLock();
+      saveDraft();
+    });
+  }
+  ["outcome","ownerPresent","demoShown","demoResult","sitDown","element"].forEach(wireSeg);
+
+  function updateCohortDisplay() {
+    var n = parseInt($("door").value, 10);
+    $("cohortDisplay").textContent = (n >= 1 && n <= TARGET) ? cohortFor(n) + "  (door " + n + ")" : "—";
+  }
+
+  function saveDraft() {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({
+      door: $("door").value, trade: $("trade").value, biz: $("biz").value,
+      notes: $("notes").value, cb: $("cb").value, seg: seg
+    }));
+  }
+  function restoreDraft() {
+    var raw = localStorage.getItem(DRAFT_KEY); if (!raw) return;
+    try {
+      var d = JSON.parse(raw);
+      if (d.door) $("door").value = d.door;
+      if (d.trade) $("trade").value = d.trade;
+      $("biz").value = d.biz || ""; $("notes").value = d.notes || ""; $("cb").value = d.cb || "";
+      if (d.seg) {
+        if (d.seg.outcome) setGroup("outcome", d.seg.outcome);
+        if (d.seg.element) setGroup("element", d.seg.element);
+        if (d.seg.outcome === "no answer") { applyOutcomeCascade(); return; }
+        if (d.seg.ownerPresent && d.seg.ownerPresent !== "not applicable") setGroup("ownerPresent", d.seg.ownerPresent);
+        if (d.seg.sitDown) setGroup("sitDown", d.seg.sitDown);
+        if (d.seg.demoShown) setGroup("demoShown", d.seg.demoShown);
+        applyOutcomeCascade();
+        if (d.seg.demoShown === "yes" && (d.seg.demoResult === "present" || d.seg.demoResult === "absent")) {
+          setGroup("demoResult", d.seg.demoResult);
+        }
+      }
+    } catch (err) { /* unreadable draft: start clean */ }
+  }
+  ["door","trade","biz","notes","cb"].forEach(function (id) {
+    $(id).addEventListener("input", saveDraft);
+    $(id).addEventListener("change", saveDraft);
+  });
+  $("door").addEventListener("input", updateCohortDisplay);
+
+  function renderLog() {
+    var unique = uniqueCount();
+    $("bar").style.width = Math.min(100, Math.round(unique / TARGET * 100)) + "%";
+    $("barLabel").textContent = unique + " / " + TARGET + " doors";
+    var c497 = 0, c997 = 0, closed = 0;
+    entries.forEach(function (e) {
+      if (e.price_cohort === "$497") c497++;
+      if (e.price_cohort === "$997") c997++;
+      if (e.outcome === "closed") closed++;
+    });
+    $("cohorts").textContent = "$497: " + c497 + " · $997: " + c997 + " · closed: " + closed;
+
+    var done = isComplete();
+    $("completeBanner").classList.toggle("show", done);
+    $("formFields").disabled = done;
+    $("saveBtn").disabled = done;
+    $("saveBtn").textContent = done ? "SPRINT COMPLETE" : "SAVE DOOR";
+
+    var list = $("list");
+    if (!entries.length) { list.innerHTML = '<p class="empty">Nothing yet. First door of twenty.</p>'; }
+    else {
+      list.innerHTML = "";
+      entries.slice().reverse().forEach(function (e) {
+        var div = document.createElement("details");
+        div.className = "entry" + (e.outcome === "closed" ? " closed" : "");
+        var summary = document.createElement("summary");
+        var summaryCopy = document.createElement("span");
+        summaryCopy.className = "summary-copy";
+        var b = document.createElement("b");
+        b.textContent = "#" + e.door_number + " · " + (e.business_name || "(unnamed)") + " · " + e.outcome;
+        var meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent = e.trade + " · " + e.price_cohort + " · owner " + (e.owner_present || "—") +
+          " · demo " + e.demo_result + " · sit " + (e.sit_down_booked || "—") + " · " + e.objection_element +
+          " · " + String(e.timestamp).slice(11, 16);
+        summaryCopy.appendChild(b); summaryCopy.appendChild(meta); summary.appendChild(summaryCopy);
+        div.appendChild(summary);
+
+        var detailWrap = document.createElement("div");
+        detailWrap.className = "entry-details";
+        var detailList = document.createElement("dl");
+        function addDetail(label, value, wide) {
+          var field = document.createElement("div");
+          field.className = "detail-field" + (wide ? " wide" : "");
+          var term = document.createElement("dt");
+          var description = document.createElement("dd");
+          term.textContent = label;
+          description.textContent = value || "—";
+          field.appendChild(term); field.appendChild(description); detailList.appendChild(field);
+        }
+        addDetail("Door / price", "#" + e.door_number + " · " + e.price_cohort);
+        addDetail("Timestamp", e.timestamp);
+        addDetail("Business", e.business_name || "(unnamed)", true);
+        addDetail("Trade", e.trade);
+        addDetail("Outcome", e.outcome);
+        addDetail("Owner present", e.owner_present || "—");
+        addDetail("Demo shown", e.demo_shown || "—");
+        addDetail("Demo result", e.demo_result || "—");
+        addDetail("Sit-down booked", e.sit_down_booked || "—");
+        addDetail("Element", e.objection_element || "—");
+        addDetail("Callback date", e.callback_date || "—");
+        addDetail("Notes / objection", e.notes || "—", true);
+        detailWrap.appendChild(detailList);
+        var readonly = document.createElement("p");
+        readonly.className = "entry-readonly";
+        readonly.textContent = "Read-only record · export the CSV for your portable backup.";
+        detailWrap.appendChild(readonly);
+        div.appendChild(detailWrap);
+        list.appendChild(div);
+      });
+    }
+    renderTop();
+  }
+
+  function flash(text, ok) {
+    var m = $("msg");
+    m.textContent = text;
+    m.className = "msg " + (ok ? "ok" : "err");
+  }
+
+  $("f").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    if (isComplete()) { flash("Sprint complete — all 20 doors are logged.", false); return; }
+    var door = parseInt($("door").value, 10);
+    if (!door || door < 1 || door > TARGET) { flash("Door # must be 1–20.", false); return; }
+    if (loggedDoors()[door]) { flash("Door " + door + " is already logged. Doors are logged once.", false); return; }
+    if (!$("trade").value) { flash("Pick the trade.", false); return; }
+    if (!seg.outcome) { flash("Pick the outcome.", false); return; }
+    // Consistency second guards (UI locks are the first line).
+    if (seg.outcome === "no answer") {
+      if (seg.ownerPresent !== "not applicable" || seg.demoShown !== "no" ||
+          seg.demoResult !== "not run" || seg.sitDown !== "no") {
+        flash("No answer — owner N/A, demo not run, no sit-down.", false); return;
+      }
+    } else {
+      if (seg.ownerPresent !== "yes" && seg.ownerPresent !== "no") { flash("Owner present: yes or no.", false); return; }
+      if (!seg.demoShown) { flash("Demo shown: yes or no.", false); return; }
+      if (seg.demoShown === "yes" && seg.demoResult !== "present" && seg.demoResult !== "absent") {
+        flash("Demo was shown — result must be Present or Absent.", false); return;
+      }
+      if (seg.demoShown === "no" && seg.demoResult !== "not run") {
+        flash("Demo not shown — result must be \"not run\".", false); return;
+      }
+      if (seg.sitDown !== "yes" && seg.sitDown !== "no") { flash("Sit-down booked: yes or no.", false); return; }
+    }
+    if (seg.sitDown === "yes" && seg.outcome === "no answer") { flash("A sit-down needs a conversation.", false); return; }
+    if (!seg.element) { flash("Element read (or Unread).", false); return; }
+
+    var now = new Date();
+    var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+    var ts = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) +
+      " " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+
+    entries.push({
+      door_number: door, timestamp: ts,
+      business_name: $("biz").value.trim(), trade: $("trade").value,
+      price_cohort: cohortFor(door),        // locked protocol: derived, never chosen
+      owner_present: seg.ownerPresent,
+      demo_shown: seg.demoShown, demo_result: seg.demoResult,
+      outcome: seg.outcome, sit_down_booked: seg.sitDown,
+      objection_element: seg.element,
+      notes: $("notes").value.trim(), callback_date: $("cb").value
+    });
+    persist();
+    localStorage.removeItem(DRAFT_KEY);
+
+    $("f").reset();
+    seg = { outcome: "", ownerPresent: "", demoShown: "", demoResult: "", sitDown: "", element: "" };
+    ["outcome","ownerPresent","demoShown","demoResult","sitDown","element"].forEach(function (g) { setGroup(g, ""); });
+    applyOutcomeCascade();
+    var nd = nextDoor();
+    if (nd) $("door").value = nd;
+    updateCohortDisplay();
+    renderLog();
+    if (isComplete()) flash("Door " + door + " saved — that's all twenty. See RESULTS.", true);
+    else flash("Door " + door + " saved. Next: door " + nd + " (" + cohortFor(nd) + ").", true);
+  });
+
+  /* ---------- CSV ---------- */
+  function csvField(v) {
+    var s = String(v == null ? "" : v);
+    if (/[",\r\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+  function buildCSV() {
+    var lines = [HEADERS.join(",")];
+    entries.slice().sort(function (a, b) { return a.door_number - b.door_number; })
+      .forEach(function (e) {
+        lines.push(HEADERS.map(function (h) { return csvField(e[h]); }).join(","));
+      });
+    return lines.join("\r\n") + "\r\n";
+  }
+  function doExport() {
+    var blob = new Blob([buildCSV()], { type: "text/csv" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "lehi-field-log.csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    flash(entries.length + " entries exported.", true);
+  }
+  $("exportBtn").addEventListener("click", doExport);
+  $("exportBtn2").addEventListener("click", doExport);
+
+  /* ---------- guarded CSV restore ---------- */
+  var pendingRestore = null;
+  function parseCSV(text) {
+    var rows = [], row = [], field = "", quoted = false;
+    text = String(text || "");
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (quoted) {
+        if (ch === '"' && text.charAt(i + 1) === '"') { field += '"'; i++; }
+        else if (ch === '"') { quoted = false; }
+        else { field += ch; }
+      } else if (ch === '"') { quoted = true; }
+      else if (ch === ",") { row.push(field); field = ""; }
+      else if (ch === "\n") {
+        row.push(field); rows.push(row); row = []; field = "";
+      } else if (ch !== "\r") { field += ch; }
+    }
+    if (quoted) throw new Error("an unclosed quoted field was found");
+    if (field !== "" || row.length) { row.push(field); rows.push(row); }
+    while (rows.length && rows[rows.length - 1].every(function (v) { return v === ""; })) rows.pop();
+    return rows;
+  }
+  function validateRestore(text) {
+    var rows = parseCSV(text);
+    if (!rows.length) throw new Error("the file is empty");
+    if (rows[0][0]) rows[0][0] = rows[0][0].replace(/^\uFEFF/, "");
+    if (rows[0].join(",") !== HEADERS.join(",")) throw new Error("the CSV header does not match this app");
+    if (rows.length === 1) throw new Error("the CSV has no door entries");
+    if (rows.length - 1 > TARGET) throw new Error("the CSV contains more than 20 entries");
+    var seen = {}, restored = [];
+    var validOutcome = { "closed":1, "callback set":1, "soft no":1, "hard no":1, "no answer":1 };
+    var validElement = { "fire":1, "earth":1, "water":1, "air":1, "unread":1 };
+    rows.slice(1).forEach(function (cells, index) {
+      var line = index + 2;
+      if (cells.length !== HEADERS.length) throw new Error("line " + line + " has " + cells.length + " columns; expected " + HEADERS.length);
+      var item = {};
+      HEADERS.forEach(function (h, n) { item[h] = cells[n]; });
+      var door = Number(item.door_number);
+      if (!Number.isInteger(door) || door < 1 || door > TARGET) throw new Error("line " + line + " has an invalid door number");
+      if (seen[door]) throw new Error("door " + door + " appears more than once");
+      seen[door] = true; item.door_number = door;
+      if (!item.trade) throw new Error("door " + door + " is missing a trade");
+      if (item.price_cohort !== cohortFor(door)) throw new Error("door " + door + " has the wrong locked price cohort");
+      if (!validOutcome[item.outcome]) throw new Error("door " + door + " has an invalid outcome");
+      if (!validElement[item.objection_element]) throw new Error("door " + door + " has an invalid element read");
+      if (["", "yes", "no", "not applicable"].indexOf(item.owner_present) < 0) throw new Error("door " + door + " has an invalid owner-present value");
+      if (["yes", "no"].indexOf(item.demo_shown) < 0) throw new Error("door " + door + " has an invalid demo-shown value");
+      if (["present", "absent", "not run"].indexOf(item.demo_result) < 0) throw new Error("door " + door + " has an invalid demo result");
+      if (["", "yes", "no"].indexOf(item.sit_down_booked) < 0) throw new Error("door " + door + " has an invalid sit-down value");
+      if (item.demo_shown === "yes" && item.demo_result === "not run") throw new Error("door " + door + " says the demo ran but records no result");
+      if (item.demo_shown === "no" && item.demo_result !== "not run") throw new Error("door " + door + " records a result for a demo that did not run");
+      if (item.outcome === "no answer" && (item.owner_present !== "not applicable" || item.demo_shown !== "no" || item.demo_result !== "not run" || item.sit_down_booked !== "no")) {
+        throw new Error("door " + door + " conflicts with the no-answer truth rules");
+      }
+      if (item.outcome !== "no answer" && item.owner_present === "not applicable") throw new Error("door " + door + " uses owner N/A for an answered door");
+      restored.push(item);
+    });
+    return restored.sort(function (a, b) { return a.door_number - b.door_number; });
+  }
+  function closeRestore() {
+    pendingRestore = null;
+    $("restorePanel").classList.remove("show");
+    $("restoreSummary").textContent = "";
+    $("importFile").value = "";
+  }
+  $("importBtn").addEventListener("click", function () {
+    closeRestore();
+    $("importFile").click();
+  });
+  $("importFile").addEventListener("change", function () {
+    var file = this.files && this.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        pendingRestore = validateRestore(reader.result);
+        $("restoreSummary").textContent = pendingRestore.length + " validated door" + (pendingRestore.length === 1 ? "" : "s") + " ready to restore. Current log: " + entries.length + ".";
+        $("restorePanel").classList.add("show");
+        flash("CSV validated. Review the restore warning below.", true);
+      } catch (err) {
+        closeRestore();
+        flash("Restore blocked: " + err.message + ".", false);
+      }
+    };
+    reader.onerror = function () { closeRestore(); flash("Restore blocked: the file could not be read.", false); };
+    reader.readAsText(file);
+  });
+  $("restoreCancel").addEventListener("click", closeRestore);
+  $("restoreConfirm").addEventListener("click", function () {
+    if (!pendingRestore) return;
+    entries = pendingRestore.map(migrate);
+    persist();
+    localStorage.removeItem(DRAFT_KEY);
+    var restoredCount = entries.length;
+    closeRestore();
+    $("f").reset();
+    ["outcome","ownerPresent","demoShown","demoResult","sitDown","element"].forEach(function (g) { setGroup(g, ""); });
+    applyOutcomeCascade();
+    var nd = nextDoor();
+    $("door").value = nd || TARGET;
+    updateCohortDisplay();
+    renderLog();
+    flash(restoredCount + " doors restored from CSV.", true);
+  });
+
+  /* ---------- reset ---------- */
+  $("resetConfirm").addEventListener("input", function () {
+    $("resetBtn").disabled = this.value.trim() !== "RESET";
+  });
+  $("resetBtn").addEventListener("click", function () {
+    if ($("resetConfirm").value.trim() !== "RESET") return;
+    entries = [];
+    localStorage.removeItem(KEY);
+    localStorage.removeItem(DRAFT_KEY);
+    $("resetConfirm").value = "";
+    $("resetBtn").disabled = true;
+    $("door").value = 1;
+    updateCohortDisplay();
+    renderLog();
+    flash("Log erased.", true);
+  });
+
+  /* ---------- RESULTS ---------- */
+  function hbar(label, count, total) {
+    var pct = total ? Math.round(count / total * 100) : 0;
+    return '<div class="hbar"><div class="hl"><span>' + escapeHTML(label) + '</span><span>' + count + '</span></div>' +
+      '<div class="ht"><div class="hf" style="width:' + pct + '%"></div></div></div>';
+  }
+  function renderResults() {
+    var answered = entries.filter(function (e) { return e.outcome && e.outcome !== "no answer"; });
+    var ownerConvos = answered.filter(function (e) { return e.owner_present === "yes"; });
+    var demoShownOwner = ownerConvos.filter(function (e) { return e.demo_shown === "yes"; });
+    var sits = entries.filter(function (e) { return e.sit_down_booked === "yes"; });
+    var closes = entries.filter(function (e) { return e.outcome === "closed"; });
+    var present = entries.filter(function (e) { return e.demo_result === "present"; }).length;
+    var absent = entries.filter(function (e) { return e.demo_result === "absent"; }).length;
+    var notrun = entries.filter(function (e) { return e.demo_result === "not run"; }).length;
+    var incomplete = entries.filter(function (e) { return !entryComplete(e); });
+
+    // Decision gate — never label a partial run.
+    var gate = $("gateCard"), verdict = $("gateVerdict"), detail = $("gateDetail");
+    if (uniqueCount() < TARGET || incomplete.length > 0) {
+      gate.className = "gate invalid";
+      verdict.textContent = "RUN INCOMPLETE — no verdict";
+      var why = uniqueCount() < TARGET ? (uniqueCount() + " of 20 unique doors logged.") : "";
+      if (incomplete.length > 0) why += " " + incomplete.length + " entr" + (incomplete.length === 1 ? "y" : "ies") +
+        " missing owner-present/sit-down data (logged with the fallback logger?) — the run can't be judged until every entry is complete.";
+      detail.textContent = (why + " Gates evaluate only on a complete 20-door run. Partial data never produces a pass or fail — keep knocking.").trim();
+    } else {
+      var demoGateOk = ownerConvos.length > 0 && (demoShownOwner.length / ownerConvos.length) >= 0.5;
+      var offerGateOk = sits.length >= 3 || closes.length >= 1;
+      if (demoGateOk && offerGateOk) {
+        gate.className = "gate pass";
+        verdict.textContent = "LEARN GATES MET";
+        detail.textContent = "Demo landed in " + demoShownOwner.length + " of " + ownerConvos.length +
+          " owner conversations and the offer drew " + sits.length + " sit-down" + (sits.length === 1 ? "" : "s") +
+          " / " + closes.length + " close" + (closes.length === 1 ? "" : "s") +
+          ". Next move: continue to the next 20 at the same prices; cohort differences below are direction only, not proof.";
+      } else {
+        gate.className = "gate attention";
+        verdict.textContent = "GATES NOT MET — stop and mine";
+        var parts = [];
+        if (!demoGateOk) parts.push(ownerConvos.length === 0
+          ? "no owner-present conversations happened, so the demo gate cannot be evaluated"
+          : "demo shown in only " + demoShownOwner.length + " of " + ownerConvos.length + " owner conversations (<50%) — the ask-permission line needs work before more doors");
+        if (!offerGateOk) parts.push("offer signal short: " + sits.length + " sit-downs / " + closes.length + " closes (needs ≥3 sits or ≥1 close) — mine the objection log before spending more doors");
+        detail.textContent = "Complete run of 20. " + parts.join("; ") + ".";
+      }
+    }
+
+    // Counts
+    $("statGrid").innerHTML =
+      '<div class="stat"><div class="n">' + entries.length + '</div><div class="l">doors logged</div></div>' +
+      '<div class="stat"><div class="n">' + answered.length + '</div><div class="l">answered</div></div>' +
+      '<div class="stat"><div class="n">' + ownerConvos.length + '</div><div class="l">owner conversations</div></div>' +
+      '<div class="stat"><div class="n">' + sits.length + '</div><div class="l">sit-downs booked</div></div>' +
+      '<div class="stat"><div class="n">' + closes.length + '</div><div class="l">closes</div></div>' +
+      '<div class="stat"><div class="n">' + present + '/' + absent + '/' + notrun + '</div><div class="l">present / absent / not run</div></div>';
+
+    // Demo rate with the correct denominator
+    if (ownerConvos.length === 0) {
+      $("demoRateCard").innerHTML = '<p class="empty">No owner-present conversations logged yet. The demo rate counts demos among answered doors where the owner was present — not among all doors.</p>';
+    } else {
+      var rate = Math.round(demoShownOwner.length / ownerConvos.length * 100);
+      $("demoRateCard").innerHTML = hbar("Demo shown — of " + ownerConvos.length + " owner conversations", demoShownOwner.length, ownerConvos.length) +
+        '<p class="quiet">' + rate + "% · learn gate needs ≥50% on the complete run</p>";
+    }
+
+    // Outcomes
+    var oc = {};
+    entries.forEach(function (e) { oc[e.outcome] = (oc[e.outcome] || 0) + 1; });
+    $("outcomeBars").innerHTML = entries.length
+      ? ["closed","callback set","soft no","hard no","no answer"].map(function (o) { return hbar(o, oc[o] || 0, entries.length); }).join("")
+      : '<p class="empty">No doors logged yet.</p>';
+
+    // Cohorts
+    function cohortStats(c) {
+      var g = entries.filter(function (e) { return e.price_cohort === c; });
+      var s = g.filter(function (e) { return e.sit_down_booked === "yes"; }).length;
+      var cl = g.filter(function (e) { return e.outcome === "closed"; }).length;
+      return { doors: g.length, sits: s, closes: cl };
+    }
+    var a = cohortStats("$497"), b = cohortStats("$997");
+    $("cohortCard").innerHTML = entries.length
+      ? '<div class="lane"><span class="tier-tag t497">$497</span><span>' + a.doors + " doors · " + a.sits + " sits · " + a.closes + ' closes</span></div>' +
+        '<div class="lane"><span class="tier-tag t997">$997</span><span>' + b.doors + " doors · " + b.sits + " sits · " + b.closes + ' closes</span></div>' +
+        '<p class="quiet">20 doors is a small sample — treat differences as direction for the next 20, never as proof.</p>'
+      : '<p class="empty">No doors logged yet.</p>';
+
+    // Trades + elements
+    var tc = {}, ec = {};
+    entries.forEach(function (e) {
+      tc[e.trade] = (tc[e.trade] || 0) + 1;
+      ec[e.objection_element] = (ec[e.objection_element] || 0) + 1;
+    });
+    var mix = Object.keys(tc).map(function (t) { return hbar(t, tc[t], entries.length); }).join("") +
+              Object.keys(ec).map(function (el) { return hbar("element: " + el, ec[el], entries.length); }).join("");
+    $("mixCard").innerHTML = mix || '<p class="empty">No doors logged yet.</p>';
+
+    // Callbacks
+    var cbs = entries.filter(function (e) { return e.callback_date; })
+      .sort(function (x, y) { return x.callback_date < y.callback_date ? -1 : 1; });
+    $("callbackCard").innerHTML = cbs.length
+      ? cbs.map(function (e) { return '<div class="lane"><span class="tier-tag t497 mono">' + escapeHTML(e.callback_date) + '</span><span>#' + e.door_number + " " + escapeHTML(e.business_name || "(unnamed)") + " · " + escapeHTML(e.trade) + '</span></div>'; }).join("")
+      : '<p class="empty">No callbacks scheduled.</p>';
+  }
+
+  /* ---------- CLIENT presentation ---------- */
+  var cIndex = 0;
+  function clientGo(i) {
+    cIndex = i;
+    Array.prototype.forEach.call(document.querySelectorAll(".ccard"), function (c) {
+      c.classList.toggle("on", parseInt(c.getAttribute("data-c"), 10) === i);
+    });
+    $("cstepLabel").textContent = "STEP " + (i + 1) + " OF 6";
+    if (i === 1) syncPrompt();
+    if (i === 5) syncClientPrice();
+  }
+  function syncPrompt() {
+    var town = $("cTown").value.trim() || "Lehi, Utah";
+    $("cPrompt").textContent = "Who should I call for a " + $("cTrade").value + " in " + town + "?";
+  }
+  function activeDoor() {
+    // The door being worked: the LOG's current door number when it is a
+    // valid unlogged 1-20, else the next unlogged door (TARGET at completion).
+    var n = parseInt($("door").value, 10);
+    if (n >= 1 && n <= TARGET && !loggedDoors()[n]) return n;
+    return nextDoor() || TARGET;
+  }
+  function syncClientPrice() {
+    var nd = activeDoor();
+    var price = cohortFor(nd);
+    $("cPrice").textContent = price + " setup";
+    var inc497 = [
+      "Your real AI score, measured — ten asks, counted",
+      "Google, Yelp, Bing, Foursquare, Apple: claimed, corrected, complete",
+      "Wrong hours and info fixed everywhere the AI reads",
+      "Remeasured at 90 days — you hold both reports"
+    ];
+    var inc997 = inc497.concat([
+      "Review engine — steady, legal Google review asks",
+      "Website tune-up + local mention pitches",
+      "Midpoint check + printed before/after report"
+    ]);
+    $("cIncludes").innerHTML = (price === "$497" ? inc497 : inc997)
+      .map(function (t) { return "<li>" + t + "</li>"; }).join("");
+  }
+  $("cNext0").addEventListener("click", function () { clientGo(1); });
+  $("cBack1").addEventListener("click", function () { clientGo(0); });
+  $("cNext1").addEventListener("click", function () { clientGo(2); });
+  $("cBack2").addEventListener("click", function () { clientGo(1); });
+  $("cBack3").addEventListener("click", function () { clientGo(2); });
+  $("cNext3").addEventListener("click", function () { clientGo(4); });
+  $("cBack4").addEventListener("click", function () { clientGo(3); });
+  $("cNext4").addEventListener("click", function () { clientGo(5); });
+  $("cBack5").addEventListener("click", function () { clientGo(4); });
+  $("cRestart").addEventListener("click", function () { clientGo(0); });
+  ["cTrade","cTown"].forEach(function (id) { $(id).addEventListener("change", syncPrompt); $(id).addEventListener("input", syncPrompt); });
+  $("cPresent").addEventListener("click", function () {
+    $("cInterpTitle").textContent = "Today's answer went your way.";
+    $("cInterpBody").textContent = "Honest truth: it doesn't always. The same question gets different answers ask to ask — one answer never proves where you rank or where calls go. What matters is how often you're named across many asks, and whether that number holds as things change.";
+    clientGo(3);
+  });
+  $("cAbsent").addEventListener("click", function () {
+    $("cInterpTitle").textContent = "Today, other businesses were named — not yours.";
+    $("cInterpBody").textContent = "Honest truth: this is one answer, one flip of the coin — it doesn't prove where you rank or where calls go. But it's the question your customers are asking, and the real number is how often you come up across many asks. That's the number we measure.";
+    clientGo(3);
+  });
+  $("cCopy").addEventListener("click", function () {
+    var text = $("cPrompt").textContent;
+    function done(ok) { $("cCopyMsg").textContent = ok ? "Copied." : "Long-press the box to copy."; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    } else { done(false); }
+  });
+
+  /* ---------- install, offline, and updates ---------- */
+  var deferredInstall = null;
+  var reloadingForUpdate = false;
+  function isStandalone() {
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  }
+  function setInstallState(message, ready) {
+    $("installStatus").textContent = message;
+    $("installDot").classList.toggle("ready", !!ready);
+  }
+  function showUpdate() { $("updateBanner").classList.add("show"); }
+  window.addEventListener("beforeinstallprompt", function (event) {
+    event.preventDefault();
+    deferredInstall = event;
+    $("installBtn").textContent = "INSTALL THIS APP";
+    setInstallState("Offline files are ready. Install to keep the Command Center on this phone.", true);
+  });
+  window.addEventListener("appinstalled", function () {
+    deferredInstall = null;
+    $("installBtn").textContent = "INSTALLED";
+    $("installBtn").disabled = true;
+    setInstallState("Installed on this phone. Your sprint data remains on this device.", true);
+  });
+  $("installBtn").addEventListener("click", function () {
+    if (deferredInstall) {
+      deferredInstall.prompt();
+      deferredInstall.userChoice.then(function () { deferredInstall = null; });
+    } else {
+      $("installHelp").textContent = "iPhone: Safari → Share → Add to Home Screen. Android: browser menu → Install app or Add to Home screen.";
+      $("installHelp").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });
+  $("reloadAppBtn").addEventListener("click", function () {
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+      navigator.serviceWorker.getRegistration().then(function (registration) {
+        if (registration && registration.waiting) registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        else window.location.reload();
+      });
+    } else { window.location.reload(); }
+  });
+  if (isStandalone()) {
+    $("installBtn").textContent = "INSTALLED";
+    $("installBtn").disabled = true;
+    setInstallState("Installed on this phone. The app will open without a connection.", true);
+  } else if (location.protocol === "file:") {
+    $("installBtn").textContent = "INSTALL FROM THE LIVE URL";
+    setInstallState("Offline file mode. Use the live HTTPS URL to install the app.", false);
+  }
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+    navigator.serviceWorker.addEventListener("controllerchange", function () {
+      if (!reloadingForUpdate) { reloadingForUpdate = true; window.location.reload(); }
+    });
+    navigator.serviceWorker.register("sw.js").then(function (registration) {
+      if (!isStandalone()) setInstallState(navigator.onLine ? "Offline files are ready on this phone." : "Offline — the Command Center is ready.", true);
+      if (registration.waiting) showUpdate();
+      registration.addEventListener("updatefound", function () {
+        var worker = registration.installing;
+        if (!worker) return;
+        worker.addEventListener("statechange", function () {
+          if (worker.state === "installed" && navigator.serviceWorker.controller) showUpdate();
+        });
+      });
+    }).catch(function () {
+      setInstallState("The app is open, but offline setup did not finish. Reload once online.", false);
+    });
+    window.addEventListener("offline", function () { setInstallState("Offline — the Command Center is ready.", true); });
+    window.addEventListener("online", function () { setInstallState("Online. Offline files are ready on this phone.", true); });
+  }
+
+  /* ---------- init ---------- */
+  var nd0 = nextDoor();
+  if (nd0) $("door").value = nd0;
+  restoreDraft();
+  applyOutcomeCascade();
+  updateCohortDisplay();
+  renderLog();
+  renderCommand();
+})();
+</script>
+</body>
+</html>
