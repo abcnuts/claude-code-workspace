@@ -8,9 +8,10 @@ backend, login, CRM, API call, or paid service.
 ## Live release
 
 - **URL:** https://guild-command-center.brandonwadepackard.workers.dev
-- **Status:** LIMITED_TEST_READY — automated + live checks passed at source
-  commit `ff79f94`; awaiting Brandon's on-phone proof (Safari Add to Home
-  Screen + airplane-mode open/reload/export) before full release.
+- **Status:** LIMITED_TEST_READY — v1.0.1 automated + live checks passed at
+  source commit `a46c2ba`; iPhone install + first save are owner-reported
+  complete. Awaiting phone refresh, saved-row open, export, and airplane-mode
+  reopen before full release.
 - **Receipt:** `pwa/RELEASE-2026-08-09.md` (etag, byte hashes, live checks).
 - Transport is a static Cloudflare Worker with no bindings, storage,
   analytics, API, payment, CRM, or OpenAI dependency. The URL is
@@ -45,4 +46,3 @@ configuration, guarded restore, persistence across reopen, and offline reopen
 after first load. A release remains limited-test ready until Brandon proves on
 his actual phone: Add to Home Screen, save/export, close/reopen, airplane-mode
 reopen, restore, then typed reset.
-

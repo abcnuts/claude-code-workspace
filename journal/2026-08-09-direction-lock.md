@@ -178,7 +178,7 @@ unchanged.
 
 ## Next actions (in order)
 
-1. On-phone release proof at the live URL (install → test door →
+1. Finish on-phone release proof (refresh v1.0.1 → open saved row →
    export → airplane-mode reopen → reset).
 2. Joey dry run (lanes 1–3 + 5, timed).
 3. Lehi 20-door sprint — field log is the canonical record.
@@ -186,3 +186,27 @@ unchanged.
 
 Not next: any purchase (GHL, number, printing until post-signal), OpenAI
 billing, probe calibration, new scripts/tiers/automation.
+
+## v1.0.1 saved-log retrieval fix (2026-08-10)
+
+- Brandon reported iPhone install + first save complete, then correctly found
+  that saved rows were summaries with no open action. This was a confirmed
+  client UX defect, not evidence of server loss; the app has no server store.
+- Source commits: read-only disclosure `30820cf8774b2645264f4642f3cd07913ea28680`;
+  deterministic offline proof `a46c2ba8145e0414c3263c8ad2e1b448ecc3fe17`.
+- Every saved door now opens natively to all recorded fields. The detail view
+  contains no input, edit, or delete controls, preserving the one-door-once
+  experiment contract. Version/footer/SW cache advanced to v1.0.1.
+- Automated proof: Command Center 137/137 + PWA 27/27 = **164/164**;
+  three consecutive offline PWA runs passed; audit 0 vulnerabilities;
+  secret-shape scan clean.
+- Live Worker etag `e052dbf494c33e2e7bd862ecd5ad00a16456153afc78bba077bd6acb5fa81b7c`;
+  HTML SHA-256 `4fb41f047739923855023eba3c7260f0d00f33ded2332e93868a7de0a353f8ae`;
+  SW SHA-256 `59feb26d312c47d6439718c5706640833f35c2f1f250db337a7857d82790f9af`.
+- Fresh live mobile proof passed: v1.0.1 visible, SW control, disclosure starts
+  closed and opens read-only, state survives close/reopen, details open
+  offline, zero external requests, unknown route 404, POST 405, and
+  `X-Guild-Commit: a46c2ba…`.
+- **Verdict remains LIMITED_TEST_READY** until Brandon refreshes the installed
+  app, opens his saved row, exports, and proves airplane-mode reopen on the
+  actual phone. No OpenAI/API/GHL/payment work was introduced.

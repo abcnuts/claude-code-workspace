@@ -36,7 +36,7 @@ activates at the first close — until then no API key, no paid calls.
 | Fulfillment playbook v1 + price tiers | `playbooks/fulfillment-playbook-v1.md` | **approved** by Brandon |
 | Build plan (revised) | `plans/2026-08-08-build-phase-plan.md` | active |
 | Lehi sprint plan | `plans/2026-08-09-lehi-learn-sprint.md` | ready now — zero-cost, needs only a phone and doors |
-| **Guild Command Center (canonical first-sprint surface)** | `playbooks/guild-command-center.html` + committed tests + private artifact d2fe8d92-9c56-4a56-bb3a-20f91a8f4cb7 + **LIVE: https://guild-command-center.brandonwadepackard.workers.dev** | verified **152/152** (130 command-center + 22 PWA) at source commit `ff79f94`; deployed as installable offline PWA on a static Cloudflare Worker (no bindings/storage/analytics/API; public-by-URL; data device-local); live checks passed (SW control, offline reopen with state, zero external requests, CSP/DENY/no-cache, `X-Guild-Commit: ff79f94…`); full receipt `pwa/RELEASE-2026-08-09.md`; verdict **LIMITED_TEST_READY** pending Brandon's on-phone proof |
+| **Guild Command Center (canonical first-sprint surface)** | `playbooks/guild-command-center.html` + committed tests + private artifact d2fe8d92-9c56-4a56-bb3a-20f91a8f4cb7 + **LIVE: https://guild-command-center.brandonwadepackard.workers.dev** | v1.0.1 verified **164/164** (137 command-center + 27 PWA) at source commit `a46c2ba`; saved doors now open as read-only full-detail disclosures; deployed as installable offline PWA on a static Cloudflare Worker (no bindings/storage/analytics/API; public-by-URL; data device-local); live checks passed (detail open, close/reopen, offline reopen, zero external requests, CSP/DENY/no-cache, `X-Guild-Commit: a46c2ba…`); full receipt `pwa/RELEASE-2026-08-09.md`; verdict **LIMITED_TEST_READY** — iPhone install + first save owner-reported complete, refresh/export/airplane proof pending |
 | Offline field log (EMERGENCY fallback only) | `playbooks/lehi-field-log.html` + `lehi-field-log-template.csv` + private artifact e52d93c2-62b6-464c-9c9b-8c6eb0208edb | pre-schema-revision (lacks owner/sit-down fields); entries logged there read as incomplete in the results gate |
 | Funnel build sheet + consent language | `playbooks/ghl-funnel-build-sheet.md` | spec only — procurement deferred until after a close |
 | Price card (honesty-fixed) | `playbooks/price-card-print.html` + artifact 9302a24e-24a1-48b2-8e29-aa83476edcea | post-signal — print after a number exists |
@@ -65,11 +65,10 @@ activates at the first close — until then no API key, no paid calls.
 
 ## 4. Next actions (all Brandon's world; docs and tools are ready)
 
-1. **On-phone release proof** — open
-   https://guild-command-center.brandonwadepackard.workers.dev on the
-   iPhone in Safari → Share → **Add to Home Screen**; save a test door
-   in LOG, export the CSV, close the app, enable airplane mode, reopen
-   and reload with data intact, then typed RESET. This upgrades the
+1. **Finish on-phone release proof** — reopen the installed app online,
+   accept **UPDATE NOW** if shown, open the saved PHONE PROOF row, export
+   the CSV, close the app, enable airplane mode, reopen with data and
+   details intact, then typed RESET. This upgrades the
    release from LIMITED_TEST_READY and makes the installed app the
    sprint device. It is the single front door: plan (COMMAND), door
    script (WORKFLOW), record (LOG), prospect presentation (CLIENT),
