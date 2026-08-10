@@ -36,7 +36,7 @@ activates at the first close — until then no API key, no paid calls.
 | Fulfillment playbook v1 + price tiers | `playbooks/fulfillment-playbook-v1.md` | **approved** by Brandon |
 | Build plan (revised) | `plans/2026-08-08-build-phase-plan.md` | active |
 | Lehi sprint plan | `plans/2026-08-09-lehi-learn-sprint.md` | ready now — zero-cost, needs only a phone and doors |
-| **Guild Command Center (canonical first-sprint surface)** | `playbooks/guild-command-center.html` + committed tests + private artifact d2fe8d92-9c56-4a56-bb3a-20f91a8f4cb7 + **LIVE: https://guild-command-center.brandonwadepackard.workers.dev** | v1.0.1 verified **164/164** (137 command-center + 27 PWA) at source commit `a46c2ba`; saved doors now open as read-only full-detail disclosures; deployed as installable offline PWA on a static Cloudflare Worker (no bindings/storage/analytics/API; public-by-URL; data device-local); live checks passed (detail open, close/reopen, offline reopen, zero external requests, CSP/DENY/no-cache, `X-Guild-Commit: a46c2ba…`); full receipt `pwa/RELEASE-2026-08-09.md`; verdict **LIMITED_TEST_READY** — iPhone install + first save owner-reported complete, refresh/export/airplane proof pending |
+| **Guild Command Center (canonical first-sprint surface)** | `playbooks/guild-command-center.html` + committed tests + private artifact d2fe8d92-9c56-4a56-bb3a-20f91a8f4cb7 + **LIVE: https://guild-command-center.brandonwadepackard.workers.dev** | v1.0.1 verified **164/164** (137 command-center + 27 PWA) at source commit `a46c2ba`; saved doors open as read-only full-detail disclosures; deployed as installable offline PWA on a static Cloudflare Worker (no bindings/storage/analytics/API; public-by-URL; data device-local); live checks passed (detail open, close/reopen, offline reopen, zero external requests, CSP/DENY/no-cache, `X-Guild-Commit: a46c2ba…`); actual-iPhone install/save/open/export/airplane-reopen/reset proof complete; full receipt `pwa/RELEASE-2026-08-09.md`; verdict **RELEASE_READY** for the Lehi field sprint |
 | Offline field log (EMERGENCY fallback only) | `playbooks/lehi-field-log.html` + `lehi-field-log-template.csv` + private artifact e52d93c2-62b6-464c-9c9b-8c6eb0208edb | pre-schema-revision (lacks owner/sit-down fields); entries logged there read as incomplete in the results gate |
 | Funnel build sheet + consent language | `playbooks/ghl-funnel-build-sheet.md` | spec only — procurement deferred until after a close |
 | Price card (honesty-fixed) | `playbooks/price-card-print.html` + artifact 9302a24e-24a1-48b2-8e29-aa83476edcea | post-signal — print after a number exists |
@@ -65,18 +65,13 @@ activates at the first close — until then no API key, no paid calls.
 
 ## 4. Next actions (all Brandon's world; docs and tools are ready)
 
-1. **Finish on-phone release proof** — reopen the installed app online,
-   accept **UPDATE NOW** if shown, open the saved PHONE PROOF row, export
-   the CSV, close the app, enable airplane mode, reopen with data and
-   details intact, then typed RESET. This upgrades the
-   release from LIMITED_TEST_READY and makes the installed app the
-   sprint device. It is the single front door: plan (COMMAND), door
-   script (WORKFLOW), record (LOG), prospect presentation (CLIENT),
-   live gates (RESULTS).
-2. **Joey dry run** — lanes 1–3 + 5 on a friendly business, timed.
-3. **Lehi sprint** — 20 doors per `plans/2026-08-09-lehi-learn-sprint.md`,
+1. **Joey dry run** — lanes 1–3 + 5 on a friendly business, timed. The
+   installed Command Center is the single front door: plan (COMMAND), door
+   script (WORKFLOW), record (LOG), prospect presentation (CLIENT), and live
+   gates (RESULTS).
+2. **Lehi sprint** — 20 doors per `plans/2026-08-09-lehi-learn-sprint.md`,
    zero-cost. Output: close-rate by cohort + complete field-log CSV.
-4. Crew decisions before first dollar: rev split, referral reward.
+3. Crew decisions before first dollar: rev split, referral reward.
 
 Post-signal (AFTER a close, procurement decisions — not launch items):
 funnel per the build sheet · dedicated line + QR · card printing ·

@@ -172,17 +172,16 @@ unchanged.
   all field data remains device-local.
 - Source of truth stays `playbooks/guild-command-center.html`; `dist/`
   stays generated and gitignored.
-- **Verdict: LIMITED_TEST_READY** until Brandon's actual-iPhone proof:
+- **Initial verdict: LIMITED_TEST_READY** until Brandon's actual-iPhone proof
+  (superseded by the completed device gate below):
   Safari Add to Home Screen + airplane-mode open/reload + save/export.
   Durable receipt: `pwa/RELEASE-2026-08-09.md`.
 
 ## Next actions (in order)
 
-1. Finish on-phone release proof (refresh v1.0.1 → open saved row →
-   export → airplane-mode reopen → reset).
-2. Joey dry run (lanes 1–3 + 5, timed).
-3. Lehi 20-door sprint — field log is the canonical record.
-4. Crew decisions before first dollar.
+1. Joey dry run (lanes 1–3 + 5, timed).
+2. Lehi 20-door sprint — field log is the canonical record.
+3. Crew decisions before first dollar.
 
 Not next: any purchase (GHL, number, printing until post-signal), OpenAI
 billing, probe calibration, new scripts/tiers/automation.
@@ -207,6 +206,19 @@ billing, probe calibration, new scripts/tiers/automation.
   closed and opens read-only, state survives close/reopen, details open
   offline, zero external requests, unknown route 404, POST 405, and
   `X-Guild-Commit: a46c2ba…`.
-- **Verdict remains LIMITED_TEST_READY** until Brandon refreshes the installed
+- **Hotfix verdict remained LIMITED_TEST_READY** until Brandon refreshed the installed
   app, opens his saved row, exports, and proves airplane-mode reopen on the
   actual phone. No OpenAI/API/GHL/payment work was introduced.
+
+## Actual-iPhone release gate complete (2026-08-09)
+
+- Brandon completed the Home Screen install, saved PHONE PROOF, and confirmed
+  1/20 on the actual device.
+- The v1.0.1 saved row was opened successfully; the captured screen shows the
+  complete read-only record and no mutation controls.
+- CSV export completed to Gmail before destructive cleanup.
+- The installed app was closed, reopened in airplane mode, and the saved
+  record/details still worked.
+- The typed RESET gate completed after backup and cleared the test state.
+- **Final verdict: RELEASE_READY** for the approved Lehi 20-door field-sprint
+  scope. The next product proof is the Joey dry run, not more infrastructure.

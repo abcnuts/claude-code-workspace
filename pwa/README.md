@@ -8,10 +8,10 @@ backend, login, CRM, API call, or paid service.
 ## Live release
 
 - **URL:** https://guild-command-center.brandonwadepackard.workers.dev
-- **Status:** LIMITED_TEST_READY — v1.0.1 automated + live checks passed at
-  source commit `a46c2ba`; iPhone install + first save are owner-reported
-  complete. Awaiting phone refresh, saved-row open, export, and airplane-mode
-  reopen before full release.
+- **Status:** RELEASE_READY for the Lehi 20-door field sprint — v1.0.1
+  automated + live checks passed at source commit `a46c2ba`; actual-iPhone
+  install, save, saved-row open, export, airplane-mode reopen, and typed reset
+  are complete.
 - **Receipt:** `pwa/RELEASE-2026-08-09.md` (etag, byte hashes, live checks).
 - Transport is a static Cloudflare Worker with no bindings, storage,
   analytics, API, payment, CRM, or OpenAI dependency. The URL is
