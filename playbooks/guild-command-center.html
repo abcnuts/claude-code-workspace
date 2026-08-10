@@ -142,9 +142,21 @@
   .save-btn:disabled { background: var(--line); border-color: var(--line); color: var(--muted); cursor: not-allowed; }
   .msg { font-size: 0.8rem; font-weight: 700; margin-top: 0.4rem; min-height: 1.1rem; }
   .msg.ok { color: var(--good); } .msg.err { color: var(--danger); }
-  .entry { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--steel); padding: 0.45rem 0.6rem; margin-bottom: 0.4rem; font-size: 0.82rem; }
-  .entry b { font-size: 0.86rem; }
-  .entry .meta { color: var(--muted); font-size: 0.74rem; }
+  .entry { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--steel); margin-bottom: 0.4rem; font-size: 0.82rem; overflow: hidden; }
+  .entry summary { list-style: none; cursor: pointer; padding: 0.55rem 0.6rem; min-height: 44px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.55rem; align-items: center; }
+  .entry summary::-webkit-details-marker { display: none; }
+  .entry summary::after { content: "VIEW"; color: var(--steel); font-size: 0.66rem; font-weight: 850; letter-spacing: 0.08em; }
+  .entry[open] summary::after { content: "CLOSE"; }
+  .entry .summary-copy { min-width: 0; }
+  .entry b { display: block; font-size: 0.86rem; overflow-wrap: anywhere; }
+  .entry .meta { color: var(--muted); font-size: 0.74rem; overflow-wrap: anywhere; }
+  .entry-details { border-top: 1px solid var(--line); background: #FFF; padding: 0.65rem; }
+  .entry-details dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem 0.7rem; margin: 0; }
+  .entry-details .detail-field { min-width: 0; }
+  .entry-details .detail-field.wide { grid-column: 1 / -1; }
+  .entry-details dt { color: var(--muted); font-size: 0.62rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+  .entry-details dd { margin: 0.12rem 0 0; color: var(--ink); font-size: 0.8rem; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .entry-readonly { margin: 0.65rem 0 0; color: var(--muted); font-size: 0.68rem; font-weight: 700; }
   .entry.closed { border-left-color: var(--good); background: var(--good-soft); }
   .empty { font-size: 0.82rem; color: var(--muted); font-style: italic; }
   .tools { display: grid; gap: 0.5rem; margin-top: 1rem; }
@@ -429,6 +441,7 @@
     </form>
 
     <h2>Logged doors</h2>
+    <p class="quiet">Tap a saved door to view every recorded detail. Saved doors are read-only.</p>
     <div id="list"><p class="empty">Nothing yet. First door of twenty.</p></div>
 
     <div class="tools">
@@ -450,7 +463,7 @@
         <button type="button" class="reset-btn" id="resetBtn" disabled>ERASE ALL ENTRIES</button>
       </details>
     </div>
-    <footer class="app-foot">Guild Command Center v1.0.0 · local device storage · every door logged once, no cherry-picking</footer>
+    <footer class="app-foot">Guild Command Center v1.0.1 · local device storage · every door logged once, no cherry-picking</footer>
   </section>
 
   <!-- ============ RESULTS ============ -->
@@ -814,8 +827,11 @@
     else {
       list.innerHTML = "";
       entries.slice().reverse().forEach(function (e) {
-        var div = document.createElement("div");
+        var div = document.createElement("details");
         div.className = "entry" + (e.outcome === "closed" ? " closed" : "");
+        var summary = document.createElement("summary");
+        var summaryCopy = document.createElement("span");
+        summaryCopy.className = "summary-copy";
         var b = document.createElement("b");
         b.textContent = "#" + e.door_number + " · " + (e.business_name || "(unnamed)") + " · " + e.outcome;
         var meta = document.createElement("div");
@@ -823,7 +839,39 @@
         meta.textContent = e.trade + " · " + e.price_cohort + " · owner " + (e.owner_present || "—") +
           " · demo " + e.demo_result + " · sit " + (e.sit_down_booked || "—") + " · " + e.objection_element +
           " · " + String(e.timestamp).slice(11, 16);
-        div.appendChild(b); div.appendChild(meta);
+        summaryCopy.appendChild(b); summaryCopy.appendChild(meta); summary.appendChild(summaryCopy);
+        div.appendChild(summary);
+
+        var detailWrap = document.createElement("div");
+        detailWrap.className = "entry-details";
+        var detailList = document.createElement("dl");
+        function addDetail(label, value, wide) {
+          var field = document.createElement("div");
+          field.className = "detail-field" + (wide ? " wide" : "");
+          var term = document.createElement("dt");
+          var description = document.createElement("dd");
+          term.textContent = label;
+          description.textContent = value || "—";
+          field.appendChild(term); field.appendChild(description); detailList.appendChild(field);
+        }
+        addDetail("Door / price", "#" + e.door_number + " · " + e.price_cohort);
+        addDetail("Timestamp", e.timestamp);
+        addDetail("Business", e.business_name || "(unnamed)", true);
+        addDetail("Trade", e.trade);
+        addDetail("Outcome", e.outcome);
+        addDetail("Owner present", e.owner_present || "—");
+        addDetail("Demo shown", e.demo_shown || "—");
+        addDetail("Demo result", e.demo_result || "—");
+        addDetail("Sit-down booked", e.sit_down_booked || "—");
+        addDetail("Element", e.objection_element || "—");
+        addDetail("Callback date", e.callback_date || "—");
+        addDetail("Notes / objection", e.notes || "—", true);
+        detailWrap.appendChild(detailList);
+        var readonly = document.createElement("p");
+        readonly.className = "entry-readonly";
+        readonly.textContent = "Read-only record · export the CSV for your portable backup.";
+        detailWrap.appendChild(readonly);
+        div.appendChild(detailWrap);
         list.appendChild(div);
       });
     }

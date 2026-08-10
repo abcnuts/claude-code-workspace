@@ -76,6 +76,11 @@ function launchOptions() {
   check("valid restore is previewed before mutation", (await page.locator("#restoreSummary").textContent()).includes("2 validated doors") && (await page.locator("#topProgress").textContent()) === "0 / 20");
   await page.click("#restoreConfirm");
   check("confirmed restore replaces the working log", (await page.locator("#topProgress").textContent()) === "2 / 20");
+  check("restored doors expose read-only disclosures", await page.locator("details.entry").count() === 2);
+  await page.locator("details.entry summary").first().click();
+  const restoredDetails = await page.locator("details.entry .entry-details").first().innerText();
+  check("restored disclosure shows complete saved data", restoredDetails.includes("Second Shop") && restoredDetails.includes("no answer") && restoredDetails.toLowerCase().includes("demo result"));
+  check("restored disclosure has no mutation controls", await page.locator("details.entry .entry-details input, details.entry .entry-details button, details.entry .entry-details textarea, details.entry .entry-details select").count() === 0);
   await page.click('#tabbar button[data-view="results"]');
   check("restored business text cannot inject HTML", await page.locator("#callbackCard img").count() === 0 && await page.evaluate(() => !window.pwned));
 
@@ -93,9 +98,15 @@ function launchOptions() {
   const reopened = await context.newPage();
   await reopened.goto(origin, { waitUntil: "networkidle" });
   check("data persists after app close and reopen", (await reopened.locator("#topProgress").textContent()) === "2 / 20");
+  await reopened.click('#tabbar button[data-view="log"]');
+  await reopened.locator("details.entry summary").first().click();
+  check("saved details survive app close and reopen", (await reopened.locator("details.entry .entry-details").first().innerText()).includes("Second Shop"));
   await context.setOffline(true);
   await reopened.reload({ waitUntil: "domcontentloaded" });
   check("app reopens offline with data intact", (await reopened.title()) === "Guild Command Center" && (await reopened.locator("#topProgress").textContent()) === "2 / 20");
+  await reopened.click('#tabbar button[data-view="log"]');
+  await reopened.locator("details.entry summary").first().click();
+  check("saved details open while offline", (await reopened.locator("details.entry .entry-details").first().innerText()).includes("Second Shop"));
   check("offline state is visible", (await reopened.locator("#installStatus").textContent()).includes("Offline"));
   check("live app made zero external requests", external.length === 0, external.join(", ") || "none");
 
@@ -108,4 +119,3 @@ function launchOptions() {
   console.error("PWA SMOKE CRASH:", error);
   process.exit(1);
 });
-

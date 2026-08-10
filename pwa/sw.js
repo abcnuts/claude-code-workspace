@@ -1,5 +1,5 @@
 /* Guild Command Center offline shell. Bump CACHE_VERSION for every release. */
-const CACHE_VERSION = "guild-command-center-v1.0.0";
+const CACHE_VERSION = "guild-command-center-v1.0.1";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -57,4 +57,3 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
-

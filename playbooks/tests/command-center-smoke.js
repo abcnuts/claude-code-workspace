@@ -221,6 +221,14 @@ async function saveDoor(page, o) {
   check("m: tally $497:1", (await page.locator("#cohorts").textContent()).includes("$497: 1"));
   check("m: door auto-advances to 2", (await page.inputValue("#door")) === "2");
   check("m: entry shows owner + sit in meta", (await page.locator(".entry .meta").first().textContent()).includes("owner yes"));
+  check("m: saved door is a closed disclosure", await page.locator("details.entry").count() === 1 && !(await page.locator("details.entry").first().getAttribute("open")));
+  await page.click("details.entry summary");
+  check("m: saved door opens on tap", await page.locator("details.entry").first().getAttribute("open") !== null);
+  const savedDetails = await page.locator("details.entry .entry-details").first().innerText();
+  check("m: saved door reveals business", savedDetails.includes("Joe's \"Plumbing\", LLC"));
+  check("m: saved door reveals callback date", savedDetails.toLowerCase().includes("callback date") && savedDetails.includes("2026-08-12"));
+  check("m: saved door preserves multiline objection", savedDetails.includes("said \"another door guy\"") && savedDetails.includes("burned by SEO before"));
+  check("m: saved door details are read-only", await page.locator("details.entry .entry-details input, details.entry .entry-details button, details.entry .entry-details textarea, details.entry .entry-details select").count() === 0);
   check("m: top progress updates", (await page.locator("#topProgress").textContent()) === "1 / 20");
 
   // ---- Duplicate ----
@@ -240,6 +248,8 @@ async function saveDoor(page, o) {
   await page.reload();
   check("m: entry persists after reload", (await page.locator("#barLabel").textContent()).trim() === "1 / 20 doors");
   await nav(page, "log");
+  await page.click("details.entry summary");
+  check("m: read-only details persist after reload", (await page.locator("details.entry .entry-details").first().innerText()).includes("2026-08-12"));
   await page.fill("#notes", "draft-survives-reload");
   await page.waitForTimeout(100);
   await page.reload();
