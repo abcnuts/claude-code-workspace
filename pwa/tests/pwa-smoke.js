@@ -107,6 +107,7 @@ function launchOptions() {
   await reopened.click('#tabbar button[data-view="log"]');
   await reopened.locator("details.entry summary").first().click();
   check("saved details open while offline", (await reopened.locator("details.entry .entry-details").first().innerText()).includes("Second Shop"));
+  await reopened.waitForFunction(() => document.getElementById("installStatus").textContent.includes("Offline"), null, { timeout: 5000 });
   check("offline state is visible", (await reopened.locator("#installStatus").textContent()).includes("Offline"));
   check("live app made zero external requests", external.length === 0, external.join(", ") || "none");
 
