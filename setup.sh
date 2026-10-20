@@ -1,167 +1,82 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # ============================================
 # Claude Code Workspace Setup Script
 # For: Brandon Packard
-# Created: 2026-03-07
+# Created: 2026-03-07 · Revised: 2026-10-20
+#
+# Clones (or updates) the workspace repo and verifies the local toolchain.
+# CLAUDE.md, .claude/settings.json, the SessionStart hook, .gitignore and the
+# protocol helper are versioned IN the repo — this script never overwrites them.
+# Safe to run repeatedly.
+#
+#   curl -sL https://raw.githubusercontent.com/abcnuts/claude-code-workspace/main/setup.sh | bash
+#   WORKSPACE=/custom/path ./setup.sh
 # ============================================
+set -euo pipefail
 
-set -e
+WORKSPACE="${WORKSPACE:-$HOME/claude-code-workspace}"
+REPO_URL="${REPO_URL:-https://github.com/abcnuts/claude-code-workspace.git}"
 
-WORKSPACE="$HOME/claude-code-workspace"
+echo "🔧 Claude Code workspace → $WORKSPACE"
 
-echo "🔧 Setting up Claude Code workspace at $WORKSPACE"
-
-# 1. Create the workspace folder
-mkdir -p "$WORKSPACE"
-cd "$WORKSPACE"
-
-# 2. Initialize git
-if [ ! -d ".git" ]; then
-  git init
-  echo "✅ Git initialized"
+# 1. Clone or update
+if [ -d "$WORKSPACE/.git" ]; then
+  cd "$WORKSPACE"
+  if ! git remote get-url origin >/dev/null 2>&1; then
+    git remote add origin "$REPO_URL"
+    echo "✅ Added origin remote"
+  fi
+  if git fetch origin main 2>/dev/null; then
+    if git merge-base --is-ancestor HEAD origin/main 2>/dev/null; then
+      git pull --ff-only origin main >/dev/null && echo "✅ Repo updated (fast-forward to origin/main)"
+    else
+      echo "⚠️  Local history has diverged from origin/main — not touching it. Reconcile manually:"
+      echo "    cd $WORKSPACE && git log --oneline --graph HEAD origin/main | head -20"
+    fi
+  else
+    echo "⚠️  Could not fetch origin/main (offline?). Continuing with local copy."
+  fi
+elif [ -e "$WORKSPACE" ]; then
+  echo "❌ $WORKSPACE exists but is not a git repo. Move it aside or run with WORKSPACE=/other/path." >&2
+  exit 1
 else
-  echo "⏭️  Git already initialized"
+  git clone "$REPO_URL" "$WORKSPACE"
+  cd "$WORKSPACE"
+  echo "✅ Repo cloned"
 fi
 
-# 3. Create directory structure
-mkdir -p .claude
-mkdir -p projects
-mkdir -p scratch
-mkdir -p outputs
-mkdir -p scripts
+# 2. Scaffold (idempotent; contents of scratch/ and outputs/ are gitignored)
+mkdir -p projects scratch outputs scripts .claude/hooks .claude/cache
+chmod +x scripts/*.sh .claude/hooks/*.sh 2>/dev/null || true
+echo "✅ Directory structure verified"
 
-echo "✅ Directory structure created"
+# 3. Toolchain check
+echo "🔍 Toolchain:"
+for t in git node npm python3 jq curl claude; do
+  if command -v "$t" >/dev/null 2>&1; then
+    v="$("$t" --version 2>&1 | head -1)"
+    printf "   %-8s %s\n" "$t" "$v"
+  else
+    printf "   %-8s MISSING\n" "$t"
+  fi
+done
+command -v jq >/dev/null 2>&1 || echo "   ⚠️  jq is required by scripts/mythos-protocol.sh (brew install jq / apt install jq)"
 
-# 4. Create .claude/settings.json
-cat > .claude/settings.json << 'SETTINGS'
-{
-  "permissions": {
-    "allow": [
-      "Bash(npm:*)",
-      "Bash(node:*)",
-      "Bash(python*:*)",
-      "Bash(pip:*)",
-      "Bash(git:*)",
-      "Bash(ls:*)",
-      "Bash(cat:*)",
-      "Bash(mkdir:*)",
-      "Bash(cp:*)",
-      "Bash(mv:*)",
-      "Bash(find:*)",
-      "Bash(grep:*)",
-      "Bash(echo:*)",
-      "Bash(touch:*)",
-      "Bash(chmod:*)"
-    ],
-    "deny": []
-  }
-}
-SETTINGS
-echo "✅ Claude Code settings created"
-
-# 5. Create CLAUDE.md (project instructions Claude Code reads automatically)
-cat > CLAUDE.md << 'CLAUDEMD'
-# Claude Code Workspace — Brandon Packard
-
-## Who You're Working With
-- Brandon has ADHD — be direct, systematic, no abstract discussion
-- He wants truth over comfort — no people-pleasing
-- He's built 80+ systems but hasn't deployed — help him SHIP, not build more
-- Reduce cognitive load — don't delegate decisions back to him
-
-## Workspace Layout
-- `projects/` — Active projects (each gets its own subfolder)
-- `scratch/` — Quick experiments, throwaway code, proofs of concept
-- `outputs/` — Final deliverables, exports, generated files
-- `scripts/` — Reusable utility scripts
-
-## Working Principles
-1. **Ship over perfect** — working > polished
-2. **One project at a time** — finish before starting
-3. **Commit often** — small atomic commits with clear messages
-4. **Document decisions** — leave breadcrumbs in commit messages and READMEs
-
-## Tech Stack Preferences
-- Python for scripting/automation
-- Node.js for web/API work
-- Keep dependencies minimal
-- Prefer standard library when possible
-
-## Git Conventions
-- Branch naming: `feature/description`, `fix/description`, `experiment/description`
-- Commit style: imperative mood, under 72 chars ("Add user auth endpoint", not "Added stuff")
-CLAUDEMD
-echo "✅ CLAUDE.md created"
-
-# 6. Create .gitignore
-cat > .gitignore << 'GITIGNORE'
-# Dependencies
-node_modules/
-__pycache__/
-*.pyc
-.venv/
-venv/
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# OS
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Build artifacts
-dist/
-build/
-*.egg-info/
-
-# Logs
-*.log
-npm-debug.log*
-
-# Scratch outputs (keep the folder, ignore contents)
-scratch/*
-!scratch/.gitkeep
-
-# Outputs (keep the folder, ignore contents)
-outputs/*
-!outputs/.gitkeep
-GITIGNORE
-echo "✅ .gitignore created"
-
-# 7. Create .gitkeep files to preserve empty dirs
-touch scratch/.gitkeep
-touch outputs/.gitkeep
-touch projects/.gitkeep
-touch scripts/.gitkeep
-
-# 8. Initial commit
-git add -A
-git commit -m "Initialize claude-code-workspace
-
-Structured workspace for Claude Code with:
-- Project scaffolding (projects/, scratch/, outputs/, scripts/)
-- CLAUDE.md with working principles and preferences
-- .claude/settings.json with sensible permissions
-- .gitignore for clean repos"
+# 4. MYTHOS protocol API reachability (no auth; best effort)
+API="https://rjcoeoropwvqzvinopze.supabase.co/functions/v1/get-protocol"
+if curl -sS --fail --max-time 8 "$API?action=rules" >/dev/null 2>&1; then
+  echo "✅ MYTHOS protocol API reachable"
+else
+  echo "⚠️  MYTHOS protocol API unreachable — Supabase project rjcoeoropwvqzvinopze may be paused (INACTIVE)."
+  echo "    Restore it in the Supabase dashboard before any agent does Drive work."
+fi
 
 echo ""
 echo "============================================"
 echo "✅ Workspace ready at: $WORKSPACE"
 echo ""
-echo "To start using it:"
-echo "  cd ~/claude-code-workspace"
-echo "  claude"
+echo "  cd $WORKSPACE && claude"
 echo ""
-echo "To start a new project:"
-echo "  cd ~/claude-code-workspace/projects"
-echo "  mkdir my-project && cd my-project"
-echo "  claude"
+echo "New project:  mkdir projects/<name> && cd projects/<name> && claude"
+echo "Folder ID:    scripts/mythos-protocol.sh id TOOLS"
 echo "============================================"
