@@ -30,6 +30,15 @@ Do not re-litigate decisions it marks as locked.
 The SessionStart hook (`.claude/hooks/session-start.sh`) prints items 1 and 3
 into context automatically and says whether the protocol API was reachable.
 
+## Where sessions run (routing rule, since 2026-11-01)
+
+**Start every session in the cloud from the repo. Use Remote Control only for
+a task on the Mac-only list.**
+
+- Mac-only list: §5 of `plans/2026-10-31-cloud-sessions-addendum.md`. That
+  list is the only copy. Do not copy it here.
+- Cloud environment: "autonomous". "Default" is retired (Brandon, 2026-11-01).
+
 ## MYTHOS protocol (Google Drive + Supabase) — non-negotiable
 
 Supabase is the source of truth. Not your memory, not cached folder IDs, not
