@@ -10,7 +10,7 @@ evidence: handoffs/2026-11-01-cloud-migration-phase-c-handoff.md
 
 # Addendum A: Claude sessions move to the cloud
 
-**Date:** 2026-10-31, revised 2026-11-01 · **Author:** Claude (cloud session session_01HV5ta1Y7pNipPG167LAkuC) · **Status:** Phases A and B done 2026-11-01. Phase C in progress: C1, C2(b) and C2(c) done 2026-11-01. C4 not started.
+**Date:** 2026-10-31, revised 2026-11-01 · **Author:** Claude (cloud session session_01HV5ta1Y7pNipPG167LAkuC) · **Status:** Phases A and B done 2026-11-01. Phase C in progress: C1, C2(b) and C2(c) done 2026-11-01. C4 started 2026-11-01, first scheduled count 2026-11-02 17:47 MST.
 **Parent plan:** Google Doc "Mac Studio → Cloud Migration Plan — 2026-10-29" (https://docs.google.com/document/d/1oDM0JZ9Nfs3bjn1d_aH0QUQXmnZfWTFRLZ4pXrA1Yfo/edit). That Doc covers data. This file covers where Claude sessions run. **This file is the only full copy of Addendum A.** The Drive connector cannot edit a Doc body, so the Doc does not contain it.
 
 ---
@@ -112,7 +112,7 @@ Each step: owner, done-test. Nothing here sends, charges, or changes an external
 | C1 | Routing rule, one line, written into claude-code-workspace CLAUDE.md: "Start every session in the cloud from the repo. Use Remote Control only for a task on the Mac-only list." | Bahir drafts, you approve | Line is in main |
 | C2 | Move recurring Claude work to scheduled tasks, one at a time, each named by you: (a) nightly Finn reader receipt for true-north-financial, if it is API-only; (b) weekly Arq receipt that reads arq-status.md on Drive and writes one line to the plan; (c) the 08:00 and 20:00 credential probes, so they page. | Bahir creates each after you name it | Each task has one green run |
 | C3 | Agent state to a private repo (canonical plan Phase 2.6). This is what gives cloud sessions memory. | Bahir, after your authorization phrase | Repo pushed, secret scan clean |
-| C4 | Weekly count: cloud vs bridge sessions, one line, in the canonical plan's §10. | Bahir | 4 weekdays at 32 of 40 or better |
+| C4 | Weekday count: cloud vs bridge sessions, one row per weekday in the "C4 count log" below. (Changed 2026-11-01 from "weekly, in the canonical plan's §10": a weekly count cannot show 4 weekdays in a row, and the Drive connector cannot edit the Doc body.) | Bahir | 4 weekdays in a row at 32 of 40 or better |
 
 **Phase C status, checked 2026-11-01 at 10:15 UTC by cloud session session_01HV5ta2DccHWb7xMws9459j**
 
@@ -122,10 +122,17 @@ Each step: owner, done-test. Nothing here sends, charges, or changes an external
 | C2(b) Weekly Arq receipt | **DONE 2026-11-01.** Scheduled task "Weekly Arq receipt" (trig_01C2abnFtzccaa3ULtzwjPbr): Mondays 11:43 America/Denver, environment "autonomous", Google Drive connector, push notification on, read-only. It reads arq-status.json (same data as arq-status.md, easier to parse) and returns OK, ALERT, STALE or FAILED with one receipt line. Green run 2026-11-01 09:49 UTC (session cse_01HV5tZziHjRTFYDmX4MEFpU): "Arq receipt 2026-11-01: OK", numbers match the Drive file exactly. The first run at 09:42 UTC correctly reported FAILED because the task had no Drive connector; Brandon attached it at 09:49 UTC. | Both run transcripts and arq-status.json, checked it myself |
 | C2(b) deferred parts | **DEFERRED, owed.** (1) Writing the receipt to Supabase agent_activity_log (canonical plan Phase 6): every insert needs a registered agent token, and no cloud identity has one. Brandon chose "ship it without Supabase" on 2026-11-01. (2) Writing the line into this plan file: scheduled sessions have no repo attached. Today the receipt lives in the push notification and the run's session. | Supabase credential_gate and gov_verify_agent definitions, checked it myself |
 | C2(c) Credential probe pager | **DONE 2026-11-01.** Mac half: the Grok bot (grok-bots) built LaunchAgent com.mythos.probe-status per `handoffs/2026-11-01-grok-probe-status-handoff.md` (PR 12, 3899e2d). It writes probe-status.json (Drive id 13N2PmS7EW8u2N22Ri_PNhgOqxJTcDTGR, folder MYTHOS-MIGRATION) with exit code and status only, no secrets; first file 2026-11-01 03:05:49 MST. Cloud half: scheduled task "Credential probe pager" (trig_01GEUcyhN5Qc5FynWw6F13hy), 08:20 and 20:20 America/Denver, environment "autonomous", Google Drive connector, push on, read-only; returns OK, ALERT, STALE (file older than 13 h) or FAILED. Test run 2026-11-01 10:12 UTC (session cse_01HV5ta1L4nBHmbm1kWkXid3): ALERT, 2 of 6 failing (n8n-probe exit 3, litellm-proxy-probe exit 2), matching the file. The LaunchAgent's own schedule is proven by the first unattended update at 20:05 MST. | The Drive file and the run transcript, checked it myself |
-| C2(c) live failures | **OPEN, Brandon decides.** n8n cloud (brandonpackard.app.n8n.cloud) answers "No instance here". Railway apps mythos-litellm and mythos-hub answer "Application not found". Fix, retire, or keep alerting. | Public HTTPS checks from the cloud, 2026-11-01 10:10 UTC, checked it myself |
+| C2(c) dead services | **ARCHIVED 2026-11-01** (Brandon: "archive those 3 items"). n8n cloud (brandonpackard.app.n8n.cloud, "No instance here"), Railway mythos-litellm and Railway mythos-hub ("Application not found"). The pager prompt was changed at 10:35 UTC: n8n-probe and litellm-proxy-probe are now "archived". They are left out of the status word and the count, and the pager says so if either one answers again. mythos-hub never had a probe. The Mac LaunchAgent still runs all 6 probes; dropping the two from the Mac is optional and Mac-only. Test run 10:35 UTC (session cse_01HV5tZz84SeL3JoGfoN1TUD): "OK, 4 of 4 active probes ok, 2 archived", matching the file. | Pager prompt, the Drive file and the run result, checked it myself |
 | C2(a) | Not started. Brandon names it. | |
 | C3 | Partly done: Claude memory is in claude-config. Codex, OpenClaw and Hermes memory are not in a repo. | Read from the Phase C handoff |
-| C4 | Not started. | |
+| C4 Weekday session count | **STARTED 2026-11-01.** Scheduled task "Weekday cloud session count (C4)" (trig_01T7prK6xbAKQvcvr1F3ncD7): weekdays 17:47 America/Denver. It fires into cloud session session_01HV5ta3v9gnfgBbySigCjyb, which counts with list_sessions, appends a row to the log below on branch claude/c4-count-log (one draft PR), and pushes the result to Brandon's phone. A first version that started a fresh session each time failed its test at 10:35 UTC: fresh scheduled sessions do not get the list_sessions tool. It was deleted. First scheduled count: 2026-11-02 17:47 MST. | Trigger definition and the failed test run, checked it myself |
+
+**C4 count log** (40 most recent sessions, not counting the counting session. Cloud = anthropic_cloud, Mac = bridge. Target 32 of 40 on 4 weekdays in a row.)
+
+| Date (America/Denver) | Status | Cloud of 40 | Mac | Other | Window (America/Denver) |
+| --- | --- | --- | --- | --- | --- |
+| 2026-10-31 (plan baseline) | BELOW | 3 | 37 | 0 | 2026-10-20 to 2026-10-31, read from §0 |
+| 2026-11-01 (Sunday, not a weekday) | BELOW | 7 | 33 | 0 | 2026-10-20 13:42 to 2026-11-01 01:23 |
 
 ### Phase D. The Mac becomes the Blue box
 
