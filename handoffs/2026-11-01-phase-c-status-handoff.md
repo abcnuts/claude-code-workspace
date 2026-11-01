@@ -2,7 +2,8 @@
 date: 2026-11-01
 type: handoff
 project: cloud-migration
-status: active
+status: superseded
+superseded_by: handoffs/2026-11-01-phase-c4-started-handoff.md
 from: claude.ai/code cloud session session_01HV5ta2DccHWb7xMws9459j
 supersedes: handoffs/2026-11-01-grok-probe-status-handoff.md
 ---
