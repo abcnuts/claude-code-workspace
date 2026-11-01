@@ -22,7 +22,7 @@ supersedes: handoffs/2026-11-01-phase-c-status-handoff.md
 ## Done after this handoff was first written (2026-11-01, checked on each main)
 
 - The wrong "reached mythos-hub and n8n cloud" sentence is corrected in all 5 work repos' CLAUDE.md. Brandon said "merge all 5". Merged: true-north-financial#4 (64eaf34), collab#2 (cc5ca51), skills#6 (c519c82), claude-config#2 (5da8497), the-boogeyman#2 (8e4084d). claude-config reaches the Mac only when `~/.claude` pulls.
-- Found, not changed (Brandon decides): claude-config's CLAUDE.md "n8n Cloud" section still describes brandonpackard.app.n8n.cloud as live. collab's CLAUDE.md still routes agent coordination through "MYTHOS Hub webhooks + n8n". Both are gone.
+- The stale n8n and MYTHOS Hub sections are marked retired (Brandon: "fix the n8n sections", then "merge both"): claude-config#3 (f4b1891) and collab#3 (cb55d1e). The old text stays as history. collab now says no replacement coordination lane is named; until Brandon names one, agents hand off through Brandon.
 
 ## Next, in order
 
@@ -38,6 +38,7 @@ supersedes: handoffs/2026-11-01-phase-c-status-handoff.md
 
 ## Open items
 
+- Name a replacement coordination lane for wade, manus and shadow in collab, or keep "through Brandon". Brandon's call.
 - C2(a), the nightly Finn reader: Brandon names it or drops it.
 - Drive folder "MYTHOS-MIGRATION" (`1iritYNIX6p6AHSr1YS87wSL9xIDx1zbb`) is not in `folder_registry`. Brandon's call.
 - On the Mac, run `git -C ~/.claude pull --ff-only`.
