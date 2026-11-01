@@ -30,6 +30,15 @@ Do not re-litigate decisions it marks as locked.
 The SessionStart hook (`.claude/hooks/session-start.sh`) prints items 1 and 3
 into context automatically and says whether the protocol API was reachable.
 
+## Where sessions run (routing rule, since 2026-11-01)
+
+**Start every session in the cloud from the repo. Use Remote Control only for
+a task on the Mac-only list.**
+
+- Mac-only list: §5 of `plans/2026-10-31-cloud-sessions-addendum.md`. That
+  list is the only copy. Do not copy it here.
+- Cloud environment: "autonomous". "Default" is retired (Brandon, 2026-11-01).
+
 ## MYTHOS protocol (Google Drive + Supabase) — non-negotiable
 
 Supabase is the source of truth. Not your memory, not cached folder IDs, not
@@ -122,9 +131,11 @@ dependencies; standard library first.
 
 ## Cloud session facts (learned the hard way, still true)
 
-- Cloud Claude authenticates to GitHub as `abcnuts`. It cannot create repos
-  and cannot reach `brandonwadepackard-cell` repos. Codex on Brandon's Mac
-  holds his personal credentials and owns the probe repo.
+- Cloud Claude authenticates to GitHub as `abcnuts`. It cannot create repos.
+  Since 2026-11-01 `abcnuts` is a collaborator with push access on the 5
+  `brandonwadepackard-cell` work repos: true-north-financial, collab, skills,
+  claude-config, the-boogeyman. Codex on Brandon's Mac holds his personal
+  credentials and owns the probe repo.
 - Network egress from cloud sessions is allowlisted per environment. A proxy
   403 means the host is not allowed — report it, do not retry or mock around
   it. The Supabase host must be on the allowlist for the protocol API to work.
