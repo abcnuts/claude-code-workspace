@@ -131,9 +131,11 @@ dependencies; standard library first.
 
 ## Cloud session facts (learned the hard way, still true)
 
-- Cloud Claude authenticates to GitHub as `abcnuts`. It cannot create repos
-  and cannot reach `brandonwadepackard-cell` repos. Codex on Brandon's Mac
-  holds his personal credentials and owns the probe repo.
+- Cloud Claude authenticates to GitHub as `abcnuts`. It cannot create repos.
+  Since 2026-11-01 `abcnuts` is a collaborator with push access on the 5
+  `brandonwadepackard-cell` work repos: true-north-financial, collab, skills,
+  claude-config, the-boogeyman. Codex on Brandon's Mac holds his personal
+  credentials and owns the probe repo.
 - Network egress from cloud sessions is allowlisted per environment. A proxy
   403 means the host is not allowed — report it, do not retry or mock around
   it. The Supabase host must be on the allowlist for the protocol API to work.
