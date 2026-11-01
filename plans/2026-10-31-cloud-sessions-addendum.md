@@ -1,0 +1,139 @@
+# Addendum A: Claude sessions move to the cloud
+
+**Date:** 2026-10-31, revised 2026-11-01 · **Author:** Claude (cloud session session_01HV5ta1Y7pNipPG167LAkuC) · **Status:** Phases A and B done 2026-11-01. Phase C not started.
+**Parent plan:** Google Doc "Mac Studio → Cloud Migration Plan — 2026-10-29" (https://docs.google.com/document/d/1oDM0JZ9Nfs3bjn1d_aH0QUQXmnZfWTFRLZ4pXrA1Yfo/edit). That Doc covers data. This file covers where Claude sessions run. **This file is the only full copy of Addendum A.** The Drive connector cannot edit a Doc body, so the Doc does not contain it.
+
+---
+
+## 0. The one sentence
+
+The 2026-10-29 plan moves your **data** to the cloud. It does not say where **your Claude sessions** run. Right now they run on the Mac: 37 of the last 40 sessions (2026-10-20 to 2026-10-31) ran through Remote Control on Brandons-Mac-Studio, 3 ran in the cloud. This addendum flips that ratio, and names what must stay on the Mac.
+
+## 1. Finish line
+
+Four consecutive weekdays where at least 32 of every 40 Claude sessions run in an Anthropic cloud environment, every active repo opens in a cloud session with its own CLAUDE.md, and the Mac-only list in §5 is written and short.
+
+Measured by: the session list (environment_kind cloud vs bridge), checked by Bahir weekly.
+
+## 2. What I checked myself on 2026-10-31
+
+| Item | Finding | Evidence |
+| --- | --- | --- |
+| Sessions, 2026-10-20 to 2026-10-31 | 40 listed. 37 bridge (Mac). 3 cloud. | list_sessions, checked it myself |
+| Repos cloud sessions can open | 25 under github.com/abcnuts, 20 not archived | list_repos, checked it myself |
+| Repos your daily work lives in | true-north-financial, collab, skills, claude-config, the-boogeyman. **None is under abcnuts.** collab's git remote is github.com/brandonwadepackard-cell/collab, a private repo. Cloud sessions are connected to GitHub as abcnuts and are refused access to it. | Session summaries 2026-10-20 to 2026-10-31; collab remote from session "Cloud migration plan architecture"; add_repo refused 2026-10-31, checked it myself |
+| Cloud environments | "Default" (2025-10-31) and "autonomous" (2025-11-24). Both active. | list_environments, checked it myself |
+| Remote Control folders | "Projects" and "Desktop" on Brandons-Mac-Studio are listed but not offered to cloud sessions. A third folder is hidden because its name has an emoji or symbol. | list_computer_folders, checked it myself |
+| Scheduled tasks | 2 exist: "Ai tooling research digest" (daily 08:00 Denver) and "Hermes PR watch — 83153 & 83274" (daily 15:43 UTC). Both ran today and succeeded. | list_triggers, checked it myself |
+| Connectors on cloud sessions | Gmail, Google Calendar, Google Drive, Google Sheets, Slack, Supabase, Vercel, Claude Docs, Wispr Flow attached. Airtable, Figma, Canva present but need sign-in. | This session's tool list, checked it myself |
+| Mac Studio state | Disk 94.8% used, 51.4 GB free, swap 29.8 GB, as of 2026-10-31 16:47 MDT. Arq last pass finished 2026-10-31 08:43 MDT, 0 real errors. | arq-status.md on Drive, read it myself |
+| Mac restart | Storage session freed 12 GB and asked you to restart. Not answered. | Session "Storage recovery handoff review" 2026-10-31 08:47, read from its papers |
+| claude-code-workspace PR 7 | Open draft as of 2026-10-20. Adds CLAUDE.md, settings, SessionStart hook for cloud sessions. Not re-checked today: GitHub API is closed to this session until the repo is attached. | Session "Environment setup" 2026-10-20, read from its papers |
+| Supabase project rjcoeoropwvqzvinopze | Paused on unpaid invoices as of 2026-10-20. Cloud environment network policy denied its host. | Same session, read from its papers |
+| Arq trial | Expires 2026-11-27. Restore not yet verified. | Session "Arq backup access verification" 2026-10-31, read from its papers |
+
+## 3. Three piles, today
+
+**Works (cloud sessions can do this now)**
+- Planning, research, writing, handoff drafting. Evidence: "Shared workspace for existing agents" ran in the cloud 2026-10-29 and uploaded 28 verified files to Drive.
+- Drive, Gmail, Calendar, Sheets, Slack, Supabase, Vercel work through connectors.
+- Scheduled tasks that only need the web and connectors. Evidence: the 2 tasks above.
+- Any repo under abcnuts, once selected at session start.
+
+**Likely works (needs one setup step)**
+- Code work on true-north-financial, collab, skills, claude-config, the-boogeyman. Needs the Claude GitHub App installed on the account that owns them.
+- Railway and Supabase calls from the cloud. Needs the account token and keys saved as environment secrets, and the hosts allowed.
+- Memory carrying over between sessions. Needs Phase 2.6 of the canonical plan (agent state into a private repo).
+- Airtable work for Muse and Lotus bases. Needs the Airtable connector signed in once.
+
+**Still missing (Mac-only today, see §5 for which stay that way)**
+- Graphify post-push sync. It is a local uv tool with a local script. Cloud sessions already follow the rule "GitHub saved; Graphify pending."
+- Credential minting through the logged-in browser (Railway, GoHighLevel). Mac only.
+- Keychain, stash, 1Password sync. Mac only.
+- Video and media work (Boogeyman, Descript, 36 GB). Mac only.
+- Local models, Docker, ComfyUI, the 75 launchd jobs. Mac only until Phase 4 of the canonical plan.
+
+## 4. Phases
+
+Each step: owner, done-test. Nothing here sends, charges, or changes an external system without your word on that step.
+
+### Phase A. Unblock access (target: by 2026-11-03)
+
+| # | Step | Owner | Done when |
+| --- | --- | --- | --- |
+| A1 | Install the Claude GitHub App on the GitHub account or org that owns true-north-financial, collab, skills, claude-config, the-boogeyman. Page: https://claude.ai/connect-github | Brandon | A cloud session's repo list shows all 5 |
+| A2 | Decide PR 7 on abcnuts/claude-code-workspace: merge or close. It is the only thing giving cloud sessions a CLAUDE.md and session-start hook today. | Brandon | PR state is merged or closed |
+| A3 | Update the Claude desktop app on Brandons-Mac-Studio. Rename the Remote Control folder whose name has an emoji or symbol. | Brandon | list_computer_folders shows Projects and Desktop as usable |
+| A4 | Restart the Mac (open ask from the storage session). | Brandon | Free space above 80 GB, swap under 10 GB |
+| A5 | Sign in the Airtable connector once in claude.ai connector settings. | Brandon | Airtable tools answer in a cloud session |
+
+**Phase A status, checked 2026-10-31 at 23:20 UTC (17:20 MDT) by the cloud session**
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| A1 GitHub access | **DONE 2026-11-01.** Brandon invited abcnuts as collaborator on all 5 repos and accepted as abcnuts. Cloud sessions now list true-north-financial, skills, collab, claude-config, the-boogeyman, all private, all with push access. collab cloned in this session: 1,793 files, 432 MB, default branch head 0f76e1e dated 2026-07-19. | list_repos and git clone, checked it myself |
+| A2 PR 7 decision | **DONE 2026-11-01 00:26 UTC.** Brandon said "merge PR 7". Merged at commit ce18f7f into main as b00f884. main now has CLAUDE.md and the session-start hook. PRs 6 and 1 are still open drafts, untouched. | GitHub REST API, checked it myself |
+| A3 Remote Control folders | **CLOSED, KNOWN LIMIT.** Claude app is up to date (Brandon, 2026-10-31). The unreadable name is "OPEN-CLAW:HERMES AGENTS" (colon); left in place on purpose because Hermes and OpenClaw are Mac-only. Projects and Desktop are still not offered to cloud sessions after the update and the restart, cause unknown. Not blocking: cloud sessions reach all 5 work repos through GitHub. | Brandon's Settings screenshots; list_computer_folders at 00:53 UTC 2026-11-01, checked it myself |
+| A4 Mac restart | **DONE 2026-10-31 evening.** Free space 57.2 GB to 93.5 GB. Swap 29.9 GB to 0.0 GB. Disk 90.6% used. | arq-status.json on Drive, generated 18:50 MDT, read it myself |
+| A5 Airtable | **DONE.** 38 bases listed from this cloud session, including "Manus Integration Starter" and "dot — Conversations & Artifacts". The sign-in was already in place. | Airtable list_bases, checked it myself |
+
+### Phase B. Make cloud sessions self-sufficient (target: 2026-11-03 to 2026-11-07)
+
+| # | Step | Owner | Done when |
+| --- | --- | --- | --- |
+| B1 | Pick one cloud environment as the working one. Recommendation: "autonomous". Retire "Default" from use. | Brandon decides, Bahir documents | CLAUDE.md names the environment |
+| B2 | In that environment's settings (cloud environment menu in the session title bar, then Edit): add Allowed domains rjcoeoropwvqzvinopze.supabase.co and backboard.railway.app. Add secrets RAILWAY_TOKEN (from 1Password item railway-account-token) and the Supabase service key. | Brandon enters values. Bahir supplies the exact list, never the values. | A cloud session's railway probe returns your email; Supabase answers |
+| B3 | One CLAUDE.md per active repo: finish line, pointer to newest handoff under handoffs/, the standing rules (credential doctrine, graphify rule, approval rule). Repos: true-north-financial, collab, skills, claude-config, the-boogeyman. One PR each. | Bahir, in cloud sessions | 5 PRs open, you merge |
+| B4 | Settle the Supabase pause. Pay or let the project go. The MYTHOS protocol stack and the Phase 6 "Arq receipt into Supabase" both depend on it. | Brandon | Project state ACTIVE, or a written decision to retire it |
+
+**Phase B status, checked 2026-11-01 at 00:58 UTC by the cloud session**
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| B1 Working environment | **DECIDED: "autonomous"** (Brandon, 2026-11-01). "Default" is retired from use. This planning session itself runs in "Default". | Brandon's message; get_session, checked it myself |
+| B2 Network and secrets | **PART 1 NOT NEEDED. PART 2 DEFERRED.** A probe session in "autonomous" (session_01HV5ta2DUvn8yeJnr3HQTPW, 2026-11-01 00:58 UTC) reached all 4 hosts: rjcoeoropwvqzvinopze.supabase.co 404, backboard.railway.app 200, mythos-hub-production.up.railway.app 404, brandonpackard.app.n8n.cloud 404. No RAILWAY, SUPABASE, N8N or WADE_RAG variables are set. Railway token stays out of the cloud until a cloud task needs it (recommended; Brandon can override). No Supabase key needed; the Supabase connector covers database work. | Probe session output, checked it myself |
+| B3 CLAUDE.md per repo | **DONE 2026-11-01 ~01:20 UTC.** Brandon said "merge all 5". Merged at the checked commits: collab#1 (dabb2686), claude-config#1 (4e50fa54), true-north-financial#2 (ebba3556), skills#5 (5ab3238e), the-boogeyman#1 (3d80d9b2). Cloud section confirmed on each main. claude-config reaches the Mac only when ~/.claude pulls. | GitHub REST API, checked it myself |
+| B4 Supabase | **RESOLVED.** Project rjcoeoropwvqzvinopze is ACTIVE_HEALTHY. The other 4 projects in the org (exmo-staging, daisy, make-a-million-production, grandmaster-council) are INACTIVE; no action asked. | Supabase list_projects, checked it myself |
+
+### Phase C. Route sessions to the cloud (target: 2026-11-07 to 2026-11-14)
+
+| # | Step | Owner | Done when |
+| --- | --- | --- | --- |
+| C1 | Routing rule, one line, written into claude-code-workspace CLAUDE.md: "Start every session in the cloud from the repo. Use Remote Control only for a task on the Mac-only list." | Bahir drafts, you approve | Line is in main |
+| C2 | Move recurring Claude work to scheduled tasks, one at a time, each named by you: (a) nightly Finn reader receipt for true-north-financial, if it is API-only; (b) weekly Arq receipt that reads arq-status.md on Drive and writes one line to the plan; (c) the 08:00 and 20:00 credential probes, so they page. | Bahir creates each after you name it | Each task has one green run |
+| C3 | Agent state to a private repo (canonical plan Phase 2.6). This is what gives cloud sessions memory. | Bahir, after your authorization phrase | Repo pushed, secret scan clean |
+| C4 | Weekly count: cloud vs bridge sessions, one line, in the canonical plan's §10. | Bahir | 4 weekdays at 32 of 40 or better |
+
+### Phase D. The Mac becomes the Blue box
+
+Already written as Phases 4 and 5 of the canonical plan. Not restated here. This addendum ends when C4 passes.
+
+## 5. Mac-only list (stays on Remote Control)
+
+1. Arq, storage cleanup, anything that reads the Mac's disk.
+2. Logged-in browser work: Railway dashboard, GoHighLevel, any site where the session lives in Chrome.
+3. Keychain, stash, 1Password sync, credential minting.
+4. Video and media: the-boogeyman 36 GB, Descript, 4K passes.
+5. Ollama, ComfyUI, Docker, chrome-cdp, embed-proxy, graphify-mcp, litellm-proxy (the Blue list from canonical plan Phase 4).
+6. Hermes and OpenClaw local runs.
+
+Everything not on this list starts in the cloud.
+
+## 6. Risks specific to this addendum
+
+| Risk | Mitigation |
+| --- | --- |
+| A1 stalls because the 5 repos are under an account the GitHub App cannot be installed on | Move the repos to abcnuts (GitHub transfer keeps history). Your call, named per repo. |
+| Secrets typed into the environment drift from 1Password, the same failure as the Railway mirror | Environment secrets hold only tokens that 1Password also holds. The 08:00 and 20:00 probes page when one dies (C2c). |
+| Cloud sessions and Codex both edit the same branch | Keep the current rule: one agent per branch, Codex branches named codex/. |
+| Arq trial lapses 2026-11-27 before the data phases finish | Decide buy or drop by 2026-11-20. Separate line in the canonical plan. |
+
+## 7. Whose move
+
+**Brandon:** A1 through A5. A1 is the gate for everything else. Say "append it" and this file goes into the Google Doc as a new section after §6.
+
+**Bahir (cloud):** nothing until A1 lands. Then B3 and C1 drafts.
+
+## 8. What done looks like
+
+C4 passes. The Mac-only list in §5 is the only reason a session runs on the Mac. Every active repo has a CLAUDE.md. Memory lives in a repo, not in one machine's home folder.
