@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Claude Code local state
+.claude/settings.local.json
+.claude/cache/
+
+# Scratch and outputs (keep the folders, ignore contents)
+scratch/*
+!scratch/.gitkeep
+outputs/*
+!outputs/.gitkeep
