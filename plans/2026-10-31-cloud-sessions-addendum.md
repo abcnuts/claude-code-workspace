@@ -10,7 +10,7 @@ evidence: handoffs/2026-11-01-cloud-migration-phase-c-handoff.md
 
 # Addendum A: Claude sessions move to the cloud
 
-**Date:** 2026-10-31, revised 2026-11-01 · **Author:** Claude (cloud session session_01HV5ta1Y7pNipPG167LAkuC) · **Status:** Phases A and B done 2026-11-01. Phase C not started.
+**Date:** 2026-10-31, revised 2026-11-01 · **Author:** Claude (cloud session session_01HV5ta1Y7pNipPG167LAkuC) · **Status:** Phases A and B done 2026-11-01. Phase C in progress: C1 done and C2(b) live, both 2026-11-01.
 **Parent plan:** Google Doc "Mac Studio → Cloud Migration Plan — 2026-10-29" (https://docs.google.com/document/d/1oDM0JZ9Nfs3bjn1d_aH0QUQXmnZfWTFRLZ4pXrA1Yfo/edit). That Doc covers data. This file covers where Claude sessions run. **This file is the only full copy of Addendum A.** The Drive connector cannot edit a Doc body, so the Doc does not contain it.
 
 ---
@@ -113,6 +113,17 @@ Each step: owner, done-test. Nothing here sends, charges, or changes an external
 | C2 | Move recurring Claude work to scheduled tasks, one at a time, each named by you: (a) nightly Finn reader receipt for true-north-financial, if it is API-only; (b) weekly Arq receipt that reads arq-status.md on Drive and writes one line to the plan; (c) the 08:00 and 20:00 credential probes, so they page. | Bahir creates each after you name it | Each task has one green run |
 | C3 | Agent state to a private repo (canonical plan Phase 2.6). This is what gives cloud sessions memory. | Bahir, after your authorization phrase | Repo pushed, secret scan clean |
 | C4 | Weekly count: cloud vs bridge sessions, one line, in the canonical plan's §10. | Bahir | 4 weekdays at 32 of 40 or better |
+
+**Phase C status, checked 2026-11-01 at 09:50 UTC by cloud session session_01HV5ta2DccHWb7xMws9459j**
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| C1 Routing rule | **DONE 2026-11-01.** PR 9 merged as e32318c. The rule is in CLAUDE.md under "Where sessions run". The same section names "autonomous" as the cloud environment, which meets B1's done-test. PR 9 also corrected the stale "cannot reach brandonwadepackard-cell repos" line. | GitHub REST API and main's CLAUDE.md, checked it myself |
+| C2(b) Weekly Arq receipt | **DONE 2026-11-01.** Scheduled task "Weekly Arq receipt" (trig_01C2abnFtzccaa3ULtzwjPbr): Mondays 11:43 America/Denver, environment "autonomous", Google Drive connector, push notification on, read-only. It reads arq-status.json (same data as arq-status.md, easier to parse) and returns OK, ALERT, STALE or FAILED with one receipt line. Green run 2026-11-01 09:49 UTC (session cse_01HV5tZziHjRTFYDmX4MEFpU): "Arq receipt 2026-11-01: OK", numbers match the Drive file exactly. The first run at 09:42 UTC correctly reported FAILED because the task had no Drive connector; Brandon attached it at 09:49 UTC. | Both run transcripts and arq-status.json, checked it myself |
+| C2(b) deferred parts | **DEFERRED, owed.** (1) Writing the receipt to Supabase agent_activity_log (canonical plan Phase 6): every insert needs a registered agent token, and no cloud identity has one. Brandon chose "ship it without Supabase" on 2026-11-01. (2) Writing the line into this plan file: scheduled sessions have no repo attached. Today the receipt lives in the push notification and the run's session. | Supabase credential_gate and gov_verify_agent definitions, checked it myself |
+| C2(a), C2(c) | Not started. Brandon names each. | |
+| C3 | Partly done: Claude memory is in claude-config. Codex, OpenClaw and Hermes memory are not in a repo. | Read from the Phase C handoff |
+| C4 | Not started. | |
 
 ### Phase D. The Mac becomes the Blue box
 
