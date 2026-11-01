@@ -1,3 +1,12 @@
+---
+date: 2026-11-01
+type: handoff
+project: cloud-migration
+status: active
+from: claude.ai/code cloud session session_01HV5ta1Y7pNipPG167LAkuC
+supersedes: handoffs/2026-08-08-codex-repo-seed-handoff.md
+---
+
 # Handoff: cloud migration, start of Phase C
 
 **Date:** 2026-11-01 · **From:** cloud session session_01HV5ta1Y7pNipPG167LAkuC · **Plan:** `plans/2026-10-31-cloud-sessions-addendum.md`
@@ -19,6 +28,7 @@
 - On the Mac, run `git -C ~/.claude pull --ff-only` so the claude-config merge reaches the Mac.
 - Railway token stays out of the cloud environment until a cloud task needs it.
 - C3 is partly done: claude-config already holds Claude's per-project memory. Codex, OpenClaw and Hermes memory are not in a repo.
+- This repo's CLAUDE.md, under "Cloud session facts", says cloud Claude cannot reach `brandonwadepackard-cell` repos. That stopped being true on 2026-11-01: abcnuts is now a collaborator on all 5 work repos.
 - PRs 6 and 1 on this repo are open drafts, untouched. PR 6's `.gitignore` now conflicts with the merged PR 7; keep PR 7's version.
 
 ## Whose move

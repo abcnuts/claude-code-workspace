@@ -1,3 +1,13 @@
+---
+date: 2026-10-31
+type: plan
+project: cloud-migration
+status: active
+revised: 2026-11-01
+parent: Google Doc "Mac Studio → Cloud Migration Plan — 2026-10-29"
+evidence: handoffs/2026-11-01-cloud-migration-phase-c-handoff.md
+---
+
 # Addendum A: Claude sessions move to the cloud
 
 **Date:** 2026-10-31, revised 2026-11-01 · **Author:** Claude (cloud session session_01HV5ta1Y7pNipPG167LAkuC) · **Status:** Phases A and B done 2026-11-01. Phase C not started.
