@@ -133,6 +133,7 @@ Each step: owner, done-test. Nothing here sends, charges, or changes an external
 | --- | --- | --- | --- | --- | --- |
 | 2026-10-31 (plan baseline) | BELOW | 3 | 37 | 0 | 2026-10-20 to 2026-10-31, read from §0 |
 | 2026-11-01 (Sunday, not a weekday) | BELOW | 7 | 33 | 0 | 2026-10-20 13:42 to 2026-11-01 01:23 |
+| 2026-11-02 (Monday, weekday 1) | BELOW | 9 | 31 | 0 | 2026-10-22 18:34 to 2026-11-02 03:51 |
 
 ### Phase D. The Mac becomes the Blue box
 
