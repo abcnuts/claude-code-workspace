@@ -16,9 +16,13 @@ Do not re-litigate decisions it marks as locked.
 
 1. Read the newest `handoffs/*.md` (files are date-prefixed; highest date wins).
    It names the project, locked decisions, blockers, and re-entry points.
-2. Check `agent_messages` in Supabase (project `rjcoeoropwvqzvinopze`) for
-   unhandled messages addressed to you. Inspect the table's columns with
-   `list_tables` the first time if unsure of the schema.
+2. Read `UNIFIED_MEMORY.md` on `main` of the private repo
+   `brandonwadepackard-cell/collab` (cloud: attach collab; Mac: run
+   `git -C ~/Projects/collab pull --ff-only` first). It is the one shared
+   memory every agent reads, and it wins over your own notes. Report
+   differences to Brandon. Personal details stay in that private file, never
+   in this public repo. Agents no longer message each other through the
+   Supabase `agent_messages` table.
 3. If the task touches Google Drive, load the folder map first:
    `scripts/mythos-protocol.sh full`.
 4. If the Supabase project reports `INACTIVE` (paused), say so and restore it
