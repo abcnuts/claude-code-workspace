@@ -134,6 +134,25 @@ Each step: owner, done-test. Nothing here sends, charges, or changes an external
 | 2026-10-31 (plan baseline) | BELOW | 3 | 37 | 0 | 2026-10-20 to 2026-10-31, read from §0 |
 | 2026-11-01 (Sunday, not a weekday) | BELOW | 7 | 33 | 0 | 2026-10-20 13:42 to 2026-11-01 01:23 |
 
+**C4 status, checked 2026-11-04 at 14:20 UTC by Claude Duet thread "Finish the MYTHOS cloud migration" (session cse_01HV5ta2YxhsW2aS9TmDwLHD)**
+
+Outcome: at the current rate C4 does not pass, and the measure as written may never pass, because most of Brandon's cloud work no longer lands in the list it counts.
+
+What I checked myself (list_sessions, mine, 2026-11-04 14:15 UTC):
+- I rebuilt the 2026-11-03 window by hand: 40 sessions from 2026-10-23 17:16 MDT to 2026-11-03 13:05 MST (session_01HV5ta3XQUHow4ToXvECYCD). Result 9 cloud, 31 Mac. It matches the log row on PR 19.
+- The 31 Mac sessions by origin: 24 Claude Code CLI run on the Mac (tag remote-control-sdk, mostly 2026-10-23 to 2026-10-30); 3 iPhone sessions started into the Mac environment (2026-10-27, 2026-10-31, 2026-11-03); 3 child sessions the Mac seeded for Mac-only work (Phase 1 inventory, bridge test, skills backup); 1 desktop app Remote Control session.
+- New counted sessions per day: 2026-11-01: 9 (plus the counting session), 2026-11-02: 5, 2026-11-03: 2, 2026-11-04: 0 so far. Since the C1 rule (2026-11-01) they split 7 cloud, 7 Mac.
+- The newest counted session is still 2026-11-03 13:05 MST, so tonight's count will read 9 of 40 again unless new sessions start before 17:47 MST.
+
+The mechanism:
+1. The window only moves when a counted session starts. Few are starting, so the old Mac-heavy sessions from 2026-10-23 to 2026-10-30 stay in it.
+2. Brandon's cloud work moved to places list_sessions does not return: Claude Duet threads (5 in this project since 2026-11-01, all cloud) and scheduled tasks (Arq receipt, probe pager, C4 count, others). Both are cloud, and neither is counted. The tags filter that would list them is "not currently available" in list_sessions.
+3. The Mac sessions that still start are mostly Mac-only list work (Phase 1 inventory, Phase 3 vault mirror, Arq), which §5 allows.
+
+Arithmetic: to reach 32 of 40, at least 23 of the next 31 counted sessions must be cloud and the window must hold no more than 8 Mac sessions, on 4 weekdays in a row.
+
+Proposed change to the C4 test (NOT applied; needs Brandon's yes because it changes the finish line): "Each weekday, every Mac session in the 40-session window is on the §5 Mac-only list, and the window holds at least 10 sessions started that week." This measures the rule C1 set ("Use Remote Control only for a task on the Mac-only list") instead of a ratio the new tools hide.
+
 ### Phase D. The Mac becomes the Blue box
 
 Already written as Phases 4 and 5 of the canonical plan. Not restated here. This addendum ends when C4 passes.
