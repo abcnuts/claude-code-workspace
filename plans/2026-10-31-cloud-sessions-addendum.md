@@ -21,7 +21,7 @@ The 2026-10-29 plan moves your **data** to the cloud. It does not say where **yo
 
 ## 1. Finish line
 
-Four consecutive weekdays where at least 32 of every 40 Claude sessions run in an Anthropic cloud environment, every active repo opens in a cloud session with its own CLAUDE.md, and the Mac-only list in §5 is written and short.
+Four consecutive weekdays where every Claude session started on the Mac in the last 7 days is on the §5 Mac-only list (changed 2026-11-04 from "at least 32 of every 40 Claude sessions run in an Anthropic cloud environment"), every active repo opens in a cloud session with its own CLAUDE.md, and the Mac-only list in §5 is written and short.
 
 Measured by: the session list (environment_kind cloud vs bridge), checked by Bahir weekly.
 
@@ -112,7 +112,7 @@ Each step: owner, done-test. Nothing here sends, charges, or changes an external
 | C1 | Routing rule, one line, written into claude-code-workspace CLAUDE.md: "Start every session in the cloud from the repo. Use Remote Control only for a task on the Mac-only list." | Bahir drafts, you approve | Line is in main |
 | C2 | Move recurring Claude work to scheduled tasks, one at a time, each named by you: (a) nightly Finn reader receipt for true-north-financial, if it is API-only; (b) weekly Arq receipt that reads arq-status.md on Drive and writes one line to the plan; (c) the 08:00 and 20:00 credential probes, so they page. | Bahir creates each after you name it | Each task has one green run |
 | C3 | Agent state to a private repo (canonical plan Phase 2.6). This is what gives cloud sessions memory. | Bahir, after your authorization phrase | Repo pushed, secret scan clean |
-| C4 | Weekday count: cloud vs bridge sessions, one row per weekday in the "C4 count log" below. (Changed 2026-11-01 from "weekly, in the canonical plan's §10": a weekly count cannot show 4 weekdays in a row, and the Drive connector cannot edit the Doc body.) | Bahir | 4 weekdays in a row at 32 of 40 or better |
+| C4 | Weekday count: cloud vs bridge sessions, one row per weekday in the "C4 count log" below. (Changed 2026-11-01 from "weekly, in the canonical plan's §10": a weekly count cannot show 4 weekdays in a row, and the Drive connector cannot edit the Doc body.) | Bahir | 4 weekdays in a row where every Mac session started in the last 7 days is on the §5 Mac-only list (changed 2026-11-04, see "New C4 test" below; old test: 32 of 40 or better) |
 
 **Phase C status, checked 2026-11-01 at 10:15 UTC by cloud session session_01HV5ta2DccHWb7xMws9459j**
 
@@ -136,18 +136,54 @@ Each step: owner, done-test. Nothing here sends, charges, or changes an external
 | 2026-11-02 (Monday, weekday 1) | BELOW | 9 | 31 | 0 | 2026-10-22 18:34 to 2026-11-02 03:51 |
 | 2026-11-03 (Tuesday, weekday 2) | BELOW | 9 | 31 | 0 | 2026-10-23 17:16 to 2026-11-03 13:05 |
 
+**C4 status, checked 2026-11-04 at 14:20 UTC by Claude Duet thread "Finish the MYTHOS cloud migration" (session cse_01HV5ta2YxhsW2aS9TmDwLHD)**
+
+Outcome: at the current rate C4 does not pass, and the measure as written may never pass, because most of Brandon's cloud work no longer lands in the list it counts.
+
+What I checked myself (list_sessions, mine, 2026-11-04 14:15 UTC):
+- I rebuilt the 2026-11-03 window by hand: 40 sessions from 2026-10-23 17:16 MDT to 2026-11-03 13:05 MST (session_01HV5ta3XQUHow4ToXvECYCD). Result 9 cloud, 31 Mac. It matches the log row on PR 19.
+- The 31 Mac sessions by origin: 24 Claude Code CLI run on the Mac (tag remote-control-sdk, mostly 2026-10-23 to 2026-10-30); 3 iPhone sessions started into the Mac environment (2026-10-27, 2026-10-31, 2026-11-03); 3 child sessions the Mac seeded for Mac-only work (Phase 1 inventory, bridge test, skills backup); 1 desktop app Remote Control session.
+- New counted sessions per day: 2026-11-01: 9 (plus the counting session), 2026-11-02: 5, 2026-11-03: 2, 2026-11-04: 0 so far. Since the C1 rule (2026-11-01) they split 7 cloud, 7 Mac.
+- The newest counted session is still 2026-11-03 13:05 MST, so tonight's count will read 9 of 40 again unless new sessions start before 17:47 MST.
+
+The mechanism:
+1. The window only moves when a counted session starts. Few are starting, so the old Mac-heavy sessions from 2026-10-23 to 2026-10-30 stay in it.
+2. Brandon's cloud work moved to places list_sessions does not return: Claude Duet threads (5 in this project since 2026-11-01, all cloud) and scheduled tasks (Arq receipt, probe pager, C4 count, others). Both are cloud, and neither is counted. The tags filter that would list them is "not currently available" in list_sessions.
+3. The Mac sessions that still start are mostly Mac-only list work (Phase 1 inventory, Phase 3 vault mirror, Arq), which §5 allows.
+
+Arithmetic: to reach 32 of 40, at least 23 of the next 31 counted sessions must be cloud and the window must hold no more than 8 Mac sessions, on 4 weekdays in a row.
+
+Proposed change to the C4 test (NOT applied; needs Brandon's yes because it changes the finish line): "Each weekday, every Mac session in the 40-session window is on the §5 Mac-only list, and the window holds at least 10 sessions started that week." This measures the rule C1 set ("Use Remote Control only for a task on the Mac-only list") instead of a ratio the new tools hide.
+
+**New C4 test, chosen by Brandon 2026-11-04 14:18 UTC ("Yes, change the test"). Window and routine change below are drafts until he says yes to them.**
+
+- Rule (his pick): C4 passes when every Mac session in the window is on the §5 Mac-only list.
+- Window (draft, needs his yes): every session started in the 7 days before the count, instead of the 40 newest. Reason: the 40-session window only moves when new sessions start, so the off-list Mac sessions from 2026-10-26 to 2026-10-28 would stay in it for weeks.
+- How a session is judged: the count reads each Mac session's title and last summary, names the §5 entry it fits with a one-line reason, or marks it OFF-LIST. Brandon can overrule any call by replying to the count.
+- Status words: PASS (no OFF-LIST Mac session in the window; zero Mac sessions also passes), BELOW (one or more OFF-LIST), FAILED (list_sessions errored).
+- Done when: PASS on 4 weekdays in a row.
+- Dry run today, checked myself 2026-11-04 14:25 UTC: window 2026-10-28 to 2026-11-04 holds 11 Mac sessions. 2 are clearly OFF-LIST: "True North project overview" (2026-10-28 21:11 MDT, repo work) and "Personal information summary" (2026-11-03 13:05 MST, a memory write-up). 2 are judgment calls: "Bridge round-trip test" and "Cloud migration plan architecture". The other 7 fit entries 1 or 5. Result: BELOW.
+- Earliest possible pass: the last clear OFF-LIST session leaves the window on 2026-11-10, so 4 weekdays in a row can first finish on 2026-11-13, if no new off-list Mac session starts.
+
+**C4 count log, new test** (window = sessions started in the 7 days before the count. Mac = bridge.)
+
+| Date (America/Denver) | Status | Mac sessions | On list | OFF-LIST (title) | Window (America/Denver) |
+| --- | --- | --- | --- | --- | --- |
+
 ### Phase D. The Mac becomes the Blue box
 
 Already written as Phases 4 and 5 of the canonical plan. Not restated here. This addendum ends when C4 passes.
 
 ## 5. Mac-only list (stays on Remote Control)
 
-1. Arq, storage cleanup, anything that reads the Mac's disk.
-2. Logged-in browser work: Railway dashboard, GoHighLevel, any site where the session lives in Chrome.
-3. Keychain, stash, 1Password sync, credential minting.
-4. Video and media: the-boogeyman 36 GB, Descript, 4K passes.
-5. Ollama, ComfyUI, Docker, chrome-cdp, embed-proxy, graphify-mcp, litellm-proxy (the Blue list from canonical plan Phase 4).
-6. Hermes and OpenClaw local runs.
+1. Arq, storage cleanup, anything that reads the Mac's disk. Reason: those files exist only on that disk until Track 1 finishes copying them.
+2. Logged-in browser work: Railway dashboard, GoHighLevel, any site where the session lives in Chrome. Reason: the signed-in sessions live in the Mac's Chrome.
+3. Keychain, stash, 1Password sync, credential minting. Reason: secrets stay on Brandon's own hardware.
+4. Video and media: the-boogeyman 36 GB, Descript, 4K passes. Reason: the working files and Descript are on the Mac.
+5. Ollama, ComfyUI, Docker, chrome-cdp, embed-proxy, graphify-mcp, litellm-proxy (the Blue list from canonical plan Phase 4). Reason: local services that run on the Mac's hardware.
+6. Hermes and OpenClaw local runs. Reason: those agents run on the Mac until Phase 4 moves them.
+
+(Reasons added 2026-11-04 by Claude for the new C4 test. No entries added or removed.)
 
 Everything not on this list starts in the cloud.
 
@@ -168,4 +204,4 @@ Everything not on this list starts in the cloud.
 
 ## 8. What done looks like
 
-C4 passes. The Mac-only list in §5 is the only reason a session runs on the Mac. Every active repo has a CLAUDE.md. Memory lives in a repo, not in one machine's home folder.
+C4 passes under the new test (every Mac session in the last 7 days is on §5, 4 weekdays in a row). The Mac-only list in §5 is the only reason a session runs on the Mac. Every active repo has a CLAUDE.md. Memory lives in a repo, not in one machine's home folder.
