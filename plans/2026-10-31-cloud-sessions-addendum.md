@@ -170,6 +170,7 @@ Proposed change to the C4 test (NOT applied; needs Brandon's yes because it chan
 | Date (America/Denver) | Status | Mac sessions | On list | OFF-LIST (title) | Window (America/Denver) |
 | --- | --- | --- | --- | --- | --- |
 | 2026-11-04 (Wednesday, new-test weekday 1) | BELOW | 13 | 6 | 7: "Refresh AIRTABLE-STATE.md to the live 40-base inventory", "Claude Duet app integration", "Personal information summary", "Continue previous chat thread", "Bridge round-trip test (read-only)", "Cloud migration plan architecture", "True North project overview" | 2026-10-28 18:47 to 2026-11-04 17:47 (sessions started 2026-10-28 21:11 to 2026-11-04 17:09) |
+| 2026-11-05 (Thursday, new-test weekday 2) | BELOW | 14 | 8 | 6: "Claude Duet ↔ Bahir Agent Mail loop", "Refresh AIRTABLE-STATE.md to the live 40-base inventory", "Claude Duet app integration", "Personal information summary", "Bridge round-trip test (read-only)", "Cloud migration plan architecture". Reclassified: "Continue previous chat thread" is now on list (entry 1), its new summary shows the Phase 3 vault mirror | 2026-10-29 18:47 to 2026-11-05 17:47 (sessions started 2026-10-29 23:00 to 2026-11-04 23:34) |
 
 ### Phase D. The Mac becomes the Blue box
 
