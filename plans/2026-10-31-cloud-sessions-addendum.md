@@ -133,6 +133,8 @@ Each step: owner, done-test. Nothing here sends, charges, or changes an external
 | --- | --- | --- | --- | --- | --- |
 | 2026-10-31 (plan baseline) | BELOW | 3 | 37 | 0 | 2026-10-20 to 2026-10-31, read from §0 |
 | 2026-11-01 (Sunday, not a weekday) | BELOW | 7 | 33 | 0 | 2026-10-20 13:42 to 2026-11-01 01:23 |
+| 2026-11-02 (Monday, weekday 1) | BELOW | 9 | 31 | 0 | 2026-10-22 18:34 to 2026-11-02 03:51 |
+| 2026-11-03 (Tuesday, weekday 2) | BELOW | 9 | 31 | 0 | 2026-10-23 17:16 to 2026-11-03 13:05 |
 
 **C4 status, checked 2026-11-04 at 14:20 UTC by Claude Duet thread "Finish the MYTHOS cloud migration" (session cse_01HV5ta2YxhsW2aS9TmDwLHD)**
 
@@ -167,6 +169,9 @@ Proposed change to the C4 test (NOT applied; needs Brandon's yes because it chan
 
 | Date (America/Denver) | Status | Mac sessions | On list | OFF-LIST (title) | Window (America/Denver) |
 | --- | --- | --- | --- | --- | --- |
+| 2026-11-04 (Wednesday, new-test weekday 1) | BELOW | 13 | 6 | 7: "Refresh AIRTABLE-STATE.md to the live 40-base inventory", "Claude Duet app integration", "Personal information summary", "Continue previous chat thread", "Bridge round-trip test (read-only)", "Cloud migration plan architecture", "True North project overview" | 2026-10-28 18:47 to 2026-11-04 17:47 (sessions started 2026-10-28 21:11 to 2026-11-04 17:09) |
+| 2026-11-05 (Thursday, new-test weekday 2) | BELOW | 14 | 8 | 6: "Claude Duet ↔ Bahir Agent Mail loop", "Refresh AIRTABLE-STATE.md to the live 40-base inventory", "Claude Duet app integration", "Personal information summary", "Bridge round-trip test (read-only)", "Cloud migration plan architecture". Reclassified: "Continue previous chat thread" is now on list (entry 1), its new summary shows the Phase 3 vault mirror | 2026-10-29 18:47 to 2026-11-05 17:47 (sessions started 2026-10-29 23:00 to 2026-11-04 23:34) |
+| 2026-11-06 (Friday, new-test weekday 3) | BELOW | 16 | 8 | 8: "True North project review and sync", "Artifact build request", "Arch Mythos", "Claude Duet ↔ Bahir Agent Mail loop", "Refresh AIRTABLE-STATE.md to the live 40-base inventory", "Claude Duet app integration", "Personal information summary", "Bridge round-trip test (read-only)" | 2026-10-30 18:47 to 2026-11-06 17:47 (sessions started 2026-10-31 00:59 to 2026-11-06 07:45) |
 
 ### Phase D. The Mac becomes the Blue box
 
